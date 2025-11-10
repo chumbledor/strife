@@ -1,0 +1,41 @@
+{
+  "name": "@strife/core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "dev": "tsc && tsc-alias && node dist/index.js",
+    "mikro-orm": "node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/jwt": "^10.0.0",
+    "@mikro-orm/core": "^6.5.8",
+    "@mikro-orm/mysql": "^6.5.8",
+    "@mikro-orm/reflection": "^6.5.8",
+    "@mikro-orm/seeder": "^6.5.8",
+    "@strife/common": "github:chumbledor/strife-common",
+    "argon2": "^0.44.0",
+    "faker-js": "^1.0.0",
+    "fastify": "^5.1.0",
+    "inversify": "^7.10.2",
+    "mongoose": "^8.19.3",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@mikro-orm/cli": "^6.5.8",
+    "@types/argon2": "^0.14.1",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.7.0",
+    "eslint": "^9.37.0",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.3"
+  }
+}

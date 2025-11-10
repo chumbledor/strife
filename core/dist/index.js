@@ -1,0 +1,28 @@
+import './src/App.js';
+import './src/Database.js';
+import di from './src/DependencyInjection.js';
+import './src/routers/AccountRouter.js';
+import './src/routers/AuthenticationRouter.js';
+import './src/routers/ProjectRouter.js';
+import { AppServiceId } from './interfaces/IApp.js';
+import { DatabaseServiceId } from './interfaces/IDatabase.js';
+import { AccountRouterServiceId } from './interfaces/routers/IAccountRouter.js';
+import { AuthenticationRouterServiceId } from './interfaces/routers/IAuthenticationRouter.js';
+import { ProjectRouterServiceId } from './interfaces/routers/IProjectRouter.js';
+import mongoose from 'mongoose';
+const host = '0.0.0.0';
+const port = 3000;
+const app = await di.getAsync(AppServiceId);
+await app.initialize();
+const database = await di.getAsync(DatabaseServiceId);
+await database.initialize();
+const test = await mongoose.connect('mongodb://127.0.0.1:27017/test');
+const accountRouter = await di.getAsync(AccountRouterServiceId);
+await accountRouter.register(app);
+const authenticationRouter = await di.getAsync(AuthenticationRouterServiceId);
+await authenticationRouter.register(app);
+const projectRouter = await di.getAsync(ProjectRouterServiceId);
+await projectRouter.register(app);
+app.listen(host, port);
+if (process.env.NODE_ENV == 'development')
+    database.update();

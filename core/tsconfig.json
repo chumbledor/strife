@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "baseUrl": "root",
+    "rootDir": "root",
+    "outDir": "dist",
+    "incremental": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "types": ["node"],
+    "paths": {
+      "@root/*": ["./*"],
+      "@interfaces/*": ["./interfaces/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["root/**/*.ts", "mikro-orm.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}
