@@ -1,26 +1,30 @@
 import '@/App.js';
-import '@/Database.js';
 import di from '@/DependencyInjection.js';
+import '@/NoSQL.js';
 import '@/routers/AccountRouter.js';
 import '@/routers/AuthenticationRouter.js';
 import '@/routers/ProjectRouter.js';
+import '@/SQL.js';
 import { AppServiceId } from '@interfaces/IApp.js';
-import { DatabaseServiceId } from '@interfaces/IDatabase.js';
+import { NoSQLServiceId } from '@interfaces/INoSQL.js';
+import { SQLServiceId } from '@interfaces/ISQL.js';
 import { AccountRouterServiceId } from '@interfaces/routers/IAccountRouter.js';
 import { AuthenticationRouterServiceId } from '@interfaces/routers/IAuthenticationRouter.js';
 import { ProjectRouterServiceId } from '@interfaces/routers/IProjectRouter.js';
-import mongoose from 'mongoose'
 
-const host = '0.0.0.0';
-const port = 3000;
+const host = process.env.APP_HOST ?? '0.0.0.0';
+const port = process.env.APP_PORT
+  ? Number.parseInt(process.env.APP_PORT)
+  : 3000;
 
 const app = await di.getAsync(AppServiceId);
 await app.initialize();
 
-const database = await di.getAsync(DatabaseServiceId);
-await database.initialize();
+const sql = await di.getAsync(SQLServiceId);
+await sql.initialize();
 
-const test = await mongoose.connect('mongodb://127.0.0.1:27017/test');
+const nosql = await di.getAsync(NoSQLServiceId);
+await nosql.initialize();
 
 const accountRouter = await di.getAsync(AccountRouterServiceId);
 await accountRouter.register(app);
@@ -34,4 +38,4 @@ await projectRouter.register(app);
 app.listen(host, port);
 
 if (process.env.NODE_ENV == 'development')
-  database.update();
+  sql.update();

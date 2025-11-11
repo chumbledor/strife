@@ -4,13 +4,14 @@ import { type IProjectRepository } from '@interfaces/repositories/IProjectReposi
 import { MikroORM } from '@mikro-orm/core';
 import { type ServiceIdentifier } from 'inversify';
 
-export interface IDatabase {
-  orm: MikroORM;
-  account: IAccountRepository;
-  authentication: IAuthenticationRepository;
-  project: IProjectRepository;
+export interface ISQL {
+  readonly orm: MikroORM;
+  readonly account: IAccountRepository,
+  readonly authentication: IAuthenticationRepository,
+  readonly project: IProjectRepository
+
   initialize(): Promise<void>;
   update(): Promise<void>;
 }
 
-export const DatabaseServiceId: ServiceIdentifier<IDatabase> = Symbol.for('DatabaseServiceId');
+export const SQLServiceId: ServiceIdentifier<ISQL> = Symbol.for('SQLServiceId');

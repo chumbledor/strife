@@ -10,7 +10,7 @@ import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import { AppServiceId } from '../interfaces/IApp.js';
-import { DatabaseServiceId } from '../interfaces/IDatabase.js';
+import { SQLServiceId } from '../interfaces/ISQL.js';
 import fastify from 'fastify';
 import { injectable } from 'inversify';
 let App = class App {
@@ -44,8 +44,8 @@ let App = class App {
     async authenticate(request, reply) {
         try {
             const { id } = await request.jwtVerify();
-            const database = await di.getAsync(DatabaseServiceId);
-            const account = await database.account.getAccount(id);
+            const sql = await di.getAsync(SQLServiceId);
+            const account = await sql.account.getAccount(id);
             const user = new User(account);
             request.user = user;
         }

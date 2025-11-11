@@ -1,4 +1,4 @@
-import { DirectoryModelName, FileSystemObjectModelName } from '../models/ModelNames.js';
+import { FileSystemDirectoryModelName, FileSystemObjectModelName } from '../models/ModelNames.js';
 import mongoose from 'mongoose';
 const fileSystemObjectOptions = {
     discriminatorKey: 'kind',
@@ -11,8 +11,8 @@ const fileSystemObjectSchema = new mongoose.Schema({
     },
     parent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: DirectoryModelName
+        ref: FileSystemDirectoryModelName
     }
 }, fileSystemObjectOptions);
-export const FileSystemObject = mongoose.model(FileSystemObjectModelName, fileSystemObjectSchema);
-export default FileSystemObject;
+export const FileSystemObjectModel = mongoose.model(FileSystemObjectModelName, fileSystemObjectSchema);
+export default FileSystemObjectModel;

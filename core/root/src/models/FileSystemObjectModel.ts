@@ -1,5 +1,5 @@
-import { DirectoryModelName, FileSystemObjectModelName } from '@/models/ModelNames.js';
-import { type IFileSystemObjectModel } from '@interfaces/models/IFileSystemObjectModel.js';
+import { FileSystemDirectoryModelName, FileSystemObjectModelName } from '@/models/ModelNames.js';
+import { type IFileSystemObject } from '@root/interfaces/models/IFileSystemObjectModel.js';
 import mongoose from 'mongoose';
 
 const fileSystemObjectOptions = {
@@ -7,7 +7,7 @@ const fileSystemObjectOptions = {
   collection: 'file_system'
 }
 
-const fileSystemObjectSchema = new mongoose.Schema(
+const fileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
   {
     name: {
       type: String,
@@ -15,11 +15,12 @@ const fileSystemObjectSchema = new mongoose.Schema(
     },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: DirectoryModelName
+      ref: FileSystemDirectoryModelName
     }
   }, 
   fileSystemObjectOptions
 );
 
-export const FileSystemObject = mongoose.model<IFileSystemObjectModel>(FileSystemObjectModelName, fileSystemObjectSchema);
-export default FileSystemObject;
+export const FileSystemObjectModel = mongoose.model<IFileSystemObject>(FileSystemObjectModelName, fileSystemObjectSchema);
+export default FileSystemObjectModel;
+

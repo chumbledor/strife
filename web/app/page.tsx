@@ -6,19 +6,19 @@ import CreateProjectDialog from '@components/project/dialogs/CreateProjectDialog
 import ProjectList from '@components/project/ProjectList';
 import { UserServiceId } from '@interfaces/IUser';
 import { ProjectServiceServiceId } from '@interfaces/services/IProjectService';
-import { Add as AddIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, type ListItemProps } from '@mui/material';
 import { type ProjectData } from '@strife/common';
 import { useRouter } from 'next/navigation';
-import { JSX, useEffect, useState } from 'react';
+import React from 'react';
 
-export default function HomePage(): JSX.Element {
+export default function HomePage(): React.JSX.Element {
   const user = di.get(UserServiceId);
   const projectService = di.get(ProjectServiceServiceId);
   const router = useRouter();
-  const [ projects, setProjects ] = useState<ProjectData[]>([]);
-  const [ isCreateDialogOpen, setIsCreateDialogOpen ] = useState(false);
-  useEffect(initializationEffect, []);
+  const [ projects, setProjects ] = React.useState<ProjectData[]>([]);
+  const [ isCreateDialogOpen, setIsCreateDialogOpen ] = React.useState(false);
+  React.useEffect(initializationEffect, []);
 
   const actions = 
     <IconButton onClick={onClickCreateProject}>
@@ -28,13 +28,17 @@ export default function HomePage(): JSX.Element {
   const empty = <Button variant='contained' sx={{ width: '100%' }} onClick={onClickCreateProject}>Create a Project</Button>;
 
   const listItemPropsCallback = (projectData: ProjectData, index: number): ListItemProps => {
-    const secondaryAction = <IconButton onClick={onClick}>
-      <EditIcon />
-    </IconButton>;
-
+    const secondaryAction = <React.Fragment>
+      <IconButton onClick={onClickEditProject}>
+        <EditIcon />
+      </IconButton>
+      <IconButton onClick={onClickDeleteProject(projectData)}>
+        <DeleteIcon />
+      </IconButton>
+    </React.Fragment>;
     return { secondaryAction };
 
-    function onClick() {
+    function onClickEditProject() {
       goToProjectPage(projectData);
     }
   }
@@ -59,6 +63,15 @@ export default function HomePage(): JSX.Element {
 
   function onClickCreateProject(): void {
     setIsCreateDialogOpen(true);
+  }
+
+  function onClickDeleteProject(projectData: ProjectData): () => Promise<void> {
+    return async function (): Promise<void> {
+      await projectService.deleteProject(projectData.id);
+      const index = projects.indexOf(projectData);
+      projects.splice(index, 1);
+      setProjects(projects);
+    }
   }
 
   function onCloseCreateProjectDialog(): void {

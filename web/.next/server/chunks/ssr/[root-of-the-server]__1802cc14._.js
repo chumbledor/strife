@@ -289,7 +289,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$tslib$2f$tsl
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$DependencyInjection$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/src/DependencyInjection.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$interfaces$2f$IUser$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/interfaces/IUser.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/index.js [app-ssr] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/account.data.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/AccountData.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$inversify$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/inversify/lib/esm/index.js [app-ssr] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$inversifyjs$2f$core$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@inversifyjs/core/lib/esm/index.js [app-ssr] (ecmascript)");
 ;
@@ -316,7 +316,7 @@ class User {
         if (!accountJson) return;
         const accountObject = JSON.parse(accountJson);
         if (!accountObject) return;
-        const accountData = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"].parse(accountObject);
+        const accountData = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"].parse(accountObject);
         return accountData;
     }
 }
@@ -333,13 +333,13 @@ __turbopack_context__.s([
     ()=>Queue
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/index.js [app-ssr] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$action$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/action.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$Action$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/Action.js [app-ssr] (ecmascript)");
 ;
 class Queue {
     get head() {
         return this._items.at(0);
     }
-    _headChangedEvent = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$action$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Action"]();
+    _headChangedEvent = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$Action$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Action"]();
     get headChangedEvent() {
         return this._headChangedEvent;
     }
@@ -609,7 +609,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$DependencyInj
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$services$2f$BaseService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/src/services/BaseService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$interfaces$2f$services$2f$IAccountService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/interfaces/services/IAccountService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/index.js [app-ssr] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/account.data.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/AccountData.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$inversify$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/inversify/lib/esm/index.js [app-ssr] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$inversifyjs$2f$core$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@inversifyjs/core/lib/esm/index.js [app-ssr] (ecmascript)");
 ;
@@ -624,7 +624,7 @@ class AccountService extends __TURBOPACK__imported__module__$5b$project$5d2f$roo
     }
     async createAccount(data) {
         return await this.post({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             data
         });
     }
@@ -636,20 +636,20 @@ class AccountService extends __TURBOPACK__imported__module__$5b$project$5d2f$roo
     }
     getAccount(id) {
         return this.get({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             url: `/${id}`
         });
     }
     getAccounts(data) {
         return this.get({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"].array(),
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"].array(),
             data
         });
     }
     async updateAccount(data) {
         if (!this.user.account) return Promise.reject();
         return this.put({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             url: `/${this.user.account.id}`,
             data
         });
@@ -678,7 +678,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$DependencyInj
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$services$2f$BaseService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/src/services/BaseService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$interfaces$2f$services$2f$IAuthenticationService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/interfaces/services/IAuthenticationService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/index.js [app-ssr] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/account.data.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/AccountData.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$inversify$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/inversify/lib/esm/index.js [app-ssr] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$inversifyjs$2f$core$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@inversifyjs/core/lib/esm/index.js [app-ssr] (ecmascript)");
 ;
@@ -694,7 +694,7 @@ class AuthenticationService extends __TURBOPACK__imported__module__$5b$project$5
     async login(data) {
         if (this.user.account) return Promise.reject();
         const accountData = await this.post({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             data
         });
         this.user.login(accountData);
@@ -713,7 +713,7 @@ class AuthenticationService extends __TURBOPACK__imported__module__$5b$project$5
     async refresh() {
         if (!this.user.account) return Promise.reject();
         const accountData = await this.post({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             url: '/refresh',
             init: {
                 credentials: 'include'
@@ -725,7 +725,7 @@ class AuthenticationService extends __TURBOPACK__imported__module__$5b$project$5
     async updateAuthentication(data) {
         if (!this.user.account) return Promise.reject();
         return this.put({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$account$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$AccountData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AccountSchema"],
             url: `/${this.user.account.id}`,
             data
         });
@@ -755,7 +755,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$services$2f$B
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$interfaces$2f$IUser$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/interfaces/IUser.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$interfaces$2f$services$2f$IProjectService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/interfaces/services/IProjectService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/index.js [app-ssr] (ecmascript) <locals>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$project$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/project.data.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$ProjectData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@strife/common/dist/ProjectData.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$inversify$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/inversify/lib/esm/index.js [app-ssr] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$inversifyjs$2f$core$2f$lib$2f$esm$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@inversifyjs/core/lib/esm/index.js [app-ssr] (ecmascript)");
 ;
@@ -771,7 +771,7 @@ class ProjectService extends __TURBOPACK__imported__module__$5b$project$5d2f$roo
     }
     async createProject(data) {
         return await this.post({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$project$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$ProjectData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
             data
         });
     }
@@ -784,20 +784,20 @@ class ProjectService extends __TURBOPACK__imported__module__$5b$project$5d2f$roo
     }
     getProject(id) {
         return this.get({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$project$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$ProjectData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
             url: `/${id}`
         });
     }
     getProjects(data) {
         return this.get({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$project$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"].array(),
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$ProjectData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"].array(),
             data
         });
     }
     async updateProject(id, data) {
         if (!this.user.account) return Promise.reject();
         return this.put({
-            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$project$2e$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
+            schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$ProjectData$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ProjectSchema"],
             url: `/${id}`,
             data
         });

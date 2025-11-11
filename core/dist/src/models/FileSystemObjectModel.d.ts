@@ -1,8 +1,8 @@
-import { type IFileSystemObjectModel } from '../../interfaces/models/IFileSystemObjectModel.js';
+import { type IFileSystemObject } from '../../interfaces/models/IFileSystemObjectModel.js';
 import mongoose from 'mongoose';
-export declare const FileSystemObject: mongoose.Model<IFileSystemObjectModel, {}, {}, {}, mongoose.Document<unknown, {}, IFileSystemObjectModel, {}, {}> & IFileSystemObjectModel & {
+export declare const FileSystemObjectModel: mongoose.Model<IFileSystemObject, {}, {}, {}, mongoose.Document<unknown, {}, IFileSystemObject, {}, {}> & IFileSystemObject & {
     _id: mongoose.Types.ObjectId;
 } & {
     __v: number;
 }, any>;
-export default FileSystemObject;
+export default FileSystemObjectModel;

@@ -15,10 +15,12 @@ const driverOptions = {
   // }
 };
 
-const host = process.env.MIKRO_ORM_HOST;
-const port = 3306;
-const user = process.env.MIKRO_ORM_USER;
-const password = process.env.MIKRO_ORM_PASSWORD;
+const host = process.env.SQL_HOST;
+const port = process.env.SQL_PORT
+  ? Number.parseInt(process.env.SQL_PORT)
+  : 3306;
+const user = process.env.SQL_USER;
+const password = process.env.SQL_PASSWORD;
 const dbName = 'public';
 
 const entitiesTsPath = path.join(__dirname, '../root/src/**/*.entity.ts');

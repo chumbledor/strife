@@ -13,6 +13,7 @@ import { DatabaseServiceId } from '../interfaces/IDatabase.js';
 import { MikroORM, RequestContext } from '@mikro-orm/core';
 import config from '../mikro-orm.config.js';
 import { injectable } from 'inversify';
+import mongoose from 'mongoose';
 let Database = class Database {
     _orm;
     get orm() {
@@ -39,6 +40,12 @@ let Database = class Database {
         this._app = await di.getAsync(AppServiceId);
         this._app.instance.addHook('onRequest', this.databaseContextHook.bind(this));
         this._app.instance.addHook('onClose', this.closeDatabaseConnectionHook.bind(this));
+        const test = await mongoose.connect(`mongodb://${process.env.NOSQL_HOST}:27017`, {
+            dbName: process.env.NOSQL_DATABASE,
+            authSource: process.env.NOSQL_AUTH_SOURCE,
+            user: process.env.NOSQL_USER,
+            pass: process.env.NOSQL_PASSWORD
+        });
     }
     async update() {
         const schemaGenerator = this.orm.getSchemaGenerator();

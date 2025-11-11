@@ -1,3 +1,3 @@
 export declare const FileSystemObjectModelName = "FileSystemObject";
-export declare const DirectoryModelName = "Directory";
-export declare const FileModelName = "File";
+export declare const FileSystemDirectoryModelName = "Directory";
+export declare const FileSystemFileModelName = "File";
