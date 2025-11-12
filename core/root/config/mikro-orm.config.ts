@@ -9,11 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const driver = MySqlDriver;
-const driverOptions = {
-  // connection: {
-  //   ssl: true,
-  // }
-};
 
 const host = process.env.SQL_HOST;
 const port = process.env.SQL_PORT
@@ -23,9 +18,9 @@ const user = process.env.SQL_USER;
 const password = process.env.SQL_PASSWORD;
 const dbName = 'public';
 
-const entitiesTsPath = path.join(__dirname, '../root/src/**/*.entity.ts');
+const entitiesTsPath = path.join(__dirname, '../../root/src/**/*.entity.ts');
 const entitiesTs = [ entitiesTsPath ]; // Folder-based discovery setup, using common filename suffix (input path)
-const entitiesPath = path.join(__dirname, '../dist/src/**/*.entity.js');
+const entitiesPath = path.join(__dirname, '../../dist/src/**/*.entity.js');
 const entities = [ entitiesPath ]; // Folder-based discovery setup, using common filename suffix (output path)
 
 const extensions = [ SeedManager ];
@@ -42,7 +37,6 @@ const debug = true;
 
 const config: Options = {
   driver,
-  driverOptions,
   host,
   port,
   user,

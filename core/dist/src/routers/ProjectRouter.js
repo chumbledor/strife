@@ -8,7 +8,7 @@ import di from '../DependencyInjection.js';
 import BaseRouter from '../routers/BaseRouter.js';
 import { SQLServiceId } from '../../interfaces/ISQL.js';
 import { ProjectRouterServiceId } from '../../interfaces/routers/IProjectRouter.js';
-import { CreateProjectSchema, GetProjectsSchema, IdSchema, UpdateProjectSchema } from '@strife/common';
+import { CreateProjectSchema, GetProjectsSchema, ProjectIdSchema, UpdateProjectSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let ProjectRouter = class ProjectRouter extends BaseRouter {
     get prefix() {
@@ -17,10 +17,10 @@ let ProjectRouter = class ProjectRouter extends BaseRouter {
     async routes(instance) {
         super.routes(instance);
         instance.post('/', { onRequest: [instance.authenticate] }, this.createProject.bind(this));
-        instance.delete('/:id', { onRequest: [instance.authenticate] }, this.deleteProject.bind(this));
-        instance.get('/:id', this.getProject.bind(this));
+        instance.delete('/:projectId', { onRequest: [instance.authenticate] }, this.deleteProject.bind(this));
+        instance.get('/:projectId', this.getProject.bind(this));
         instance.get('/', this.getProjects.bind(this));
-        instance.put('/:id', { onRequest: [instance.authenticate] }, this.updateProject.bind(this));
+        instance.put('/:projectId', { onRequest: [instance.authenticate] }, this.updateProject.bind(this));
     }
     async createProject(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
@@ -31,13 +31,13 @@ let ProjectRouter = class ProjectRouter extends BaseRouter {
     async deleteProject(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
-        await sql.project.deleteProject(user.account, id);
+        const { projectId } = await ProjectIdSchema.parseAsync(request.params);
+        await sql.project.deleteProject(user.account, projectId);
     }
     async getProject(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
-        const { id } = await IdSchema.parseAsync(request.params);
-        return await sql.project.getProject(id);
+        const { projectId } = await ProjectIdSchema.parseAsync(request.params);
+        return await sql.project.getProject(projectId);
     }
     async getProjects(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
@@ -47,9 +47,9 @@ let ProjectRouter = class ProjectRouter extends BaseRouter {
     async updateProject(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
+        const { projectId } = await ProjectIdSchema.parseAsync(request.params);
         const data = await UpdateProjectSchema.parseAsync(request.body);
-        return await sql.project.updateProject(user.account, id, data);
+        return await sql.project.updateProject(user.account, projectId, data);
     }
 };
 ProjectRouter = __decorate([

@@ -1,8 +1,10 @@
-import { type IFileSystemObject } from "@interfaces/models/IFileSystemObjectModel.js";
-import mongoose from "mongoose";
+import { type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
+import mongoose from 'mongoose';
 
 export interface IFileSystemDirectory extends IFileSystemObject {
-  children: mongoose.Types.ObjectId[]
+  childrenIds: mongoose.Types.ObjectId[]
 }
 
 export type IFileSystemDirectoryModel = mongoose.Model<IFileSystemDirectory>;
+
+export const FileSystemDirectoryModelName = 'FileSystemDirectoryModel';

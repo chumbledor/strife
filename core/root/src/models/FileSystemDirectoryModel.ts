@@ -1,10 +1,10 @@
 import FileSystemObjectModel from '@/models/FileSystemObjectModel.js';
-import { FileSystemDirectoryModelName, FileSystemObjectModelName } from '@/models/ModelNames.js';
-import { type IFileSystemDirectory } from '@root/interfaces/models/IFileSystemDirectoryModel.js';
+import { FileSystemDirectoryModelName, type IFileSystemDirectory } from '@interfaces/models/IFileSystemDirectoryModel.js';
+import { FileSystemObjectModelName } from '@interfaces/models/IFileSystemObjectModel.js';
 import mongoose from 'mongoose';
 
 export const FileSystemDirectorySchema = new mongoose.Schema<IFileSystemDirectory>({
-  children: [{
+  childrenIds: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: FileSystemObjectModelName
   }]
@@ -14,7 +14,7 @@ FileSystemDirectorySchema.pre(
   'deleteOne', 
   { document: true, query: false }, 
   async function(next: mongoose.CallbackWithoutResultAndOptionalError) {
-    await FileSystemObjectModel.deleteMany({ _id: { $in: this.children } });
+    await FileSystemObjectModel.deleteMany({ _id: { $in: this.childrenIds } });
     next();
   }
 )

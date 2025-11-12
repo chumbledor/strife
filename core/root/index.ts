@@ -3,6 +3,7 @@ import di from '@/DependencyInjection.js';
 import '@/NoSQL.js';
 import '@/routers/AccountRouter.js';
 import '@/routers/AuthenticationRouter.js';
+import '@/routers/FileSystemRouter.js';
 import '@/routers/ProjectRouter.js';
 import '@/SQL.js';
 import { AppServiceId } from '@interfaces/IApp.js';
@@ -10,6 +11,7 @@ import { NoSQLServiceId } from '@interfaces/INoSQL.js';
 import { SQLServiceId } from '@interfaces/ISQL.js';
 import { AccountRouterServiceId } from '@interfaces/routers/IAccountRouter.js';
 import { AuthenticationRouterServiceId } from '@interfaces/routers/IAuthenticationRouter.js';
+import { FileSystemRouterServiceId } from '@interfaces/routers/IFileSystemRouter.js';
 import { ProjectRouterServiceId } from '@interfaces/routers/IProjectRouter.js';
 
 const host = process.env.APP_HOST ?? '0.0.0.0';
@@ -34,6 +36,9 @@ await authenticationRouter.register(app);
 
 const projectRouter = await di.getAsync(ProjectRouterServiceId);
 await projectRouter.register(app);
+
+const fileSystemRouter = await di.getAsync(FileSystemRouterServiceId);
+await fileSystemRouter.register(app);
 
 app.listen(host, port);
 

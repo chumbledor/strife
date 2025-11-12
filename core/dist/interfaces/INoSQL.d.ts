@@ -2,9 +2,11 @@ import { type IFileSystemDirectoryModel } from './models/IFileSystemDirectoryMod
 import { type IFileSystemFileModel } from './models/IFileSystemFileModel.js';
 import { type IFileSystemObjectModel } from './models/IFileSystemObjectModel.js';
 import { type ServiceIdentifier } from 'inversify';
+import { type GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
 export interface INoSQL {
-    readonly odm: typeof mongoose;
+    readonly odm: mongoose.Mongoose;
+    readonly fileSystemBucket: GridFSBucket;
     readonly fileSystemObject: IFileSystemObjectModel;
     readonly fileSystemDirectory: IFileSystemDirectoryModel;
     readonly fileSystemFile: IFileSystemFileModel;

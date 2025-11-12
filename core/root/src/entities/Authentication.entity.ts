@@ -1,7 +1,7 @@
 import AccountEntity from '@/entities/Account.entity.js';
 import BaseEntity from '@/entities/Base.entity.js';
 import AuthenticationRepository from '@/repositories/AuthenticationRepository.js';
-import { IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
+import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
 import { BeforeCreate, BeforeUpdate, Entity, OneToOne, Property, type EventArgs } from '@mikro-orm/core';
 import { hash, verify } from 'argon2';
 

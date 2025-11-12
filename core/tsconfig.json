@@ -20,9 +20,11 @@
     "paths": {
       "@root/*": ["./*"],
       "@interfaces/*": ["./interfaces/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@lib/*": ["./lib/*"],
+      "@config/*": ["./config/*"]
     }
   },
-  "include": ["root/**/*.ts", "mikro-orm.config.ts"],
+  "include": ["root/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

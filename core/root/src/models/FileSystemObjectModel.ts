@@ -1,21 +1,25 @@
-import { FileSystemDirectoryModelName, FileSystemObjectModelName } from '@/models/ModelNames.js';
-import { type IFileSystemObject } from '@root/interfaces/models/IFileSystemObjectModel.js';
+import { FileSystemDirectoryModelName } from '@interfaces/models/IFileSystemDirectoryModel.js';
+import { FileSystemObjectModelName, type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
 import mongoose from 'mongoose';
 
 const fileSystemObjectOptions = {
-  discriminatorKey: 'kind',
-  collection: 'file_system'
+  collection: 'file_system',
+  discriminatorKey: 'type'
 }
 
 const fileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
   {
-    name: {
+    projectId: {
       type: String,
       required: true
     },
-    parent: {
+    parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: FileSystemDirectoryModelName
+    },
+    name: {
+      type: String,
+      required: true
     }
   }, 
   fileSystemObjectOptions
@@ -23,4 +27,3 @@ const fileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
 
 export const FileSystemObjectModel = mongoose.model<IFileSystemObject>(FileSystemObjectModelName, fileSystemObjectSchema);
 export default FileSystemObjectModel;
-

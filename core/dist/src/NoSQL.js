@@ -11,10 +11,15 @@ import FileSystemObjectModel from './models/FileSystemObjectModel.js';
 import { NoSQLServiceId } from '../interfaces/INoSQL.js';
 import { injectable } from 'inversify';
 import mongoose from 'mongoose';
+const FileSystemBucketName = 'file_system';
 let NoSQL = class NoSQL {
     _odm;
     get odm() {
         return this._odm;
+    }
+    _fileSystemBucket;
+    get fileSystemBucket() {
+        return this._fileSystemBucket;
     }
     _fileSystemObject;
     get fileSystemObject() {
@@ -28,7 +33,6 @@ let NoSQL = class NoSQL {
     get fileSystemFile() {
         return this._fileSystemFile;
     }
-    _app;
     async initialize() {
         this._odm = await mongoose.connect(`mongodb://${process.env.NOSQL_HOST}:${process.env.NOSQL_PORT}`, {
             dbName: process.env.NOSQL_DATABASE,
@@ -36,6 +40,12 @@ let NoSQL = class NoSQL {
             user: process.env.NOSQL_USER,
             pass: process.env.NOSQL_PASSWORD
         });
+        if (!this._odm.connection.db)
+            return;
+        // this._fileSystemBucket = new GridFSBucket(
+        //   this._odm.connection.db,
+        //   { bucketName: FileSystemBucketName }
+        // )
         this._fileSystemObject = FileSystemObjectModel;
         this._fileSystemDirectory = FileSystemDirectoryModel;
         this._fileSystemFile = FileSystemFileModel;

@@ -2,45 +2,18 @@ import di from '@/DependencyInjection.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
-import FileSystemDirectoryModel from '@/models/FileSystemDirectoryModel.js';
-import FileSystemFileModel from '@/models/FileSystemFileModel.js';
-import FileSystemObjectModel from '@/models/FileSystemObjectModel.js';
 import AccountRepository from '@/repositories/AccountRepository.js';
 import AuthenticationRepository from '@/repositories/AuthenticationRepository.js';
 import ProjectRepository from '@/repositories/ProjectRepository.js';
 import { AppServiceId, type IApp } from '@interfaces/IApp.js';
-import { SQLServiceId, type ISQL } from '@root/interfaces/ISQL.js';
+import { SQLServiceId, type ISQL } from '@interfaces/ISQL.js';
 import { type IAccountRepository } from '@interfaces/repositories/IAccountRepository.js';
 import { type IAuthenticationRepository } from '@interfaces/repositories/IAuthenticationRepository.js';
 import { type IProjectRepository } from '@interfaces/repositories/IProjectRepository.js';
 import { MikroORM, RequestContext } from '@mikro-orm/core';
-import config from '@root/mikro-orm.config.js';
+import config from '@root/config/mikro-orm.config.js';
 import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify';
 import { injectable } from 'inversify';
-import mongoose from 'mongoose';
-
-class Models {
-  private _fileSystemObject: typeof FileSystemObjectModel;
-  public get fileSystemObject(): typeof FileSystemObjectModel {
-    return this._fileSystemObject;
-  }
-
-  private _fileSystemDirectory: typeof FileSystemDirectoryModel;
-  public get fileSystemDirectory(): typeof FileSystemDirectoryModel {
-    return this._fileSystemDirectory;
-  }
-
-  private _fileSystemFile: typeof FileSystemFileModel;
-  public get fileSystemFile(): typeof FileSystemFileModel {
-    return this._fileSystemFile;
-  }
-
-  public constructor(odm: typeof mongoose) {
-    this._fileSystemObject = FileSystemObjectModel;
-    this._fileSystemDirectory = FileSystemDirectoryModel;
-    this._fileSystemFile = FileSystemFileModel;
-  }
-}
 
 @injectable()
 class SQL implements ISQL {
@@ -65,16 +38,6 @@ class SQL implements ISQL {
     return this._project;
   }
 
-  private _odm!: typeof mongoose;
-  public get odm(): typeof mongoose {
-    return this._odm;
-  }
-
-  private _models!: Models;
-  public get models(): Models {
-    return this._models;
-  }
-
   private _app!: IApp;
   
   public async initialize(): Promise<void> {
@@ -94,17 +57,6 @@ class SQL implements ISQL {
       'onClose', 
       this.closeDatabaseConnectionHook.bind(this)
     );
-
-    this._odm = await mongoose.connect(
-      `mongodb://${process.env.NOSQL_HOST}:${process.env.NOSQL_PORT}`,
-      {
-        dbName: process.env.NOSQL_DATABASE,
-        authSource: process.env.NOSQL_AUTH_SOURCE,
-        user: process.env.NOSQL_USER,
-        pass: process.env.NOSQL_PASSWORD
-      }
-    );
-    this._models = new Models(this._odm);
   }
 
   public async update(): Promise<void> {

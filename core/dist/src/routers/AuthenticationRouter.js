@@ -9,7 +9,7 @@ import { AuthenticationLogoutError, AuthenticationRefreshInvalidRefreshTokenErro
 import BaseRouter from '../routers/BaseRouter.js';
 import { SQLServiceId } from '../../interfaces/ISQL.js';
 import { AuthenticationRouterServiceId } from '../../interfaces/routers/IAuthenticationRouter.js';
-import { AccountSchema, IdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema } from '@strife/common';
+import { AccountSchema, AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
     get prefix() {
@@ -18,9 +18,9 @@ let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
     async routes(instance) {
         super.routes(instance);
         instance.post('/', this.login.bind(this));
-        instance.delete('/:id', { onRequest: [instance.authenticate] }, this.logout.bind(this));
+        instance.delete('/:accountId', { onRequest: [instance.authenticate] }, this.logout.bind(this));
         instance.post('/refresh', this.refresh.bind(this));
-        instance.put('/:id', { onRequest: [instance.authenticate] }, this.updateAuthentication.bind(this));
+        instance.put('/:accountId', { onRequest: [instance.authenticate] }, this.updateAuthentication.bind(this));
     }
     async login(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
@@ -34,8 +34,8 @@ let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
     async logout(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
-        if (!user.is(id))
+        const { accountId } = await AccountIdSchema.parseAsync(request.params);
+        if (!user.is(accountId))
             return Promise.reject(AuthenticationLogoutError);
         await sql.authentication.logout(user.account);
     }
@@ -53,8 +53,8 @@ let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
     async updateAuthentication(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
-        if (!user.is(id))
+        const { accountId } = await AccountIdSchema.parseAsync(request.params);
+        if (!user.is(accountId))
             return Promise.reject(AuthenticationUpdateUnauthorizedError);
         const data = await UpdateAuthenticationSchema.parseAsync(request.body);
         const authentication = await sql.authentication.updateAuthentication(user.account, data);

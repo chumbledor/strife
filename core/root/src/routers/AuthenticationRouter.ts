@@ -2,10 +2,10 @@ import di from '@/DependencyInjection.js';
 import { AuthenticationLogoutError, AuthenticationRefreshInvalidRefreshTokenError, AuthenticationUpdateUnauthorizedError } from '@/errors/authentication.js';
 import BaseRouter from '@/routers/BaseRouter.js';
 import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
-import { SQLServiceId } from '@root/interfaces/ISQL.js';
+import { SQLServiceId } from '@interfaces/ISQL.js';
 import { type IUser } from '@interfaces/IUser.js';
 import { AuthenticationRouterServiceId, type IAuthenticationRouter } from '@interfaces/routers/IAuthenticationRouter.js';
-import { AccountSchema, IdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema, type AccountData } from '@strife/common';
+import { AccountSchema, AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema, type AccountData } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
@@ -19,9 +19,9 @@ class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
   protected override async routes(instance: FastifyInstance): Promise<void> {
     super.routes(instance);
     instance.post('/', this.login.bind(this));
-    instance.delete('/:id', { onRequest: [ instance.authenticate ] }, this.logout.bind(this));
+    instance.delete('/:accountId', { onRequest: [ instance.authenticate ] }, this.logout.bind(this));
     instance.post('/refresh', this.refresh.bind(this));
-    instance.put('/:id', { onRequest: [ instance.authenticate ] }, this.updateAuthentication.bind(this));
+    instance.put('/:accountId', { onRequest: [ instance.authenticate ] }, this.updateAuthentication.bind(this));
   }
 
   private async login(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
@@ -37,8 +37,8 @@ class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
   private async logout(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
-    const { id } = await IdSchema.parseAsync(request.params);
-    if (!user.is(id))
+    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+    if (!user.is(accountId))
       return Promise.reject(AuthenticationLogoutError);
     
     await sql.authentication.logout(user.account);
@@ -60,8 +60,8 @@ class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
   private async updateAuthentication(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
     const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
-    const { id } = await IdSchema.parseAsync(request.params);
-    if (!user.is(id))
+    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+    if (!user.is(accountId))
       return Promise.reject(AuthenticationUpdateUnauthorizedError);
     
     const data = await UpdateAuthenticationSchema.parseAsync(request.body);

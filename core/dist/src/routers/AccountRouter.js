@@ -9,7 +9,7 @@ import { AccountDeleteUnauthorizedError, AccountUpdateUnauthorizedError } from '
 import BaseRouter from '../routers/BaseRouter.js';
 import { SQLServiceId } from '../../interfaces/ISQL.js';
 import { AccountRouterServiceId } from '../../interfaces/routers/IAccountRouter.js';
-import { AccountSchema, CreateAccountSchema, GetAccountsSchema, IdSchema, UpdateAccountSchema } from '@strife/common';
+import { AccountSchema, CreateAccountSchema, GetAccountsSchema, AccountIdSchema, UpdateAccountSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let AccountRouter = class AccountRouter extends BaseRouter {
     get prefix() {
@@ -18,10 +18,10 @@ let AccountRouter = class AccountRouter extends BaseRouter {
     async routes(instance) {
         super.routes(instance);
         instance.post('/', this.createAccount.bind(this));
-        instance.delete('/:id', { onRequest: [instance.authenticate] }, this.deleteAccount.bind(this));
-        instance.get('/:id', this.getAccount.bind(this));
+        instance.delete('/:accountId', { onRequest: [instance.authenticate] }, this.deleteAccount.bind(this));
+        instance.get('/:accountId', this.getAccount.bind(this));
         instance.get('/', this.getAccounts.bind(this));
-        instance.put('/:id', { onRequest: [instance.authenticate] }, this.updateAccount.bind(this));
+        instance.put('/:accountId', { onRequest: [instance.authenticate] }, this.updateAccount.bind(this));
     }
     async createAccount(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
@@ -33,15 +33,15 @@ let AccountRouter = class AccountRouter extends BaseRouter {
     async deleteAccount(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
-        if (!user.is(id))
+        const { accountId } = await AccountIdSchema.parseAsync(request.params);
+        if (!user.is(accountId))
             return Promise.reject(AccountDeleteUnauthorizedError);
         return await sql.account.deleteAccount(user.account);
     }
     async getAccount(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
-        const { id } = await IdSchema.parseAsync(request.params);
-        const account = await sql.account.getAccount(id);
+        const { accountId } = await AccountIdSchema.parseAsync(request.params);
+        const account = await sql.account.getAccount(accountId);
         const accountData = await AccountSchema.parseAsync(account);
         return accountData;
     }
@@ -55,8 +55,8 @@ let AccountRouter = class AccountRouter extends BaseRouter {
     async updateAccount(request, reply) {
         const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const { id } = await IdSchema.parseAsync(request.params);
-        if (!user.is(id))
+        const { accountId } = await AccountIdSchema.parseAsync(request.params);
+        if (!user.is(accountId))
             return Promise.reject(AccountUpdateUnauthorizedError);
         const data = await UpdateAccountSchema.parseAsync(request.body);
         const account = await sql.account.updateAccount(user.account, data);

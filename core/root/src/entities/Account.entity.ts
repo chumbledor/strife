@@ -2,7 +2,7 @@ import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
 import UniqueEntity from '@/entities/Unique.entity.js';
 import AccountRepository from '@/repositories/AccountRepository.js';
-import { IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
+import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
 import { Cascade, Collection, Entity, OneToMany, OneToOne, Property } from '@mikro-orm/core';
 
 @Entity({ repository: () => AccountRepository })

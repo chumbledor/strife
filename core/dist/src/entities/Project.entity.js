@@ -16,23 +16,22 @@ let ProjectEntity = class ProjectEntity extends UniqueEntity {
     account;
     name;
     description;
-    fileSystemRootDirectoryId;
+    fileSystemRootObjectId;
     async getFileSystemRootDirectory() {
-        if (!mongoose.isValidObjectId(this.fileSystemRootDirectoryId))
+        if (!mongoose.isValidObjectId(this.fileSystemRootObjectId))
             return null;
         const nosql = await di.getAsync(NoSQLServiceId);
-        return nosql.fileSystemDirectory.findById(this.fileSystemRootDirectoryId);
+        return nosql.fileSystemDirectory.findById(this.fileSystemRootObjectId);
     }
     async createFileSystem(args) {
         const nosql = await di.getAsync(NoSQLServiceId);
-        const fileSystemRootDirectory = new nosql.fileSystemDirectory({ name: RootDirectoryName });
-        await fileSystemRootDirectory.save();
-        console.log(`CREATED FILE SYSTEM ROOT: ${fileSystemRootDirectory._id}`);
-        this.fileSystemRootDirectoryId = fileSystemRootDirectory._id.toString();
+        const fileSystemRootObject = new nosql.fileSystemDirectory({ projectId: this.id, name: RootDirectoryName });
+        await fileSystemRootObject.save();
+        this.fileSystemRootObjectId = fileSystemRootObject._id.toString();
     }
     async deleteFileSystem(args) {
         const nosql = await di.getAsync(NoSQLServiceId);
-        await nosql.fileSystemDirectory.deleteOne({ _id: this.fileSystemRootDirectoryId });
+        await nosql.fileSystemDirectory.deleteOne({ _id: this.fileSystemRootObjectId });
     }
 };
 __decorate([
@@ -46,7 +45,7 @@ __decorate([
 ], ProjectEntity.prototype, "description", void 0);
 __decorate([
     Property()
-], ProjectEntity.prototype, "fileSystemRootDirectoryId", void 0);
+], ProjectEntity.prototype, "fileSystemRootObjectId", void 0);
 __decorate([
     BeforeCreate()
 ], ProjectEntity.prototype, "createFileSystem", null);

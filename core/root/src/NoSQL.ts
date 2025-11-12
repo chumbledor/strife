@@ -2,17 +2,24 @@ import di from '@/DependencyInjection.js';
 import FileSystemDirectoryModel from '@/models/FileSystemDirectoryModel.js';
 import FileSystemFileModel from '@/models/FileSystemFileModel.js';
 import FileSystemObjectModel from '@/models/FileSystemObjectModel.js';
-import { type IApp } from '@interfaces/IApp.js';
 import { NoSQLServiceId, type INoSQL } from '@interfaces/INoSQL.js';
 import { injectable } from 'inversify';
+import { GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
+
+const FileSystemBucketName = 'file_system';
 
 @injectable()
 class NoSQL implements INoSQL {
 
-  private _odm!: typeof mongoose;
-  public get odm(): typeof mongoose {
+  private _odm!: mongoose.Mongoose;
+  public get odm(): mongoose.Mongoose {
     return this._odm;
+  }
+
+  private _fileSystemBucket!: GridFSBucket;
+  public get fileSystemBucket(): GridFSBucket {
+    return this._fileSystemBucket;
   }
 
   private _fileSystemObject!: typeof FileSystemObjectModel;
@@ -29,8 +36,6 @@ class NoSQL implements INoSQL {
   public get fileSystemFile(): typeof FileSystemFileModel {
     return this._fileSystemFile;
   }
-
-  private _app!: IApp;
   
   public async initialize(): Promise<void> {
     this._odm = await mongoose.connect(
@@ -43,6 +48,14 @@ class NoSQL implements INoSQL {
       }
     );
 
+    if (!this._odm.connection.db)
+      return;
+
+    // this._fileSystemBucket = new GridFSBucket(
+    //   this._odm.connection.db,
+    //   { bucketName: FileSystemBucketName }
+    // )
+    
     this._fileSystemObject = FileSystemObjectModel;
     this._fileSystemDirectory = FileSystemDirectoryModel;
     this._fileSystemFile = FileSystemFileModel;

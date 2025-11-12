@@ -4,7 +4,7 @@ import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import { AppServiceId, type IApp } from '@interfaces/IApp.js';
-import { SQLServiceId } from '@root/interfaces/ISQL.js';
+import { SQLServiceId } from '@interfaces/ISQL.js';
 import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
