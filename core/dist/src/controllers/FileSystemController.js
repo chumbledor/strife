@@ -9,6 +9,25 @@ import { default as FileSystemDirectoryModel, default as FileSystemFileModel } f
 import { FileSystemDirectorySchema, FileSystemFileSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let FileSystemController = class FileSystemController extends BaseController {
+    // public async createFileSystemObject(user: IUser, projectId: string, fileSystemObjectId: string, createFileSystemObjectData: CreateFileSystemDirectoryData | CreateFileSystemFileData): Promise<FileSystemDirectoryData | FileSystemFileData> {
+    //   try {
+    //     this.sql.project.findOneOrFail({ account: user.account, id: projectId });
+    //   } catch (error: any) {
+    //     return Promise.reject();
+    //   }
+    //   const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: fileSystemObjectId, projectId });
+    //   if (!parentFileSystemDirectory)
+    //     return Promise.reject();
+    //   const fileSystemDirectory = new this.nosql.fileSystemDirectory({
+    //     projectId,
+    //     parentId: fileSystemObjectId,
+    //     name: createFileSystemDirectoryData.name
+    //   });
+    //   fileSystemDirectory.save();
+    //   parentFileSystemDirectory.childrenIds.push(fileSystemDirectory.id);
+    //   parentFileSystemDirectory.save();
+    //   return await FileSystemDirectorySchema.parseAsync(fileSystemDirectory);
+    // }
     async createFileSystemDirectory(user, projectId, fileSystemObjectId, createFileSystemDirectoryData) {
         try {
             this.sql.project.findOneOrFail({ account: user.account, id: projectId });
@@ -104,12 +123,10 @@ let FileSystemController = class FileSystemController extends BaseController {
         const promises = fileSystemObjects.map(async (fileSystemObject) => {
             if (fileSystemObject instanceof FileSystemDirectoryModel)
                 return FileSystemDirectorySchema.parseAsync(fileSystemObject);
-            else if (fileSystemObject instanceof FileSystemFileModel)
+            else
                 return FileSystemFileSchema.parseAsync(fileSystemObject);
-            return undefined;
         });
-        const results = await Promise.all(promises);
-        return results.filter((fileSystemObject) => fileSystemObject != undefined);
+        return await Promise.all(promises);
     }
 };
 FileSystemController = __decorate([

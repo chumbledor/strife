@@ -29,7 +29,7 @@ export default class FileSystemService extends BaseService implements IFileSyste
       return Promise.reject();
     
     const anyFileSystemObjectData = await this.get<AnyFileSystemObjectData>({ schema: AnyFileSystemObjectSchema, url: `/${projectId}/fs/${fileSystemObjectId}` });
-    switch (anyFileSystemObjectData.fileSystemObjectType) {
+    switch (anyFileSystemObjectData.type) {
       case FileSystemObjectType.Directory:
         return anyFileSystemObjectData as FileSystemDirectoryData;
       case FileSystemObjectType.File:

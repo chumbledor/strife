@@ -10,43 +10,19 @@ import { Box, IconButton, List, ListItemButton, Stack, Typography, type ListItem
 import { type CreateFileSystemDirectoryData, type FileSystemDirectoryData, type FileSystemObjectData } from '@strife/common';
 import React from 'react';
 
-type FileSystemObjectMap = Map<string, FileSystemObjectData>;
-
 export interface ProjectWidgetProps extends WidgetProps {}
 
 export default function ProjectWidget({ ...widgetProps }: ProjectWidgetProps): React.JSX.Element {
-  const fileSystemService = di.get(FileSystemServiceServiceId);
   const { project } = useEditorContext();
-  const [ rootFileSystemDirectory, setRootFileSystemDirectory ] = React.useState<FileSystemDirectoryData>();
-  const [ fileSystemObjectMap, setFileSystemObjectMap ] = React.useState<FileSystemObjectMap>(new Map<string, FileSystemObjectData>());
-  React.useEffect(initializationEffect, [ project ]);
 
   if (!project)
     return <React.Fragment />
-
-  const root = rootFileSystemDirectory != undefined
-    ? <DirectoryListItemButton projectId={project.id} fileSystemObjectId={project.rootFileSystemObjectId} />
-    : undefined;
-
+  
   return <Widget {...widgetProps}>
     <List>
-      {root}
+      <DirectoryListItemButton projectId={project.id} fileSystemObjectId={project.rootFileSystemObjectId} />
     </List>
   </Widget>;
-  
-  function initializationEffect(): void {
-    getFileSystem();
-  }
-
-  async function getFileSystem(): Promise<void> {
-    if (!project)
-      return;
-
-    const fileSystemDirectoryData = await fileSystemService.getFileSystemObject(project.id, project.rootFileSystemObjectId) as FileSystemDirectoryData;
-    setRootFileSystemDirectory(fileSystemDirectoryData);
-    fileSystemObjectMap.set(fileSystemDirectoryData.id, fileSystemDirectoryData);
-    console.log(fileSystemDirectoryData);
-  }
 }
 
 interface FolderListItemButtonProps extends ListItemButtonProps {

@@ -1,7 +1,7 @@
 'use client'
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Input, InputLabel, type DialogProps } from '@mui/material';
-import { type CreateProjectData } from '@strife/common';
+import { CreateProjectSchema, type CreateProjectData } from '@strife/common';
 import React from 'react';
 
 export interface CreateProjectDialogProps extends DialogProps {
@@ -63,10 +63,10 @@ export default function CreateProjectDialog({ onCancel, onCreate, ...dialogProps
     if (nameError || descriptionError)
       return;
 
-    const createProjectData: CreateProjectData = {
+    const createProjectData = await CreateProjectSchema.parseAsync({
       name,
       description
-    }
+    });
     
     if (onCreate)
       onCreate(createProjectData);

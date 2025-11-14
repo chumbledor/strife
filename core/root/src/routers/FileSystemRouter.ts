@@ -26,7 +26,7 @@ export default class FileSystemRouter extends BaseRouter implements IFileSystemR
     const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
     let data = await CreateFileSystemObjectSchema.parseAsync(request.body);
     const fileSystemController = await di.getAsync(FileSystemControllerServiceId)
-    switch (data.fileSystemObjectType) {
+    switch (data.type) {
       case FileSystemObjectType.Directory:
         const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync(request.body);
         return await fileSystemController.createFileSystemDirectory(user, projectId, fileSystemObjectId, createFileSystemDirectoryData);

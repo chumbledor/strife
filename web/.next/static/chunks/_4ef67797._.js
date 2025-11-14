@@ -1338,7 +1338,7 @@ class FileSystemService extends __TURBOPACK__imported__module__$5b$project$5d2f$
             schema: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$FileSystemData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnyFileSystemObjectSchema"],
             url: "/".concat(projectId, "/fs/").concat(fileSystemObjectId)
         });
-        switch(anyFileSystemObjectData.fileSystemObjectType){
+        switch(anyFileSystemObjectData.type){
             case __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$FileSystemData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileSystemObjectType"].Directory:
                 return anyFileSystemObjectData;
             case __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$FileSystemData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileSystemObjectType"].File:
@@ -1526,10 +1526,10 @@ function CreateFileSystemDialog(param) {
     async function onSubmitCreate(event) {
         event.preventDefault();
         if (nameError) return;
-        const createFileSystemDirectoryData = {
+        const createFileSystemDirectoryData = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$FileSystemData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CreateFileSystemDirectorySchema"].parseAsync({
             fileSystemObjectType: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$strife$2f$common$2f$dist$2f$FileSystemData$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileSystemObjectType"].Directory,
             name
-        };
+        });
         if (onCreate) onCreate(createFileSystemDirectoryData);
     }
 }
@@ -1575,54 +1575,35 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 function ProjectWidget(param) {
     let { ...widgetProps } = param;
     _s();
-    const fileSystemService = __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$DependencyInjection$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get(__TURBOPACK__imported__module__$5b$project$5d2f$root$2f$src$2f$di$2f$services$2f$FileSystemServiceInjector$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileSystemServiceServiceId"]);
     const { project } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$components$2f$editor$2f$EditorContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEditorContext"])();
-    const [rootFileSystemDirectory, setRootFileSystemDirectory] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState();
-    const [fileSystemObjectMap, setFileSystemObjectMap] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useState(new Map());
-    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useEffect(initializationEffect, [
-        project
-    ]);
     if (!project) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {}, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 25,
+        lineNumber: 19,
         columnNumber: 12
     }, this);
-    const root = rootFileSystemDirectory != undefined ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(DirectoryListItemButton, {
-        projectId: project.id,
-        fileSystemObjectId: project.rootFileSystemObjectId
-    }, void 0, false, {
-        fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 28,
-        columnNumber: 7
-    }, this) : undefined;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$root$2f$components$2f$editor$2f$widgets$2f$Widget$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
         ...widgetProps,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$List$2f$List$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__List$3e$__["List"], {
-            children: root
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(DirectoryListItemButton, {
+                projectId: project.id,
+                fileSystemObjectId: project.rootFileSystemObjectId
+            }, void 0, false, {
+                fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
+                lineNumber: 23,
+                columnNumber: 7
+            }, this)
         }, void 0, false, {
             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-            lineNumber: 32,
+            lineNumber: 22,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 31,
+        lineNumber: 21,
         columnNumber: 10
     }, this);
-    //TURBOPACK unreachable
-    ;
-    function initializationEffect() {
-        getFileSystem();
-    }
-    async function getFileSystem() {
-        if (!project) return;
-        const fileSystemDirectoryData = await fileSystemService.getFileSystemObject(project.id, project.rootFileSystemObjectId);
-        setRootFileSystemDirectory(fileSystemDirectoryData);
-        fileSystemObjectMap.set(fileSystemDirectoryData.id, fileSystemDirectoryData);
-        console.log(fileSystemDirectoryData);
-    }
 }
-_s(ProjectWidget, "p/dnosEx3n1m8hHv57tZ/GKmnI0=", false, function() {
+_s(ProjectWidget, "l/U8aXLUX6zZ5OnJJKx0FiW8UEY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$components$2f$editor$2f$EditorContext$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEditorContext"]
     ];
@@ -1640,7 +1621,7 @@ function DirectoryListItemButton(param) {
     ]);
     if (!fileSystemDirectoryData) return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].Fragment, {}, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 65,
+        lineNumber: 41,
         columnNumber: 12
     }, this);
     const children = fileSystemDirectoryData.childrenIds.map((childId)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(DirectoryListItemButton, {
@@ -1648,7 +1629,7 @@ function DirectoryListItemButton(param) {
             fileSystemObjectId: childId
         }, void 0, false, {
             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-            lineNumber: 67,
+            lineNumber: 43,
             columnNumber: 71
         }, this));
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Box$2f$Box$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Box$3e$__["Box"], {
@@ -1668,7 +1649,7 @@ function DirectoryListItemButton(param) {
                             children: fileSystemDirectoryData.name
                         }, void 0, false, {
                             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                            lineNumber: 72,
+                            lineNumber: 48,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$IconButton$2f$IconButton$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__IconButton$3e$__["IconButton"], {
@@ -1678,23 +1659,23 @@ function DirectoryListItemButton(param) {
                             },
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$icons$2d$material$2f$esm$2f$CreateNewFolder$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                                 fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                                lineNumber: 76,
+                                lineNumber: 52,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                            lineNumber: 75,
+                            lineNumber: 51,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                    lineNumber: 71,
+                    lineNumber: 47,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                lineNumber: 70,
+                lineNumber: 46,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Box$2f$Box$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Box$3e$__["Box"], {
@@ -1702,12 +1683,12 @@ function DirectoryListItemButton(param) {
                     children: children
                 }, void 0, false, {
                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                    lineNumber: 83,
+                    lineNumber: 59,
                     columnNumber: 13
                 }, this) : undefined
             }, void 0, false, {
                 fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                lineNumber: 80,
+                lineNumber: 56,
                 columnNumber: 5
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$root$2f$components$2f$fileSystem$2f$dialogs$2f$CreateFileSystemDirectoryDialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -1719,13 +1700,13 @@ function DirectoryListItemButton(param) {
                 maxWidth: "sm"
             }, void 0, false, {
                 fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                lineNumber: 89,
+                lineNumber: 65,
                 columnNumber: 5
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 69,
+        lineNumber: 45,
         columnNumber: 10
     }, this);
     //TURBOPACK unreachable
@@ -1765,7 +1746,7 @@ function FileListItemButton(param) {
         children: "File"
     }, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 130,
+        lineNumber: 106,
         columnNumber: 10
     }, this);
 }
