@@ -4,11 +4,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import di from './DependencyInjection.js';
 import FileSystemDirectoryModel from './models/FileSystemDirectoryModel.js';
 import FileSystemFileModel from './models/FileSystemFileModel.js';
 import FileSystemObjectModel from './models/FileSystemObjectModel.js';
-import { NoSQLServiceId } from '../interfaces/INoSQL.js';
 import { injectable } from 'inversify';
 import mongoose from 'mongoose';
 const FileSystemBucketName = 'file_system';
@@ -55,4 +53,4 @@ let NoSQL = class NoSQL {
 NoSQL = __decorate([
     injectable()
 ], NoSQL);
-di.bind(NoSQLServiceId).to(NoSQL).inSingletonScope();
+export default NoSQL;

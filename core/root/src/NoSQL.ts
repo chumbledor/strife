@@ -1,8 +1,7 @@
-import di from '@/DependencyInjection.js';
 import FileSystemDirectoryModel from '@/models/FileSystemDirectoryModel.js';
 import FileSystemFileModel from '@/models/FileSystemFileModel.js';
 import FileSystemObjectModel from '@/models/FileSystemObjectModel.js';
-import { NoSQLServiceId, type INoSQL } from '@interfaces/INoSQL.js';
+import { type INoSQL } from '@interfaces/INoSQL.js';
 import { injectable } from 'inversify';
 import { GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
@@ -10,7 +9,7 @@ import mongoose from 'mongoose';
 const FileSystemBucketName = 'file_system';
 
 @injectable()
-class NoSQL implements INoSQL {
+export default class NoSQL implements INoSQL {
 
   private _odm!: mongoose.Mongoose;
   public get odm(): mongoose.Mongoose {
@@ -64,5 +63,3 @@ class NoSQL implements INoSQL {
   public async update(): Promise<void> {}
 
 }
-
-di.bind(NoSQLServiceId).to(NoSQL).inSingletonScope();

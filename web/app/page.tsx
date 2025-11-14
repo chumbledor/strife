@@ -1,14 +1,14 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { ProjectServiceServiceId } from '@/di/services/ProjectServiceInjector';
+import { UserServiceId } from '@/di/UserInjector';
 import AuthenticatedPage from '@components/page/AuthenticatedPage';
 import CreateProjectDialog from '@components/project/dialogs/CreateProjectDialog';
 import ProjectList from '@components/project/ProjectList';
-import { UserServiceId } from '@interfaces/IUser';
-import { ProjectServiceServiceId } from '@interfaces/services/IProjectService';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Box, Button, IconButton, Paper, type ListItemProps } from '@mui/material';
-import { type ProjectData } from '@strife/common';
+import { type CreateProjectData, type ProjectData } from '@strife/common';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -82,7 +82,8 @@ export default function HomePage(): React.JSX.Element {
     setIsCreateDialogOpen(false);
   }
 
-  function onCreateCreateProjectDialog(projectData: ProjectData): void {
+  async function onCreateCreateProjectDialog(createProjectData: CreateProjectData): Promise<void> {
+    const projectData = await projectService.createProject(createProjectData);
     setIsCreateDialogOpen(false);
     projects.push(projectData);
     setProjects(projects);

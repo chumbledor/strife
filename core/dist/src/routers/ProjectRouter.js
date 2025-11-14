@@ -6,8 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import di from '../DependencyInjection.js';
 import BaseRouter from '../routers/BaseRouter.js';
-import { SQLServiceId } from '../../interfaces/ISQL.js';
-import { ProjectRouterServiceId } from '../../interfaces/routers/IProjectRouter.js';
+import { ProjectControllerServiceId } from '../di/controllers/ProjectControllerInjector.js';
 import { CreateProjectSchema, GetProjectsSchema, ProjectIdSchema, UpdateProjectSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let ProjectRouter = class ProjectRouter extends BaseRouter {
@@ -23,36 +22,36 @@ let ProjectRouter = class ProjectRouter extends BaseRouter {
         instance.put('/:projectId', { onRequest: [instance.authenticate] }, this.updateProject.bind(this));
     }
     async createProject(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
-        const data = await CreateProjectSchema.parseAsync(request.body);
-        return await sql.project.createProject(user.account, data);
+        const createProjectData = await CreateProjectSchema.parseAsync(request.body);
+        const projectController = await di.getAsync(ProjectControllerServiceId);
+        return await projectController.createProject(user, createProjectData);
     }
     async deleteProject(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-        await sql.project.deleteProject(user.account, projectId);
+        const projectController = await di.getAsync(ProjectControllerServiceId);
+        await projectController.deleteProject(user, projectId);
     }
     async getProject(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-        return await sql.project.getProject(projectId);
+        const projectController = await di.getAsync(ProjectControllerServiceId);
+        return await projectController.getProject(projectId);
     }
     async getProjects(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
-        const data = await GetProjectsSchema.parseAsync(request.query);
-        return await sql.project.getProjects(data);
+        const getProjectsData = await GetProjectsSchema.parseAsync(request.query);
+        const projectController = await di.getAsync(ProjectControllerServiceId);
+        return await projectController.getProjects(getProjectsData);
     }
     async updateProject(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-        const data = await UpdateProjectSchema.parseAsync(request.body);
-        return await sql.project.updateProject(user.account, projectId, data);
+        const updateProjectData = await UpdateProjectSchema.parseAsync(request.body);
+        const projectController = await di.getAsync(ProjectControllerServiceId);
+        return await projectController.updateProject(user, projectId, updateProjectData);
     }
 };
 ProjectRouter = __decorate([
     injectable()
 ], ProjectRouter);
-di.bind(ProjectRouterServiceId).to(ProjectRouter).inSingletonScope();
+export default ProjectRouter;

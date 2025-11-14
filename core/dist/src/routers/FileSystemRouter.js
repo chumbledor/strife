@@ -5,10 +5,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import di from '../DependencyInjection.js';
+import { FileSystemControllerServiceId } from '../di/controllers/FileSystemControllerInjector.js';
 import BaseRouter from '../routers/BaseRouter.js';
-import { NoSQLServiceId } from '../../interfaces/INoSQL.js';
-import { FileSystemRouterServiceId } from '../../interfaces/routers/IFileSystemRouter.js';
-import { CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, CreateFileSystemObjectSchema, FileSystemDirectorySchema, FileSystemFileSchema, FileSystemObjectIdSchema, FileSystemObjectType, ProjectIdSchema } from '@strife/common';
+import { CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, CreateFileSystemObjectSchema, FileSystemObjectIdSchema, FileSystemObjectType, ProjectIdSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let FileSystemRouter = class FileSystemRouter extends BaseRouter {
     get prefix() {
@@ -17,49 +16,40 @@ let FileSystemRouter = class FileSystemRouter extends BaseRouter {
     async routes(instance) {
         super.routes(instance);
         instance.post('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.createFileSystemObject.bind(this));
-        // instance.delete('/:fileSystemObjectId', { onRequest: [ instance.authenticate ] }, this.deleteFileSystemObject.bind(this));
+        instance.delete('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.deleteFileSystemObject.bind(this));
+        instance.get('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.getFileSystemObject.bind(this));
     }
     async createFileSystemObject(request, reply) {
         const user = request.user;
         const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
         let data = await CreateFileSystemObjectSchema.parseAsync(request.body);
-        switch (data.type) {
+        const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
+        switch (data.fileSystemObjectType) {
             case FileSystemObjectType.Directory:
-                const directoryData = await CreateFileSystemDirectorySchema.parseAsync(request.body);
-                return await this.createFileSystemDirectory(user.account, projectId, fileSystemObjectId, directoryData);
+                const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync(request.body);
+                return await fileSystemController.createFileSystemDirectory(user, projectId, fileSystemObjectId, createFileSystemDirectoryData);
             case FileSystemObjectType.File:
-                const fileData = await CreateFileSystemFileSchema.parseAsync(request.body);
-                return await this.createFileSystemFile(user.account, projectId, fileSystemObjectId, fileData);
+                const createFileSystemFileData = await CreateFileSystemFileSchema.parseAsync(request.body);
+                return await fileSystemController.createFileSystemFile(user, projectId, fileSystemObjectId, createFileSystemFileData);
             default:
                 return Promise.reject();
         }
     }
-    async createFileSystemDirectory(account, projectId, fileSystemObjectId, data) {
-        const nosql = await di.getAsync(NoSQLServiceId);
-        const fileSystemDirectory = new nosql.fileSystemDirectory({
-            projectId,
-            parentId: fileSystemObjectId,
-            name: data.name
-        });
-        fileSystemDirectory.save();
-        const fileSystemDirectoryData = await FileSystemDirectorySchema.parseAsync(fileSystemDirectory);
-        return fileSystemDirectoryData;
+    async deleteFileSystemObject(request, reply) {
+        const user = request.user;
+        const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
+        const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
+        return fileSystemController.deleteFileSystemObject(user, projectId, fileSystemObjectId);
     }
-    async createFileSystemFile(account, projectId, fileSystemObjectId, data) {
-        const nosql = await di.getAsync(NoSQLServiceId);
-        const fileSystemFile = new nosql.fileSystemFile({
-            projectId,
-            parentId: fileSystemObjectId,
-            name: data.name,
-            size: data.size,
-            mimeType: data.mimeType
-        });
-        fileSystemFile.save();
-        const fileSystemFileData = await FileSystemFileSchema.parseAsync(fileSystemFile);
-        return fileSystemFileData;
+    async getFileSystemObject(request, reply) {
+        const user = request.user;
+        const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
+        const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
+        const data = fileSystemController.getFileSystemObject(user, projectId, fileSystemObjectId);
+        return data;
     }
 };
 FileSystemRouter = __decorate([
     injectable()
 ], FileSystemRouter);
-di.bind(FileSystemRouterServiceId).to(FileSystemRouter).inSingletonScope();
+export default FileSystemRouter;

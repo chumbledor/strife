@@ -1,10 +1,8 @@
-import di from '@/DependencyInjection.js';
 import User from '@/User.js';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import { AppServiceId, type IApp } from '@interfaces/IApp.js';
-import { SQLServiceId } from '@interfaces/ISQL.js';
+import { type IApp } from '@interfaces/IApp.js';
 import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
@@ -15,7 +13,7 @@ declare module 'fastify' {
 }
 
 @injectable()
-class App implements IApp {
+export default class App implements IApp {
 
   private _instance!: FastifyInstance;
   public get instance(): FastifyInstance {
@@ -64,10 +62,8 @@ class App implements IApp {
 
   private async authenticate(request: FastifyRequest, reply: FastifyReply): Promise<void> {
     try {
-      const { id } = await request.jwtVerify<{ id: string }>();
-      const sql = await di.getAsync(SQLServiceId);
-      const account = await sql.account.getAccount(id);
-      const user = new User(account);
+      const { accountId } = await request.jwtVerify<{ accountId: string }>();
+      const user = await User.from(accountId);
       request.user = user;
     } catch (error: any) {
       reply.send(error);
@@ -75,5 +71,3 @@ class App implements IApp {
   }
 
 }
-
-di.bind(AppServiceId).to(App).inSingletonScope();

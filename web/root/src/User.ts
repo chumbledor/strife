@@ -1,5 +1,4 @@
-import di from '@/DependencyInjection';
-import { UserServiceId, type IUser } from '@interfaces/IUser';
+import { type IUser } from '@interfaces/IUser';
 import { AccountSchema, type AccountData } from '@strife/common';
 import { injectable } from 'inversify';
 
@@ -38,5 +37,3 @@ export default class User implements IUser {
   }
 
 }
-
-di.bind(UserServiceId).to(User).inSingletonScope();

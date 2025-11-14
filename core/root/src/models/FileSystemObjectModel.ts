@@ -1,13 +1,13 @@
-import { FileSystemDirectoryModelName } from '@interfaces/models/IFileSystemDirectoryModel.js';
-import { FileSystemObjectModelName, type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
+import { type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
+import { FileSystemObjectType } from '@strife/common';
 import mongoose from 'mongoose';
 
-const fileSystemObjectOptions = {
+const FileSystemObjectOptions = {
   collection: 'file_system',
   discriminatorKey: 'type'
 }
 
-const fileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
+const FileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
   {
     projectId: {
       type: String,
@@ -15,15 +15,39 @@ const fileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
     },
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: FileSystemDirectoryModelName
+      ref: FileSystemObjectType.Directory
     },
     name: {
       type: String,
       required: true
     }
   }, 
-  fileSystemObjectOptions
+  FileSystemObjectOptions
 );
 
-export const FileSystemObjectModel = mongoose.model<IFileSystemObject>(FileSystemObjectModelName, fileSystemObjectSchema);
+FileSystemObjectSchema.pre(
+  'deleteOne', 
+  { document: true, query: false }, 
+  async function(next: mongoose.CallbackWithoutResultAndOptionalError): Promise<void> {
+    if (!this.parentId)
+      return next();
+
+    const parentFileSystemDirectory = await mongoose.model(FileSystemObjectType.Directory)
+      .findById(this.parentId)
+      .select('_id')
+      .lean();
+
+    if (!parentFileSystemDirectory)
+      return next();
+
+    await mongoose.model(FileSystemObjectType.Directory).updateOne(
+      { _id: this.parentId },
+      { $pull: { childrenIds: this._id } }
+    );
+    
+    next();
+  }
+)
+
+export const FileSystemObjectModel = mongoose.model<IFileSystemObject>(FileSystemObjectType.Object, FileSystemObjectSchema);
 export default FileSystemObjectModel;

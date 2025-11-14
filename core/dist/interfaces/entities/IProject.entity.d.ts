@@ -7,7 +7,7 @@ export interface IProjectEntity extends IBaseEntity, IUniqueEntity {
     account: IAccountEntity;
     name: string;
     description?: string;
-    fileSystemRootObjectId: string;
+    rootFileSystemObjectId: string;
     getFileSystemRootDirectory(): Promise<IFileSystemDirectory | null>;
     createFileSystem(args: EventArgs<IProjectEntity>): Promise<void>;
     deleteFileSystem(args: EventArgs<IProjectEntity>): Promise<void>;

@@ -1,4 +1,4 @@
-import { type IAccountEntity } from './entities/IAccount.entity.js';
+import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
 
 export interface IUser {
   account: IAccountEntity;

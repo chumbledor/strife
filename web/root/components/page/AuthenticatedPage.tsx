@@ -1,9 +1,9 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { UserServiceId } from '@/di/UserInjector';
 import '@/User';
 import Page, { PageProps } from '@components/page/Page';
-import { UserServiceId } from '@interfaces/IUser';
 import { usePathname, useRouter } from 'next/navigation';
 import React from 'react';
 

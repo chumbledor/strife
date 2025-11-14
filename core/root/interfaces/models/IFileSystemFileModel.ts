@@ -8,5 +8,3 @@ export interface IFileSystemFile extends IFileSystemObject {
 }
 
 export type IFileSystemFileModel = mongoose.Model<IFileSystemFile>;
-
-export const FileSystemFileModelName = 'FileSystemFileModel';

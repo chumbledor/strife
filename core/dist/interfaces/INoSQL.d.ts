@@ -1,7 +1,6 @@
 import { type IFileSystemDirectoryModel } from './models/IFileSystemDirectoryModel.js';
 import { type IFileSystemFileModel } from './models/IFileSystemFileModel.js';
 import { type IFileSystemObjectModel } from './models/IFileSystemObjectModel.js';
-import { type ServiceIdentifier } from 'inversify';
 import { type GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
 export interface INoSQL {
@@ -13,4 +12,3 @@ export interface INoSQL {
     initialize(): Promise<void>;
     update(): Promise<void>;
 }
-export declare const NoSQLServiceId: ServiceIdentifier<INoSQL>;

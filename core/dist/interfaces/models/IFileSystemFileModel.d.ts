@@ -6,4 +6,3 @@ export interface IFileSystemFile extends IFileSystemObject {
     gridFsId: mongoose.Types.ObjectId;
 }
 export type IFileSystemFileModel = mongoose.Model<IFileSystemFile>;
-export declare const FileSystemFileModelName = "FileSystemFileModel";

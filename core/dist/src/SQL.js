@@ -5,13 +5,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import di from './DependencyInjection.js';
+import { AppServiceId } from './di/AppInjector.js';
 import AccountEntity from './entities/Account.entity.js';
 import AuthenticationEntity from './entities/Authentication.entity.js';
 import ProjectEntity from './entities/Project.entity.js';
-import { AppServiceId } from '../interfaces/IApp.js';
-import { SQLServiceId } from '../interfaces/ISQL.js';
-import { MikroORM, RequestContext } from '@mikro-orm/core';
 import config from '../config/mikro-orm.config.js';
+import { MikroORM, RequestContext } from '@mikro-orm/core';
 import { injectable } from 'inversify';
 let SQL = class SQL {
     _orm;
@@ -54,4 +53,4 @@ let SQL = class SQL {
 SQL = __decorate([
     injectable()
 ], SQL);
-di.bind(SQLServiceId).to(SQL).inSingletonScope();
+export default SQL;

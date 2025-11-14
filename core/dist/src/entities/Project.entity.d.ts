@@ -7,7 +7,7 @@ export default class ProjectEntity extends UniqueEntity implements IProjectEntit
     account: AccountEntity;
     name: string;
     description?: string;
-    fileSystemRootObjectId: string;
+    rootFileSystemObjectId: string;
     getFileSystemRootDirectory(): Promise<IFileSystemDirectory | null>;
     createFileSystem(args: EventArgs<IProjectEntity>): Promise<void>;
     deleteFileSystem(args: EventArgs<IProjectEntity>): Promise<void>;

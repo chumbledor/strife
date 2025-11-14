@@ -1,13 +1,13 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { AccountServiceServiceId } from '@/di/services/AccountServiceInjector';
+import { AuthenticationServiceServiceId } from '@/di/services/AuthenticationServiceInjector';
 import '@/services/AccountService';
 import '@/services/AuthenticationService';
 import Window from '@components/layout/Window';
 import Logo from '@components/Logo';
 import Page from '@components/page/Page';
-import { AccountServiceServiceId } from '@interfaces/services/IAccountService';
-import { AuthenticationServiceServiceId } from '@interfaces/services/IAuthenticationService';
 import { Alert, Box, Button, FormControl, FormHelperText, Input, InputLabel, Link } from '@mui/material';
 import { validateEmail, validatePassword, validateUsername } from '@strife/common';
 import { useRouter } from 'next/navigation';

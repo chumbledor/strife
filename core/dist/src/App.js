@@ -4,13 +4,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import di from './DependencyInjection.js';
 import User from './User.js';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import { AppServiceId } from '../interfaces/IApp.js';
-import { SQLServiceId } from '../interfaces/ISQL.js';
 import fastify from 'fastify';
 import { injectable } from 'inversify';
 let App = class App {
@@ -43,10 +40,8 @@ let App = class App {
     }
     async authenticate(request, reply) {
         try {
-            const { id } = await request.jwtVerify();
-            const sql = await di.getAsync(SQLServiceId);
-            const account = await sql.account.getAccount(id);
-            const user = new User(account);
+            const { accountId } = await request.jwtVerify();
+            const user = await User.from(accountId);
             request.user = user;
         }
         catch (error) {
@@ -57,4 +52,4 @@ let App = class App {
 App = __decorate([
     injectable()
 ], App);
-di.bind(AppServiceId).to(App).inSingletonScope();
+export default App;

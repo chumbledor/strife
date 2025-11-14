@@ -1,9 +1,9 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { AuthenticationServiceServiceId } from '@/di/services/AuthenticationServiceInjector';
 import Window from '@components/layout/Window';
 import Logo from '@components/Logo';
-import { AuthenticationServiceServiceId } from '@interfaces/services/IAuthenticationService';
 import { Alert, Box, Button, FormControl, FormHelperText, Input, InputLabel, Link } from '@mui/material';
 import Page from '@root/components/page/Page';
 import { validateEmail, validatePassword } from '@strife/common';

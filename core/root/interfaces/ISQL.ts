@@ -1,17 +1,14 @@
-import { type IAccountRepository } from '@interfaces/repositories/IAccountRepository.js';
-import { type IAuthenticationRepository } from '@interfaces/repositories/IAuthenticationRepository.js';
-import { type IProjectRepository } from '@interfaces/repositories/IProjectRepository.js';
+import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
+import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
+import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
 import { MikroORM } from '@mikro-orm/core';
-import { type ServiceIdentifier } from 'inversify';
+import { SqlEntityRepository } from '@mikro-orm/mysql';
 
 export interface ISQL {
   readonly orm: MikroORM;
-  readonly account: IAccountRepository,
-  readonly authentication: IAuthenticationRepository,
-  readonly project: IProjectRepository
-
+  readonly account: SqlEntityRepository<IAccountEntity>,
+  readonly authentication: SqlEntityRepository<IAuthenticationEntity>,
+  readonly project: SqlEntityRepository<IProjectEntity>
   initialize(): Promise<void>;
   update(): Promise<void>;
 }
-
-export const SQLServiceId: ServiceIdentifier<ISQL> = Symbol.for('SQLServiceId');

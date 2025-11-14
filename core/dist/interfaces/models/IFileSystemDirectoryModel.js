@@ -1,1 +1,1 @@
-export const FileSystemDirectoryModelName = 'FileSystemDirectoryModel';
+export {};

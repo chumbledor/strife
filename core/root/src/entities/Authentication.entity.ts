@@ -1,11 +1,10 @@
 import AccountEntity from '@/entities/Account.entity.js';
 import BaseEntity from '@/entities/Base.entity.js';
-import AuthenticationRepository from '@/repositories/AuthenticationRepository.js';
 import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
 import { BeforeCreate, BeforeUpdate, Entity, OneToOne, Property, type EventArgs } from '@mikro-orm/core';
 import { hash, verify } from 'argon2';
 
-@Entity({ repository: () => AuthenticationRepository })
+@Entity()
 export default class AuthenticationEntity extends BaseEntity implements IAuthenticationEntity {
 
   @OneToOne({ primary: true })

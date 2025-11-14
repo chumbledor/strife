@@ -7,7 +7,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import AuthenticationEntity from '../entities/Authentication.entity.js';
 import ProjectEntity from '../entities/Project.entity.js';
 import UniqueEntity from '../entities/Unique.entity.js';
-import AccountRepository from '../repositories/AccountRepository.js';
 import { Cascade, Collection, Entity, OneToMany, OneToOne, Property } from '@mikro-orm/core';
 let AccountEntity = class AccountEntity extends UniqueEntity {
     authentication;
@@ -28,6 +27,6 @@ __decorate([
     Property({ unique: true })
 ], AccountEntity.prototype, "username", void 0);
 AccountEntity = __decorate([
-    Entity({ repository: () => AccountRepository })
+    Entity()
 ], AccountEntity);
 export default AccountEntity;

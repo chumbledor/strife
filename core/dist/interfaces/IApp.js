@@ -1,1 +1,1 @@
-export const AppServiceId = Symbol.for('AppServiceId');
+export {};

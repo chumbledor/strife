@@ -5,11 +5,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import di from '../DependencyInjection.js';
+import { AccountControllerServiceId } from '../di/controllers/AccountControllerInjector.js';
 import { AccountDeleteUnauthorizedError, AccountUpdateUnauthorizedError } from '../errors/account.js';
 import BaseRouter from '../routers/BaseRouter.js';
-import { SQLServiceId } from '../../interfaces/ISQL.js';
-import { AccountRouterServiceId } from '../../interfaces/routers/IAccountRouter.js';
-import { AccountSchema, CreateAccountSchema, GetAccountsSchema, AccountIdSchema, UpdateAccountSchema } from '@strife/common';
+import { AccountIdSchema, CreateAccountSchema, GetAccountsSchema, UpdateAccountSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let AccountRouter = class AccountRouter extends BaseRouter {
     get prefix() {
@@ -24,47 +23,39 @@ let AccountRouter = class AccountRouter extends BaseRouter {
         instance.put('/:accountId', { onRequest: [instance.authenticate] }, this.updateAccount.bind(this));
     }
     async createAccount(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
-        const data = await CreateAccountSchema.parseAsync(request.body);
-        const account = await sql.account.createAccount(data);
-        const accountData = await AccountSchema.parseAsync(account);
-        return accountData;
+        const createAccountData = await CreateAccountSchema.parseAsync(request.body);
+        const accountController = await di.getAsync(AccountControllerServiceId);
+        return accountController.createAccount(createAccountData);
     }
     async deleteAccount(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { accountId } = await AccountIdSchema.parseAsync(request.params);
         if (!user.is(accountId))
             return Promise.reject(AccountDeleteUnauthorizedError);
-        return await sql.account.deleteAccount(user.account);
+        const accountController = await di.getAsync(AccountControllerServiceId);
+        return accountController.deleteAccount(user);
     }
     async getAccount(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const { accountId } = await AccountIdSchema.parseAsync(request.params);
-        const account = await sql.account.getAccount(accountId);
-        const accountData = await AccountSchema.parseAsync(account);
-        return accountData;
+        const accountController = await di.getAsync(AccountControllerServiceId);
+        return accountController.getAccount(accountId);
     }
     async getAccounts(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
-        const data = await GetAccountsSchema.parseAsync(request.query);
-        const accountEntities = await sql.account.getAccounts(data);
-        const accountDatas = await AccountSchema.array().parseAsync(accountEntities);
-        return accountDatas;
+        const getAccountsData = await GetAccountsSchema.parseAsync(request.query);
+        const accountController = await di.getAsync(AccountControllerServiceId);
+        return accountController.getAccounts(getAccountsData);
     }
     async updateAccount(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { accountId } = await AccountIdSchema.parseAsync(request.params);
         if (!user.is(accountId))
             return Promise.reject(AccountUpdateUnauthorizedError);
-        const data = await UpdateAccountSchema.parseAsync(request.body);
-        const account = await sql.account.updateAccount(user.account, data);
-        const accountData = await AccountSchema.parseAsync(account);
-        return accountData;
+        const updateAccountData = await UpdateAccountSchema.parseAsync(request.body);
+        const accountController = await di.getAsync(AccountControllerServiceId);
+        return accountController.updateAccount(user, updateAccountData);
     }
 };
 AccountRouter = __decorate([
     injectable()
 ], AccountRouter);
-di.bind(AccountRouterServiceId).to(AccountRouter).inSingletonScope();
+export default AccountRouter;

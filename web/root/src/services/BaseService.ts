@@ -1,6 +1,6 @@
 import di from '@/DependencyInjection';
-import '@/User';
-import { UserServiceId, type IUser } from '@interfaces/IUser';
+import { UserServiceId } from '@/di/UserInjector';
+import { type IUser } from '@interfaces/IUser';
 import { type IBaseService, type ServiceOptions, type VoidServiceOptions } from '@interfaces/services/IBaseService';
 
 export default class BaseService implements IBaseService {
@@ -91,7 +91,6 @@ export default class BaseService implements IBaseService {
 
     const url = `${this.baseUrl}${options.url ? options.url : ''}`;
 
-    console.log(JSON.stringify(options.init));
     const response = await fetch(url, options.init);
     if (!response.ok) {
       const json = await response.json();

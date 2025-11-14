@@ -1,5 +1,5 @@
 import FileSystemObjectModel from '../models/FileSystemObjectModel.js';
-import { FileSystemFileModelName } from '../../interfaces/models/IFileSystemFileModel.js';
+import { FileSystemObjectType } from '@strife/common';
 import mongoose from 'mongoose';
 export const FileSystemFileSchema = new mongoose.Schema({
     size: {
@@ -15,7 +15,5 @@ export const FileSystemFileSchema = new mongoose.Schema({
         required: true
     }
 });
-FileSystemFileSchema.methods.save = function () {
-};
-export const FileSystemFileModel = FileSystemObjectModel.discriminator(FileSystemFileModelName, FileSystemFileSchema);
+export const FileSystemFileModel = FileSystemObjectModel.discriminator(FileSystemObjectType.File, FileSystemFileSchema);
 export default FileSystemFileModel;

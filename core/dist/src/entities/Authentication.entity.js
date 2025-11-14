@@ -5,7 +5,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import BaseEntity from '../entities/Base.entity.js';
-import AuthenticationRepository from '../repositories/AuthenticationRepository.js';
 import { BeforeCreate, BeforeUpdate, Entity, OneToOne, Property } from '@mikro-orm/core';
 import { hash, verify } from 'argon2';
 let AuthenticationEntity = class AuthenticationEntity extends BaseEntity {
@@ -40,6 +39,6 @@ __decorate([
     BeforeUpdate()
 ], AuthenticationEntity.prototype, "hashPassword", null);
 AuthenticationEntity = __decorate([
-    Entity({ repository: () => AuthenticationRepository })
+    Entity()
 ], AuthenticationEntity);
 export default AuthenticationEntity;

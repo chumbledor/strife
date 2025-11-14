@@ -1,10 +1,10 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { AuthenticationServiceServiceId } from '@/di/services/AuthenticationServiceInjector';
+import { UserServiceId } from '@/di/UserInjector';
 import AccountAvatar from '@components/account/AccountAvatar';
 import Logo from '@components/Logo';
-import { UserServiceId } from '@interfaces/IUser';
-import { AuthenticationServiceServiceId } from '@interfaces/services/IAuthenticationService';
 import { AppBar, Box, Button, Divider, IconButton, Menu, MenuItem, Toolbar, type AppBarProps } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import React from 'react';

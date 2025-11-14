@@ -7,9 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import di from '../DependencyInjection.js';
 import { AuthenticationLogoutError, AuthenticationRefreshInvalidRefreshTokenError, AuthenticationUpdateUnauthorizedError } from '../errors/authentication.js';
 import BaseRouter from '../routers/BaseRouter.js';
-import { SQLServiceId } from '../../interfaces/ISQL.js';
-import { AuthenticationRouterServiceId } from '../../interfaces/routers/IAuthenticationRouter.js';
-import { AccountSchema, AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema } from '@strife/common';
+import { AuthenticationControllerServiceId } from '../di/controllers/AuthenticationControllerInjector.js';
+import { AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
     get prefix() {
@@ -23,58 +22,40 @@ let AuthenticationRouter = class AuthenticationRouter extends BaseRouter {
         instance.put('/:accountId', { onRequest: [instance.authenticate] }, this.updateAuthentication.bind(this));
     }
     async login(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
-        const data = await LoginAuthenticationSchema.parseAsync(request.body);
-        const authentication = await sql.authentication.login(data);
-        this.updateRefreshTokenCookie(authentication, request, reply);
-        const account = authentication.account;
-        const accountData = await AccountSchema.parseAsync(account);
+        const loginAuthenticationData = await LoginAuthenticationSchema.parseAsync(request.body);
+        const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
+        const accountData = await authenticationController.login(loginAuthenticationData);
+        // this.updateRefreshTokenCookie(accountData, request, reply);
         return accountData;
     }
     async logout(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { accountId } = await AccountIdSchema.parseAsync(request.params);
         if (!user.is(accountId))
             return Promise.reject(AuthenticationLogoutError);
-        await sql.authentication.logout(user.account);
+        const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
+        await authenticationController.logout(user);
     }
     async refresh(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const { refreshToken } = request.cookies;
         if (!refreshToken)
             return Promise.reject(AuthenticationRefreshInvalidRefreshTokenError);
-        const authentication = await sql.authentication.refresh(refreshToken);
-        this.updateRefreshTokenCookie(authentication, request, reply);
-        const account = authentication.account;
-        const accountData = await AccountSchema.parseAsync(account);
+        const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
+        const accountData = await authenticationController.refresh(refreshToken);
+        // this.updateRefreshTokenCookie(accountData, request, reply);
         return accountData;
     }
     async updateAuthentication(request, reply) {
-        const sql = await di.getAsync(SQLServiceId);
         const user = request.user;
         const { accountId } = await AccountIdSchema.parseAsync(request.params);
         if (!user.is(accountId))
             return Promise.reject(AuthenticationUpdateUnauthorizedError);
-        const data = await UpdateAuthenticationSchema.parseAsync(request.body);
-        const authentication = await sql.authentication.updateAuthentication(user.account, data);
-        const account = authentication.account;
-        const accountData = await AccountSchema.parseAsync(account);
-        return accountData;
-    }
-    updateRefreshTokenCookie(authentication, request, reply) {
-        if (!authentication.refreshToken)
-            return;
-        reply.setCookie('refreshToken', authentication.refreshToken, {
-            path: `${this.prefix}/refresh`,
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false,
-            maxAge: 60 * 60 * 24 * 7
-        });
+        const updateAuthenticationData = await UpdateAuthenticationSchema.parseAsync(request.body);
+        const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
+        return authenticationController.updateAuthentication(user, updateAuthenticationData);
     }
 };
 AuthenticationRouter = __decorate([
     injectable()
 ], AuthenticationRouter);
-di.bind(AuthenticationRouterServiceId).to(AuthenticationRouter).inSingletonScope();
+export default AuthenticationRouter;

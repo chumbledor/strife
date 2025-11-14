@@ -1,13 +1,10 @@
 import { type IBaseService } from '@interfaces/services/IBaseService';
 import { type CreateProjectData, type GetProjectsData, type ProjectData, type UpdateProjectData } from '@strife/common';
-import { type ServiceIdentifier } from 'inversify';
 
 export interface IProjectService extends IBaseService {
-  createProject(data: CreateProjectData): Promise<ProjectData>;
-  deleteProject(id: string): Promise<void>;
-  getProject(id: string): Promise<ProjectData>;
-  getProjects(data: GetProjectsData): Promise<ProjectData[]>;
-  updateProject(id: string, data: UpdateProjectData): Promise<ProjectData>;
+  createProject(createProjectData: CreateProjectData): Promise<ProjectData>;
+  deleteProject(projectId: string): Promise<void>;
+  getProject(projectId: string): Promise<ProjectData>;
+  getProjects(getProjectsData: GetProjectsData): Promise<ProjectData[]>;
+  updateProject(projectId: string, updateProjectData: UpdateProjectData): Promise<ProjectData>;
 }
-
-export const ProjectServiceServiceId: ServiceIdentifier<IProjectService> = Symbol.for('ProjectServiceServiceId');

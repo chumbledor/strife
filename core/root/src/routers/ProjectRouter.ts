@@ -1,15 +1,14 @@
 import di from '@/DependencyInjection.js';
 import BaseRouter from '@/routers/BaseRouter.js';
-import { NoSQLServiceId } from '@interfaces/INoSQL.js';
-import { SQLServiceId } from '@interfaces/ISQL.js';
+import { ProjectControllerServiceId } from '@/di/controllers/ProjectControllerInjector.js';
 import { type IUser } from '@interfaces/IUser.js';
-import { ProjectRouterServiceId, type IProjectRouter } from '@interfaces/routers/IProjectRouter.js';
-import { CreateFileSystemDirectorySchema, CreateProjectSchema, FileSystemObjectIdSchema, GetProjectsSchema, ProjectIdSchema, UpdateProjectSchema, type ProjectData } from '@strife/common';
+import { type IProjectRouter } from '@interfaces/routers/IProjectRouter.js';
+import { CreateProjectSchema, GetProjectsSchema, ProjectIdSchema, UpdateProjectSchema, type ProjectData } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-class ProjectRouter extends BaseRouter implements IProjectRouter {
+export default class ProjectRouter extends BaseRouter implements IProjectRouter {
 
   protected override get prefix(): string | undefined {
     return 'projects';
@@ -25,39 +24,37 @@ class ProjectRouter extends BaseRouter implements IProjectRouter {
   }
 
   private async createProject(request: FastifyRequest, reply: FastifyReply): Promise<ProjectData> {
-    const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
-    const data = await CreateProjectSchema.parseAsync(request.body);
-    return await sql.project.createProject(user.account, data);
+    const createProjectData = await CreateProjectSchema.parseAsync(request.body);
+    const projectController = await di.getAsync(ProjectControllerServiceId);
+    return await projectController.createProject(user, createProjectData);
   }
 
   private async deleteProject(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
     const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-    await sql.project.deleteProject(user.account, projectId);
+    const projectController = await di.getAsync(ProjectControllerServiceId);
+    await projectController.deleteProject(user, projectId);
   }
 
   private async getProject(request: FastifyRequest, reply: FastifyReply): Promise<ProjectData> {
-    const sql = await di.getAsync(SQLServiceId);
     const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-    return await sql.project.getProject(projectId);
+    const projectController = await di.getAsync(ProjectControllerServiceId);
+    return await projectController.getProject(projectId);
   }
 
   private async getProjects(request: FastifyRequest, reply: FastifyReply): Promise<ProjectData[]> {
-    const sql = await di.getAsync(SQLServiceId);
-    const data = await GetProjectsSchema.parseAsync(request.query);
-    return await sql.project.getProjects(data);
+    const getProjectsData = await GetProjectsSchema.parseAsync(request.query);
+    const projectController = await di.getAsync(ProjectControllerServiceId);
+    return await projectController.getProjects(getProjectsData);
   }
 
   private async updateProject(request: FastifyRequest, reply: FastifyReply): Promise<ProjectData> {
-    const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
     const { projectId } = await ProjectIdSchema.parseAsync(request.params);
-    const data = await UpdateProjectSchema.parseAsync(request.body);
-    return await sql.project.updateProject(user.account, projectId, data);
+    const updateProjectData = await UpdateProjectSchema.parseAsync(request.body);
+    const projectController = await di.getAsync(ProjectControllerServiceId);
+    return await projectController.updateProject(user, projectId, updateProjectData);
   }
 
 }
-
-di.bind(ProjectRouterServiceId).to(ProjectRouter).inSingletonScope();

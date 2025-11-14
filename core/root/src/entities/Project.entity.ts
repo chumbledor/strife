@@ -1,16 +1,15 @@
 import di from '@/DependencyInjection.js';
+import { NoSQLServiceId } from '@/di/NoSQLInjector.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import UniqueEntity from '@/entities/Unique.entity.js';
-import ProjectRepository from '@/repositories/ProjectRepository.js';
 import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
-import { NoSQLServiceId } from '@interfaces/INoSQL.js';
 import { type IFileSystemDirectory } from '@interfaces/models/IFileSystemDirectoryModel.js';
 import { BeforeCreate, BeforeDelete, Entity, ManyToOne, Property, type EventArgs } from '@mikro-orm/core';
 import mongoose from 'mongoose';
 
 const RootDirectoryName = 'root';
 
-@Entity({ repository: () => ProjectRepository })
+@Entity()
 export default class ProjectEntity extends UniqueEntity implements IProjectEntity {
 
   @ManyToOne(() => AccountEntity)
@@ -23,27 +22,27 @@ export default class ProjectEntity extends UniqueEntity implements IProjectEntit
   public description?: string;
 
   @Property()
-  public fileSystemRootObjectId!: string;
+  public rootFileSystemObjectId!: string;
   public async getFileSystemRootDirectory(): Promise<IFileSystemDirectory | null> {
-    if (!mongoose.isValidObjectId(this.fileSystemRootObjectId))
+    if (!mongoose.isValidObjectId(this.rootFileSystemObjectId))
       return null;
 
     const nosql = await di.getAsync(NoSQLServiceId);
-    return nosql.fileSystemDirectory.findById(this.fileSystemRootObjectId);
+    return nosql.fileSystemDirectory.findById(this.rootFileSystemObjectId);
   }
 
   @BeforeCreate()
   public async createFileSystem(args: EventArgs<IProjectEntity>): Promise<void> {
     const nosql = await di.getAsync(NoSQLServiceId);
-    const fileSystemRootObject = new nosql.fileSystemDirectory({ projectId: this.id, name: RootDirectoryName });
-    await fileSystemRootObject.save();
-    this.fileSystemRootObjectId = fileSystemRootObject._id.toString();
+    const rootfileSystemObject = new nosql.fileSystemDirectory({ projectId: this.id, name: RootDirectoryName });
+    await rootfileSystemObject.save();
+    this.rootFileSystemObjectId = rootfileSystemObject.id.toString();
   }
 
   @BeforeDelete()
   public async deleteFileSystem(args: EventArgs<IProjectEntity>): Promise<void> {
     const nosql = await di.getAsync(NoSQLServiceId);
-    await nosql.fileSystemDirectory.deleteOne({ _id: this.fileSystemRootObjectId });
+    await nosql.fileSystemDirectory.deleteOne({ _id: this.rootFileSystemObjectId });
   }
 
 }

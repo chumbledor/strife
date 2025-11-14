@@ -1,1 +1,1 @@
-export const FileSystemFileModelName = 'FileSystemFileModel';
+export {};

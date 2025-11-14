@@ -1,40 +1,39 @@
 import di from '@/DependencyInjection.js';
+import { AppServiceId } from '@/di/AppInjector.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
-import AccountRepository from '@/repositories/AccountRepository.js';
-import AuthenticationRepository from '@/repositories/AuthenticationRepository.js';
-import ProjectRepository from '@/repositories/ProjectRepository.js';
-import { AppServiceId, type IApp } from '@interfaces/IApp.js';
-import { SQLServiceId, type ISQL } from '@interfaces/ISQL.js';
-import { type IAccountRepository } from '@interfaces/repositories/IAccountRepository.js';
-import { type IAuthenticationRepository } from '@interfaces/repositories/IAuthenticationRepository.js';
-import { type IProjectRepository } from '@interfaces/repositories/IProjectRepository.js';
+import config from '@config/mikro-orm.config.js';
+import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
+import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
+import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
+import { type IApp } from '@interfaces/IApp.js';
+import { type ISQL } from '@interfaces/ISQL.js';
 import { MikroORM, RequestContext } from '@mikro-orm/core';
-import config from '@root/config/mikro-orm.config.js';
-import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify';
+import { SqlEntityRepository } from '@mikro-orm/mysql';
+import { type FastifyReply, type FastifyRequest, type HookHandlerDoneFunction } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-class SQL implements ISQL {
+export default class SQL implements ISQL {
 
   private _orm!: MikroORM;
   public get orm(): MikroORM {
     return this._orm;
   }
 
-  private _account!: IAccountRepository;
-  public get account(): IAccountRepository {
+  private _account!: SqlEntityRepository<IAccountEntity>;
+  public get account(): SqlEntityRepository<IAccountEntity> {
     return this._account;
   }
 
-  private _authentication!: IAuthenticationRepository;
-  public get authentication(): IAuthenticationRepository {
+  private _authentication!: SqlEntityRepository<IAuthenticationEntity>;
+  public get authentication(): SqlEntityRepository<IAuthenticationEntity> {
     return this._authentication;
   }
 
-  private _project!: IProjectRepository;
-  public get project(): IProjectRepository {
+  private _project!: SqlEntityRepository<IProjectEntity>;
+  public get project(): SqlEntityRepository<IProjectEntity> {
     return this._project;
   }
 
@@ -42,9 +41,9 @@ class SQL implements ISQL {
   
   public async initialize(): Promise<void> {
     this._orm = await MikroORM.init(config);
-    this._account = this._orm.em.getRepository(AccountEntity) as AccountRepository as IAccountRepository,
-    this._authentication = this._orm.em.getRepository(AuthenticationEntity) as AuthenticationRepository as IAuthenticationRepository,
-    this._project = this._orm.em.getRepository(ProjectEntity) as ProjectRepository as IProjectRepository
+    this._account = this._orm.em.getRepository(AccountEntity),
+    this._authentication = this._orm.em.getRepository(AuthenticationEntity),
+    this._project = this._orm.em.getRepository(ProjectEntity)
 
     this._app = await di.getAsync(AppServiceId);
 
@@ -73,5 +72,3 @@ class SQL implements ISQL {
   }
 
 }
-
-di.bind(SQLServiceId).to(SQL).inSingletonScope();

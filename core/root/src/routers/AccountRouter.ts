@@ -1,15 +1,15 @@
 import di from '@/DependencyInjection.js';
+import { AccountControllerServiceId } from '@/di/controllers/AccountControllerInjector.js';
 import { AccountDeleteUnauthorizedError, AccountUpdateUnauthorizedError } from '@/errors/account.js';
 import BaseRouter from '@/routers/BaseRouter.js';
-import { SQLServiceId } from '@interfaces/ISQL.js';
 import { type IUser } from '@interfaces/IUser.js';
-import { AccountRouterServiceId, type IAccountRouter } from '@interfaces/routers/IAccountRouter.js';
-import { AccountSchema, CreateAccountSchema, GetAccountsSchema, AccountIdSchema, UpdateAccountSchema, type AccountData } from '@strife/common';
+import { type IAccountRouter } from '@interfaces/routers/IAccountRouter.js';
+import { AccountIdSchema, CreateAccountSchema, GetAccountsSchema, UpdateAccountSchema, type AccountData } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-class AccountRouter extends BaseRouter implements IAccountRouter {
+export default class AccountRouter extends BaseRouter implements IAccountRouter {
 
   protected override get prefix(): string | undefined {
     return 'accounts';
@@ -25,52 +25,42 @@ class AccountRouter extends BaseRouter implements IAccountRouter {
   }
 
   private async createAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const sql = await di.getAsync(SQLServiceId);
-    const data = await CreateAccountSchema.parseAsync(request.body);
-    const account = await sql.account.createAccount(data);
-    const accountData = await AccountSchema.parseAsync(account);
-    return accountData;
+    const createAccountData = await CreateAccountSchema.parseAsync(request.body);
+    const accountController = await di.getAsync(AccountControllerServiceId);
+    return accountController.createAccount(createAccountData);
   }
 
   private async deleteAccount(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
     const { accountId } = await AccountIdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AccountDeleteUnauthorizedError);
 
-    return await sql.account.deleteAccount(user.account);
+    const accountController = await di.getAsync(AccountControllerServiceId);
+    return accountController.deleteAccount(user);
   }
 
   private async getAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const sql = await di.getAsync(SQLServiceId);
     const { accountId } = await AccountIdSchema.parseAsync(request.params);
-    const account = await sql.account.getAccount(accountId);
-    const accountData = await AccountSchema.parseAsync(account);
-    return accountData;
+    const accountController = await di.getAsync(AccountControllerServiceId);
+    return accountController.getAccount(accountId);
   }
 
   private async getAccounts(request: FastifyRequest, reply: FastifyReply): Promise<AccountData[]> {
-    const sql = await di.getAsync(SQLServiceId);
-    const data = await GetAccountsSchema.parseAsync(request.query);
-    const accountEntities = await sql.account.getAccounts(data);
-    const accountDatas = await AccountSchema.array().parseAsync(accountEntities);
-    return accountDatas;
+    const getAccountsData = await GetAccountsSchema.parseAsync(request.query);
+    const accountController = await di.getAsync(AccountControllerServiceId);
+    return accountController.getAccounts(getAccountsData);
   }
 
   private async updateAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const sql = await di.getAsync(SQLServiceId);
     const user = request.user as IUser;
     const { accountId } = await AccountIdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AccountUpdateUnauthorizedError);
 
-    const data = await UpdateAccountSchema.parseAsync(request.body);
-    const account = await sql.account.updateAccount(user.account, data);
-    const accountData = await AccountSchema.parseAsync(account);
-    return accountData;
+    const updateAccountData = await UpdateAccountSchema.parseAsync(request.body);
+    const accountController = await di.getAsync(AccountControllerServiceId);
+    return accountController.updateAccount(user, updateAccountData);
   }
 
 }
-
-di.bind(AccountRouterServiceId).to(AccountRouter).inSingletonScope();

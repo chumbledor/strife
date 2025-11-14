@@ -109,6 +109,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$root$2f$components$2f$editor$2f$widgets$2f$Widget$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/root/components/editor/widgets/Widget.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$List$2f$List$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__List$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/List/List.js [app-client] (ecmascript) <export default as List>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$ListItemButton$2f$ListItemButton$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ListItemButton$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/ListItemButton/ListItemButton.js [app-client] (ecmascript) <export default as ListItemButton>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$ListSubheader$2f$ListSubheader$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ListSubheader$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/ListSubheader/ListSubheader.js [app-client] (ecmascript) <export default as ListSubheader>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Stack$2f$Stack$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Stack$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Stack/Stack.js [app-client] (ecmascript) <export default as Stack>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
@@ -122,50 +123,57 @@ function ProjectWidget(param) {
         ...widgetProps,
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$List$2f$List$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__List$3e$__["List"], {
             children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$ListSubheader$2f$ListSubheader$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ListSubheader$3e$__["ListSubheader"], {
+                    children: "Test"
+                }, void 0, false, {
+                    fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
+                    lineNumber: 10,
+                    columnNumber: 7
+                }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FolderListItemButton, {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
                             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                            lineNumber: 11,
+                            lineNumber: 12,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
                             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                            lineNumber: 12,
+                            lineNumber: 13,
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FolderListItemButton, {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
                                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                                    lineNumber: 14,
+                                    lineNumber: 15,
                                     columnNumber: 11
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
                                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                                    lineNumber: 15,
+                                    lineNumber: 16,
                                     columnNumber: 11
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                            lineNumber: 13,
+                            lineNumber: 14,
                             columnNumber: 9
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                    lineNumber: 10,
-                    columnNumber: 7
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
-                    fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                    lineNumber: 18,
+                    lineNumber: 11,
                     columnNumber: 7
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
                     lineNumber: 19,
+                    columnNumber: 7
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileListItemButton, {}, void 0, false, {
+                    fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
+                    lineNumber: 20,
                     columnNumber: 7
                 }, this)
             ]
@@ -198,18 +206,18 @@ function FolderListItemButton(param) {
                     children: children
                 }, void 0, false, {
                     fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-                    lineNumber: 35,
+                    lineNumber: 36,
                     columnNumber: 13
                 }, this) : undefined
             ]
         }, void 0, true, {
             fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-            lineNumber: 31,
+            lineNumber: 32,
             columnNumber: 5
         }, this)
     }, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 30,
+        lineNumber: 31,
         columnNumber: 10
     }, this);
 }
@@ -223,7 +231,7 @@ function FileListItemButton(param) {
         children: "File"
     }, void 0, false, {
         fileName: "[project]/root/components/editor/widgets/ProjectWidget.tsx",
-        lineNumber: 49,
+        lineNumber: 50,
         columnNumber: 10
     }, this);
 }
