@@ -1,11 +1,12 @@
 import { type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
+import { type IUser } from '@interfaces/IUser.js';
 import { FileSystemObjectType } from '@strife/common';
 import mongoose from 'mongoose';
 
 const FileSystemObjectOptions = {
   collection: 'file_system',
   discriminatorKey: 'type'
-}
+};
 
 const FileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
   {
@@ -24,6 +25,15 @@ const FileSystemObjectSchema = new mongoose.Schema<IFileSystemObject>(
   }, 
   FileSystemObjectOptions
 );
+
+FileSystemObjectSchema.methods.hasPermission = async function (user: IUser): Promise<boolean> {
+  try {
+    await this.sql.project.findOneOrFail({ account: user.account, id: this.projectId });
+    return true;
+  } catch (error: any) {
+    return false;
+  }
+};
 
 FileSystemObjectSchema.pre(
   'deleteOne', 
@@ -47,7 +57,7 @@ FileSystemObjectSchema.pre(
     
     next();
   }
-)
+);
 
 export const FileSystemObjectModel = mongoose.model<IFileSystemObject>(FileSystemObjectType.Object, FileSystemObjectSchema);
 export default FileSystemObjectModel;

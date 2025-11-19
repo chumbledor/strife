@@ -7,46 +7,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import di from '../DependencyInjection.js';
 import { FileSystemControllerServiceId } from '../di/controllers/FileSystemControllerInjector.js';
 import BaseRouter from '../routers/BaseRouter.js';
-import { CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, CreateFileSystemObjectSchema, FileSystemObjectIdSchema, FileSystemObjectType, ProjectIdSchema } from '@strife/common';
+import { CreateFileSystemObjectSchema, FileSystemObjectIdSchema, GetFileSystemObjectsSchema } from '@strife/common';
 import { injectable } from 'inversify';
 let FileSystemRouter = class FileSystemRouter extends BaseRouter {
     get prefix() {
-        return 'projects/:projectId/fs';
+        return 'fs';
     }
     async routes(instance) {
         super.routes(instance);
-        instance.post('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.createFileSystemObject.bind(this));
+        instance.post('/', { onRequest: [instance.authenticate] }, this.createFileSystemObject.bind(this));
         instance.delete('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.deleteFileSystemObject.bind(this));
         instance.get('/:fileSystemObjectId', { onRequest: [instance.authenticate] }, this.getFileSystemObject.bind(this));
+        instance.get('/', { onRequest: [instance.authenticate] }, this.getFileSystemObjects.bind(this));
     }
     async createFileSystemObject(request, reply) {
         const user = request.user;
-        const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
-        let data = await CreateFileSystemObjectSchema.parseAsync(request.body);
+        const createFileSystemObjectData = await CreateFileSystemObjectSchema.parseAsync(request.body);
         const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
-        switch (data.type) {
-            case FileSystemObjectType.Directory:
-                const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync(request.body);
-                return await fileSystemController.createFileSystemDirectory(user, projectId, fileSystemObjectId, createFileSystemDirectoryData);
-            case FileSystemObjectType.File:
-                const createFileSystemFileData = await CreateFileSystemFileSchema.parseAsync(request.body);
-                return await fileSystemController.createFileSystemFile(user, projectId, fileSystemObjectId, createFileSystemFileData);
-            default:
-                return Promise.reject();
-        }
+        return fileSystemController.createFileSystemObject(user, createFileSystemObjectData);
     }
     async deleteFileSystemObject(request, reply) {
         const user = request.user;
-        const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
+        const { fileSystemObjectId } = await FileSystemObjectIdSchema.parseAsync(request.params);
         const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
-        return fileSystemController.deleteFileSystemObject(user, projectId, fileSystemObjectId);
+        return fileSystemController.deleteFileSystemObject(user, fileSystemObjectId);
     }
     async getFileSystemObject(request, reply) {
         const user = request.user;
-        const { projectId, fileSystemObjectId } = await ProjectIdSchema.and(FileSystemObjectIdSchema).parseAsync(request.params);
+        const { fileSystemObjectId } = await FileSystemObjectIdSchema.parseAsync(request.params);
         const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
-        const data = fileSystemController.getFileSystemObject(user, projectId, fileSystemObjectId);
-        return data;
+        return fileSystemController.getFileSystemObject(user, fileSystemObjectId);
+    }
+    async getFileSystemObjects(request, reply) {
+        const user = request.user;
+        const getFileSystemObjectsData = await GetFileSystemObjectsSchema.parseAsync(request.query);
+        const fileSystemController = await di.getAsync(FileSystemControllerServiceId);
+        return fileSystemController.getFileSystemObjects(user, getFileSystemObjectsData);
     }
 };
 FileSystemRouter = __decorate([

@@ -17,7 +17,9 @@ export default function EditorContextProvider({ projectId, children }: EditorCon
     project
   };
 
-  return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
+  return <EditorContext.Provider value={value}>
+    {children}
+  </EditorContext.Provider>;
   
   function initializationEffect(): void {
     getProject();

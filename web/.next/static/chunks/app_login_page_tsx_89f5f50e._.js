@@ -6,8 +6,8 @@
   "static/chunks/node_modules_mongoose_dist_browser_umd_81154a10.js",
   "static/chunks/node_modules_@mui_system_esm_3998d402._.js",
   "static/chunks/node_modules_@mui_material_esm_86258ef5._.js",
-  "static/chunks/node_modules_6a2b70a9._.js",
-  "static/chunks/_c0e5482f._.js"
+  "static/chunks/node_modules_7d0392c4._.js",
+  "static/chunks/_c60678c4._.js"
 ],
     source: "dynamic"
 });

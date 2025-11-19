@@ -18,6 +18,15 @@ const FileSystemObjectSchema = new mongoose.Schema({
         required: true
     }
 }, FileSystemObjectOptions);
+FileSystemObjectSchema.methods.hasPermission = async function (user) {
+    try {
+        await this.sql.project.findOneOrFail({ account: user.account, id: this.projectId });
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+};
 FileSystemObjectSchema.pre('deleteOne', { document: true, query: false }, async function (next) {
     if (!this.parentId)
         return next();

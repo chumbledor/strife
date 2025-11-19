@@ -1,5 +1,5 @@
 import AceEditorWidget from '@components/editor/widgets/AceEditorWidget';
-import ProjectWidget from '@components/editor/widgets/ProjectWidget';
+import ProjectWidget from '@components/editor/widgets/project/ProjectWidget';
 import View, { ViewProps } from '@components/editor/views/View';
 import React from 'react';
 import { Drawer } from '@mui/material';

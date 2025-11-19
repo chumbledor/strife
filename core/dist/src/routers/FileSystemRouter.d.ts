@@ -7,4 +7,5 @@ export default class FileSystemRouter extends BaseRouter implements IFileSystemR
     private createFileSystemObject;
     private deleteFileSystemObject;
     private getFileSystemObject;
+    private getFileSystemObjects;
 }

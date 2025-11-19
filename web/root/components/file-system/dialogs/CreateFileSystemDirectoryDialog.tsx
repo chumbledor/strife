@@ -5,11 +5,13 @@ import { CreateFileSystemDirectorySchema, FileSystemObjectType, type CreateFileS
 import React from 'react';
 
 export interface CreateFileSystemDialogProps extends DialogProps {
+  projectId: string,
+  parentId: string,
   onCancel?: () => void;
   onCreate?: (createFileSystemDirectoryData: CreateFileSystemDirectoryData) => void;
 }
 
-export default function CreateFileSystemDialog({ onCancel, onCreate, ...dialogProps }: CreateFileSystemDialogProps): React.JSX.Element {  
+export default function CreateFileSystemDialog({ projectId, parentId, onCancel, onCreate, ...dialogProps }: CreateFileSystemDialogProps): React.JSX.Element {  
   const [ name, setName ] = React.useState('');
   const [ nameError, setNameError ] = React.useState<string | undefined>();
   
@@ -48,6 +50,8 @@ export default function CreateFileSystemDialog({ onCancel, onCreate, ...dialogPr
       return;
 
     const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync({
+      projectId,
+      parentId,
       fileSystemObjectType: FileSystemObjectType.Directory,
       name
     });

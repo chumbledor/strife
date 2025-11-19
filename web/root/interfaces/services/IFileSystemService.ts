@@ -1,8 +1,9 @@
 import { type IBaseService } from '@interfaces/services/IBaseService';
-import { type CreateFileSystemDirectoryData, type CreateFileSystemFileData, type FileSystemDirectoryData, type FileSystemFileData } from '@strife/common';
+import { type AnyFileSystemObjectData, type CreateFileSystemDirectoryData, type CreateFileSystemFileData, type FileSystemDirectoryData, type FileSystemFileData, type GetFileSystemObjectsData } from '@strife/common';
 
 export interface IFileSystemService extends IBaseService {
-  createFileSystemDirectory(projectId: string, fileSystemObjectId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData>;
-  createFileSystemFile(projectId: string, fileSystemObjectId: string, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData>;
-  getFileSystemObject(projectId: string, fileSystemObjectId: string): Promise<FileSystemDirectoryData | FileSystemFileData>;
+  createFileSystemDirectory(createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData>;
+  createFileSystemFile(createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData>;
+  getFileSystemObject(fileSystemObjectId: string, projectId?: string): Promise<AnyFileSystemObjectData>;
+  getFileSystemObjects(getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]>;
 }

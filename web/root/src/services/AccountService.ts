@@ -1,10 +1,13 @@
+import Batcher from '@/collections/Batcher';
 import BaseService from '@/services/BaseService';
 import { type IAccountService } from '@interfaces/services/IAccountService';
-import { AccountSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
+import { AccountSchema, GetAccountsSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
 export default class AccountService extends BaseService implements IAccountService {
+
+  private _batcher = new Batcher<string, AccountData>(this.onFetch);
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/accounts`;
@@ -22,7 +25,8 @@ export default class AccountService extends BaseService implements IAccountServi
   }
 
   public getAccount(accountId: string): Promise<AccountData> {
-    return this.get<AccountData>({ schema: AccountSchema, url: `/${accountId}` });
+    return this._batcher.request(accountId);
+    // return this.get<AccountData>({ schema: AccountSchema, url: `/${accountId}` });
   }
 
   public getAccounts(getAccountsData: GetAccountsData): Promise<AccountData[]> {
@@ -34,6 +38,13 @@ export default class AccountService extends BaseService implements IAccountServi
       return Promise.reject();
 
     return this.put<AccountData>({ schema: AccountSchema, url: `/${this.user.account.id}`, data: updateAccountData });
+  }
+
+  private async onFetch(ids: string[]): Promise<Map<string, AccountData>> {
+    const getAccountsData = await GetAccountsSchema.parseAsync({ ids });
+    const accountsData = await this.getAccounts(getAccountsData);
+    const accountsEntries = accountsData.map((accountData: AccountData): [string, AccountData] => [ accountData.id, accountData ]);
+    return new Map(accountsEntries);
   }
 
 }

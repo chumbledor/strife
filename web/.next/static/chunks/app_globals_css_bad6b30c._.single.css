@@ -398,6 +398,10 @@
     display: flex;
   }
 
+  .rotate-90 {
+    rotate: 90deg;
+  }
+
   .text-center {
     text-align: center;
   }
