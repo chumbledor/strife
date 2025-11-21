@@ -9,7 +9,7 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fa
 import { injectable } from 'inversify';
 
 @injectable()
-export default class AccountRouter extends BaseRouter implements IAccountRouter {
+export class AccountRouter extends BaseRouter implements IAccountRouter {
 
   protected override get prefix(): string | undefined {
     return 'accounts';
@@ -64,3 +64,5 @@ export default class AccountRouter extends BaseRouter implements IAccountRouter 
   }
 
 }
+
+export default AccountRouter;

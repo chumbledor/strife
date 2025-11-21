@@ -151,6 +151,7 @@ class BaseService {
         };
         options.init.method = 'GET';
         const searchParams = new URLSearchParams(options.data);
+        console.log(searchParams.toString());
         options.url = searchParams.size == 0 ? options.url : `${options.url}?${searchParams.toString()}`;
         return this.fetch(options);
     }
@@ -559,9 +560,9 @@ class Batcher {
         const valuesByKey = await this._onFetch([
             ...keys
         ]);
-        valuesByKey.forEach(this.resolve);
+        valuesByKey.forEach(this.resolve.bind(this));
         const rejects = keys.filter((key)=>!valuesByKey.has(key));
-        rejects.forEach(this.reject);
+        rejects.forEach(this.reject.bind(this));
     }
     resolve(value, key) {
         const promiseExecutorDatas = this._promiseExecutorDatasByKey.get(key);

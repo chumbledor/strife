@@ -8,7 +8,7 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fa
 import { injectable } from 'inversify';
 
 @injectable()
-export default class ProjectRouter extends BaseRouter implements IProjectRouter {
+export class ProjectRouter extends BaseRouter implements IProjectRouter {
 
   protected override get prefix(): string | undefined {
     return 'projects';
@@ -58,3 +58,5 @@ export default class ProjectRouter extends BaseRouter implements IProjectRouter 
   }
 
 }
+
+export default ProjectRouter;

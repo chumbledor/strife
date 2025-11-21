@@ -5,7 +5,7 @@ import { type IBaseController } from '@interfaces/controllers/IBaseController.js
 import { type INoSQL } from '@interfaces/INoSQL.js';
 import { type ISQL } from '@interfaces/ISQL.js';
 
-export default abstract class BaseController implements IBaseController {
+export abstract class BaseController implements IBaseController {
 
   private _sql!: ISQL;
   protected get sql(): ISQL {
@@ -23,3 +23,5 @@ export default abstract class BaseController implements IBaseController {
   }
 
 }
+
+export default BaseController;

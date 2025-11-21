@@ -13,7 +13,7 @@ declare module 'fastify' {
 }
 
 @injectable()
-export default class App implements IApp {
+export class App implements IApp {
 
   private _instance!: FastifyInstance;
   public get instance(): FastifyInstance {
@@ -71,3 +71,5 @@ export default class App implements IApp {
   }
 
 }
+
+export default App;

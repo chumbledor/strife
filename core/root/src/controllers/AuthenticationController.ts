@@ -3,13 +3,13 @@ import di from '@/DependencyInjection.js';
 import { AppServiceId } from '@/di/AppInjector.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import { AuthenticationLoginInvalidEmailOrPasswordError, AuthenticationRefreshInvalidRefreshTokenError } from '@/errors/authentication.js';
-import { IAuthenticationController } from '@interfaces/controllers/IAuthenticationController.js';
+import { type IAuthenticationController } from '@interfaces/controllers/IAuthenticationController.js';
 import { type IUser } from "@interfaces/IUser.js";
 import { AccountSchema, type AccountData, type LoginAuthenticationData, type UpdateAuthenticationData } from '@strife/common';
 import { injectable } from "inversify";
 
 @injectable()
-export default class AuthenticationController extends BaseController implements IAuthenticationController {
+export class AuthenticationController extends BaseController implements IAuthenticationController {
 
   public async login(loginAuthenticationData: LoginAuthenticationData): Promise<AccountData> {
     const accountEntity = await this.sql.authentication.getEntityManager().findOneOrFail(
@@ -77,3 +77,5 @@ export default class AuthenticationController extends BaseController implements 
   }
   
 }
+
+export default AuthenticationController;

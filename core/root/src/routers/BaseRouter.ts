@@ -2,7 +2,7 @@ import { type IApp } from '@interfaces/IApp.js';
 import { type IBaseRouter } from '@interfaces/routers/IBaseRouter.js';
 import { type FastifyInstance } from 'fastify';
 
-export default abstract class BaseRouter implements IBaseRouter {
+export abstract class BaseRouter implements IBaseRouter {
 
   public async register(app: IApp): Promise<void> {
     await app.instance.register(this.routes.bind(this), { prefix: this.prefix });
@@ -15,3 +15,5 @@ export default abstract class BaseRouter implements IBaseRouter {
   protected async routes(instance: FastifyInstance): Promise<void> {}
 
 }
+
+export default BaseRouter;

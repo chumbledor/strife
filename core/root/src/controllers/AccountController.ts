@@ -10,7 +10,7 @@ import { AccountSchema, type AccountData, type CreateAccountData, type GetAccoun
 import { injectable } from 'inversify';
 
 @injectable()
-export default class AccountController extends BaseController implements IAccountController {
+export class AccountController extends BaseController implements IAccountController {
 
   public async existsAccount(where: QBFilterQuery<IAccountEntity>): Promise<boolean> {
     const count = await this.sql.account.qb()
@@ -81,3 +81,5 @@ export default class AccountController extends BaseController implements IAccoun
   }
 
 }
+
+export default AccountController;

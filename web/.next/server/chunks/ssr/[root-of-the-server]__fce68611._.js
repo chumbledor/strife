@@ -217,6 +217,7 @@ class BaseService {
         };
         options.init.method = 'GET';
         const searchParams = new URLSearchParams(options.data);
+        console.log(searchParams.toString());
         options.url = searchParams.size == 0 ? options.url : `${options.url}?${searchParams.toString()}`;
         return this.fetch(options);
     }

@@ -6,10 +6,10 @@ import mongoose from 'mongoose';
 
 export interface IFileSystemController extends IBaseController {
   existsFileSystemObject(query: mongoose.FilterQuery<IFileSystemObject>): Promise<boolean>;
-  createFileSystemObject(user: IUser, createFileSystemObjectData: CreateFileSystemObjectData): Promise<AnyFileSystemObjectData>;
-  createFileSystemDirectory(user: IUser, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData>;
-  createFileSystemFile(user: IUser, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData>;
-  deleteFileSystemObject(user: IUser, fileSystemObjectId: string): Promise<void>;
-  getFileSystemObject(user: IUser, fileSystemObjectId: string): Promise<AnyFileSystemObjectData>;
-  getFileSystemObjects(user: IUser, getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]>
+  createFileSystemObject(user: IUser, fileSystemId: string, createFileSystemObjectData: CreateFileSystemObjectData): Promise<AnyFileSystemObjectData>;
+  createFileSystemDirectory(user: IUser, fileSystemId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData>;
+  createFileSystemFile(user: IUser, fileSystemId: string, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData>;
+  deleteFileSystemObject(user: IUser, fileSystemId: string, fileSystemObjectId: string): Promise<void>;
+  getFileSystemObject(user: IUser, fileSystemId: string, fileSystemObjectId: string): Promise<AnyFileSystemObjectData>;
+  getFileSystemObjects(user: IUser, fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]>
 }

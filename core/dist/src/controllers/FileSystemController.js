@@ -7,9 +7,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import BaseController from '../controllers/BaseController.js';
 import FileSystemDirectoryModel from '../models/FileSystemDirectoryModel.js';
 import FileSystemFileModel from '../models/FileSystemFileModel.js';
-import { Algorithms, CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, FileSystemDirectorySchema, FileSystemFileSchema, FileSystemObjectType } from '@strife/common';
+import { CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, FileSystemDirectorySchema, FileSystemFileSchema, FileSystemObjectType } from '@strife/common';
 import { injectable } from 'inversify';
-import mongoose from 'mongoose';
 let FileSystemController = class FileSystemController extends BaseController {
     async existsFileSystemObject(query) {
         query = {
@@ -32,17 +31,11 @@ let FileSystemController = class FileSystemController extends BaseController {
         return Promise.reject();
     }
     async createFileSystemDirectory(user, createFileSystemDirectoryData) {
-        try {
-            await this.sql.project.findOneOrFail({ account: user.account, id: createFileSystemDirectoryData.projectId });
-        }
-        catch (error) {
-            return Promise.reject();
-        }
-        const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemDirectoryData.parentId, projectId: createFileSystemDirectoryData.projectId });
+        const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemDirectoryData.parentId });
         if (!parentFileSystemDirectory)
             return Promise.reject();
         const fileSystemDirectory = new this.nosql.fileSystemDirectory({
-            projectId: createFileSystemDirectoryData.projectId,
+            projectId: '',
             parentId: createFileSystemDirectoryData.parentId,
             name: createFileSystemDirectoryData.name
         });
@@ -52,17 +45,11 @@ let FileSystemController = class FileSystemController extends BaseController {
         return await FileSystemDirectorySchema.parseAsync(fileSystemDirectory);
     }
     async createFileSystemFile(user, createFileSystemFileData) {
-        try {
-            await this.sql.project.findOneOrFail({ account: user.account, id: createFileSystemFileData.projectId });
-        }
-        catch (error) {
-            return Promise.reject();
-        }
-        const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemFileData.parentId, projectId: createFileSystemFileData.projectId });
+        const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemFileData.parentId });
         if (!parentFileSystemDirectory)
             return Promise.reject();
         const fileSystemFile = new this.nosql.fileSystemFile({
-            projectId: createFileSystemFileData.projectId,
+            projectId: '',
             parentId: createFileSystemFileData.parentId,
             name: createFileSystemFileData.name,
             size: createFileSystemFileData.size,
@@ -77,15 +64,11 @@ let FileSystemController = class FileSystemController extends BaseController {
         const fileSystemObject = await this.nosql.fileSystemObject.findOne({ id: fileSystemObjectId });
         if (!fileSystemObject)
             return Promise.reject();
-        if (await fileSystemObject.hasPermission(user))
-            return Promise.reject();
         await fileSystemObject.deleteOne();
     }
     async getFileSystemObject(user, fileSystemObjectId) {
         const fileSystemObject = await this.nosql.fileSystemObject.findOne({ id: fileSystemObjectId });
         if (!fileSystemObject)
-            return Promise.reject();
-        if (await fileSystemObject.hasPermission(user))
             return Promise.reject();
         if (fileSystemObject instanceof FileSystemDirectoryModel)
             return FileSystemDirectorySchema.parseAsync(fileSystemObject);
@@ -95,22 +78,11 @@ let FileSystemController = class FileSystemController extends BaseController {
     }
     async getFileSystemObjects(user, getFileSystemObjectsData) {
         // If we specified a projectId in the data, verify that the user has permission to view file system objects from that project
-        if (getFileSystemObjectsData.projectId) {
-            try {
-                await this.sql.project.findOneOrFail({ account: user.account, id: getFileSystemObjectsData.projectId });
-            }
-            catch (error) {
-                return Promise.reject();
-            }
-        }
         const query = {};
-        if (getFileSystemObjectsData.projectId) {
-            query.projectId = getFileSystemObjectsData.projectId;
-        }
         console.log(`\n${JSON.stringify(getFileSystemObjectsData.ids)}\n`);
         if (getFileSystemObjectsData.ids) {
             query._id = {
-                $in: getFileSystemObjectsData.ids.map((id) => new mongoose.Types.ObjectId(id))
+                $in: getFileSystemObjectsData.ids
             };
         }
         if (getFileSystemObjectsData.parentId) {
@@ -125,11 +97,6 @@ let FileSystemController = class FileSystemController extends BaseController {
         let fileSystemObjects = await this.nosql.fileSystemObject.find(query)
             .skip(getFileSystemObjectsData.skip)
             .limit(getFileSystemObjectsData.take);
-        // If we did not specify a projectId in the data, verify that the user has permission to view each file system object
-        // WARNING: This could be very expensive
-        if (!getFileSystemObjectsData.projectId) {
-            fileSystemObjects = await Algorithms.filterAsync(fileSystemObjects, (fileSystemObject) => fileSystemObject.hasPermission(user));
-        }
         const promises = fileSystemObjects.map(async (fileSystemObject) => {
             if (fileSystemObject.type == FileSystemObjectType.Directory)
                 return FileSystemDirectorySchema.parseAsync(fileSystemObject);
