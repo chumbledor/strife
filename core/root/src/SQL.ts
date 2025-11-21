@@ -2,10 +2,12 @@ import di from '@/DependencyInjection.js';
 import { AppServiceId } from '@/di/AppInjector.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import AuthenticationEntity from '@/entities/Authentication.entity.js';
+import FileSystemEntity from '@root/src/entities/FileSystem.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
-import config from '@config/mikro-orm.config.js';
+import config from 'mikro-orm.config.js';
 import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
 import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
+import { type IFileSystemEntity } from '@interfaces/entities/IFileSystem.entity.js';
 import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
 import { type IApp } from '@interfaces/IApp.js';
 import { type ISQL } from '@interfaces/ISQL.js';
@@ -15,7 +17,7 @@ import { type FastifyReply, type FastifyRequest, type HookHandlerDoneFunction } 
 import { injectable } from 'inversify';
 
 @injectable()
-export default class SQL implements ISQL {
+export class SQL implements ISQL {
 
   private _orm!: MikroORM;
   public get orm(): MikroORM {
@@ -37,6 +39,11 @@ export default class SQL implements ISQL {
     return this._project;
   }
 
+  private _fileSystem!: SqlEntityRepository<IFileSystemEntity>;
+  public get fileSystem(): SqlEntityRepository<IFileSystemEntity> {
+    return this._fileSystem;
+  }
+
   private _app!: IApp;
   
   public async initialize(): Promise<void> {
@@ -44,6 +51,7 @@ export default class SQL implements ISQL {
     this._account = this._orm.em.getRepository(AccountEntity),
     this._authentication = this._orm.em.getRepository(AuthenticationEntity),
     this._project = this._orm.em.getRepository(ProjectEntity)
+    this._fileSystem = this._orm.em.getRepository(FileSystemEntity);
 
     this._app = await di.getAsync(AppServiceId);
 
@@ -72,3 +80,5 @@ export default class SQL implements ISQL {
   }
 
 }
+
+export default SQL;

@@ -1,16 +1,15 @@
 import di from '@/DependencyInjection.js';
+import { AuthenticationControllerServiceId } from '@/di/controllers/AuthenticationControllerInjector.js';
 import { AuthenticationLogoutError, AuthenticationRefreshInvalidRefreshTokenError, AuthenticationUpdateUnauthorizedError } from '@/errors/authentication.js';
 import BaseRouter from '@/routers/BaseRouter.js';
-import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
-import { AuthenticationControllerServiceId } from '@/di/controllers/AuthenticationControllerInjector.js';
 import { type IUser } from '@interfaces/IUser.js';
 import { type IAuthenticationRouter } from '@interfaces/routers/IAuthenticationRouter.js';
-import { AccountIdSchema, AccountSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema, type AccountData } from '@strife/common';
+import { AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema, type AccountData } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-export default class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
+export class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
 
   protected override get prefix(): string | undefined {
     return 'authentication';
@@ -82,3 +81,5 @@ export default class AuthenticationRouter extends BaseRouter implements IAuthent
   // }
 
 }
+
+export default AuthenticationRouter;

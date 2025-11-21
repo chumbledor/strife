@@ -1,11 +1,11 @@
-import di from './src/DependencyInjection.js';
-import { NoSQLServiceId } from './src/di/NoSQLInjector.js';
-import { AppServiceId } from './src/di/AppInjector.js';
-import { SQLServiceId } from './src/di/SQLInjector.js';
-import { AccountRouterServiceId } from './src/di/routers/AccountRouterInjector.js';
-import { AuthenticationRouterServiceId } from './src/di/routers/AuthenticationRouterInjector.js';
-import { FileSystemRouterServiceId } from './src/di/routers/FileSystemRouterInjector.js';
-import { ProjectRouterServiceId } from './src/di/routers/ProjectRouterInjector.js';
+import di from '@/DependencyInjection.js';
+import { NoSQLServiceId } from '@/di//NoSQLInjector.js';
+import { AppServiceId } from '@/di/AppInjector.js';
+import { SQLServiceId } from '@/di/SQLInjector.js';
+import { AccountRouterServiceId } from '@/di/routers/AccountRouterInjector.js';
+import { AuthenticationRouterServiceId } from '@/di/routers/AuthenticationRouterInjector.js';
+import { FileSystemRouterServiceId } from '@/di/routers/FileSystemRouterInjector.js';
+import { ProjectRouterServiceId } from '@/di/routers/ProjectRouterInjector.js';
 const host = process.env.APP_HOST ?? '0.0.0.0';
 const port = process.env.APP_PORT
     ? Number.parseInt(process.env.APP_PORT)

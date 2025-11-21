@@ -1,4 +1,5 @@
 import BaseController from '@/controllers/BaseController.js';
+import FileSystemEntity from '@root/src/entities/FileSystem.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
 import { ProjectCreateNameInUseError, ProjectDeleteUnauthorizedError, ProjectUpdateUnauthorizedError } from '@/errors/project.js';
 import { type IProjectController } from '@interfaces/controllers/IProjectController.js';
@@ -9,7 +10,7 @@ import { ProjectSchema, type CreateProjectData, type GetProjectsData, type Proje
 import { injectable } from 'inversify';
 
 @injectable()
-export default class ProjectController extends BaseController implements IProjectController {
+export class ProjectController extends BaseController implements IProjectController {
 
   async existsProject(where: QBFilterQuery<ProjectData>): Promise<boolean> {
     const count = await this.sql.project.qb()
@@ -24,7 +25,10 @@ export default class ProjectController extends BaseController implements IProjec
       return Promise.reject(ProjectCreateNameInUseError);
 
     const projectEntity = new ProjectEntity();
+    const fileSystemEntity = new FileSystemEntity();
+
     projectEntity.account = user.account;
+    projectEntity.fileSystem = fileSystemEntity;
     projectEntity.name = createProjectData.name;
     projectEntity.description = createProjectData.description;
 
@@ -77,3 +81,5 @@ export default class ProjectController extends BaseController implements IProjec
   }  
 
 }
+
+export default ProjectController;

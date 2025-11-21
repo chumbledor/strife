@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "baseUrl": "root",
-    "rootDir": "root",
+    "baseUrl": ".",
+    "rootDir": ".",
     "outDir": "dist",
     "incremental": true,
     "experimentalDecorators": true,
@@ -18,13 +18,13 @@
     "declaration": true,
     "types": ["node"],
     "paths": {
-      "@root/*": ["./*"],
-      "@interfaces/*": ["./interfaces/*"],
-      "@/*": ["./src/*"],
-      "@lib/*": ["./lib/*"],
-      "@config/*": ["./config/*"]
+      "@root/*": ["root/*"],
+      "@interfaces/*": ["root/interfaces/*"],
+      "@/*": ["root/src/*"],
+      "@lib/*": ["root/lib/*"],
+      "@config/*": ["root/config/*"]
     }
   },
-  "include": ["root/**/*.ts"],
+  "include": ["root/**/*.ts", "mikro-orm.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

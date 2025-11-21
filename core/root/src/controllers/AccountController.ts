@@ -4,13 +4,13 @@ import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import { AccountCreateEmailInUseError, AccountCreateUsernameInUseError } from '@/errors/account.js';
 import { type IAccountController } from '@interfaces/controllers/IAccountController.js';
 import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
-import { type FilterQuery, type QBFilterQuery } from '@mikro-orm/core';
 import { type IUser } from '@interfaces/IUser.js';
+import { type FilterQuery, type QBFilterQuery } from '@mikro-orm/core';
 import { AccountSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export default class AccountController extends BaseController implements IAccountController {
+export class AccountController extends BaseController implements IAccountController {
 
   public async existsAccount(where: QBFilterQuery<IAccountEntity>): Promise<boolean> {
     const count = await this.sql.account.qb()
@@ -81,3 +81,5 @@ export default class AccountController extends BaseController implements IAccoun
   }
 
 }
+
+export default AccountController;

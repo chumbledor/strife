@@ -9,7 +9,7 @@ import { AccountSchema, type AccountData, type LoginAuthenticationData, type Upd
 import { injectable } from "inversify";
 
 @injectable()
-export default class AuthenticationController extends BaseController implements IAuthenticationController {
+export class AuthenticationController extends BaseController implements IAuthenticationController {
 
   public async login(loginAuthenticationData: LoginAuthenticationData): Promise<AccountData> {
     const accountEntity = await this.sql.authentication.getEntityManager().findOneOrFail(
@@ -77,3 +77,5 @@ export default class AuthenticationController extends BaseController implements 
   }
   
 }
+
+export default AuthenticationController;

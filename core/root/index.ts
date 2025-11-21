@@ -13,8 +13,8 @@ const port = process.env.APP_PORT
   : 3000;
 
 const app = await di.getAsync(AppServiceId);
-  const sql = await di.getAsync(SQLServiceId);
-  const nosql = await di.getAsync(NoSQLServiceId);
+const sql = await di.getAsync(SQLServiceId);
+const nosql = await di.getAsync(NoSQLServiceId);
 
 const accountRouter = await di.getAsync(AccountRouterServiceId);
 await accountRouter.register(app);

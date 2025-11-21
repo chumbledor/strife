@@ -5,7 +5,7 @@ import { BeforeCreate, BeforeUpdate, Entity, OneToOne, Property, type EventArgs 
 import { hash, verify } from 'argon2';
 
 @Entity()
-export default class AuthenticationEntity extends BaseEntity implements IAuthenticationEntity {
+export class AuthenticationEntity extends BaseEntity implements IAuthenticationEntity {
 
   @OneToOne({ primary: true })
   public account!: AccountEntity;
@@ -34,3 +34,5 @@ export default class AuthenticationEntity extends BaseEntity implements IAuthent
   }
 
 }
+
+export default AuthenticationEntity;

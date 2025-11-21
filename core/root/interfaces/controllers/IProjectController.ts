@@ -1,7 +1,7 @@
 import { type IBaseController } from '@interfaces/controllers/IBaseController.js';
 import { type IUser } from '@interfaces/IUser.js';
 import { type QBFilterQuery } from '@mikro-orm/core';
-import { ProjectData, type CreateProjectData, type GetProjectsData, type UpdateProjectData } from '@strife/common';
+import { type CreateProjectData, type GetProjectsData, type ProjectData, type UpdateProjectData } from '@strife/common';
 
 export interface IProjectController extends IBaseController {
   existsProject(where: QBFilterQuery<ProjectData>): Promise<boolean>;

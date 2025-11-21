@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 const FileSystemBucketName = 'file_system';
 
 @injectable()
-export default class NoSQL implements INoSQL {
+export class NoSQL implements INoSQL {
 
   private _odm!: mongoose.Mongoose;
   public get odm(): mongoose.Mongoose {
@@ -63,3 +63,5 @@ export default class NoSQL implements INoSQL {
   public async update(): Promise<void> {}
 
 }
+
+export default NoSQL;

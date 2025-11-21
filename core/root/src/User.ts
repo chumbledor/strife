@@ -3,7 +3,7 @@ import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
 import { SQLServiceId } from '@/di/SQLInjector.js';
 import di from '@/DependencyInjection.js';
 
-export default class User implements IUser {
+export class User implements IUser {
 
   public static async from(accountId: string): Promise<IUser> {
     const user = new User();
@@ -28,3 +28,5 @@ export default class User implements IUser {
   }
 
 }
+
+export default User;
