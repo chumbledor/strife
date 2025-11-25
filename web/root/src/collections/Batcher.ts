@@ -1,9 +1,14 @@
+import { type IBatcher } from '@interfaces/collections/IBatcher';
+
+// TODO: Clear map after resolving?
+// TODO: Hold one promise per key and just return that for each thing that requests it?
+
 interface PromiseExecutorData<TValue> {
   resolve: (value: TValue | PromiseLike<TValue>) => void;
   reject: (error?: any) => void;
 }
 
-export default class Batcher<TKey, TValue> {
+export class Batcher<TKey, TValue> implements IBatcher<TKey, TValue> {
 
   private _onFetch: (keys: TKey[]) => Promise<Map<TKey, TValue>>;
   private _time: number;
@@ -16,7 +21,7 @@ export default class Batcher<TKey, TValue> {
     this._time = time;
   }
 
-  public request(key: TKey): Promise<TValue> {
+  public async request(key: TKey): Promise<TValue> {
     const self = this;
 
     const promise = new Promise(executor);
@@ -85,3 +90,5 @@ export default class Batcher<TKey, TValue> {
   }
 
 }
+
+export default Batcher;

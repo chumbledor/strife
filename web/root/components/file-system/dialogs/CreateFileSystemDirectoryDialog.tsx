@@ -1,17 +1,14 @@
-'use client'
-
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Input, InputLabel, type DialogProps } from '@mui/material';
 import { CreateFileSystemDirectorySchema, FileSystemObjectType, type CreateFileSystemDirectoryData } from '@strife/common';
 import React from 'react';
 
 export interface CreateFileSystemDialogProps extends DialogProps {
-  projectId: string,
   parentId: string,
   onCancel?: () => void;
   onCreate?: (createFileSystemDirectoryData: CreateFileSystemDirectoryData) => void;
 }
 
-export default function CreateFileSystemDialog({ projectId, parentId, onCancel, onCreate, ...dialogProps }: CreateFileSystemDialogProps): React.JSX.Element {  
+export default function CreateFileSystemDialog({ parentId, onCancel, onCreate, ...dialogProps }: CreateFileSystemDialogProps): React.JSX.Element {  
   const [ name, setName ] = React.useState('');
   const [ nameError, setNameError ] = React.useState<string | undefined>();
   
@@ -50,7 +47,6 @@ export default function CreateFileSystemDialog({ projectId, parentId, onCancel, 
       return;
 
     const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync({
-      projectId,
       parentId,
       fileSystemObjectType: FileSystemObjectType.Directory,
       name

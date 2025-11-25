@@ -1,12 +1,11 @@
-import di from '@/DependencyInjection';
 import QueueManager from '@/managers/QueueManager';
-import { ToastQueueManagerServiceId, type IToastData, type IToastQueueManager } from '@interfaces/managers/IToastQueueManager';
+import { type IToastData, type IToastQueueManager } from '@interfaces/managers/IToastQueueManager';
 import { type SnackbarCloseReason } from '@mui/material';
 import { injectable } from 'inversify';
 import { type SyntheticEvent } from 'react';
 
 @injectable()
-class ToastQueueManager extends QueueManager<IToastData> implements IToastQueueManager {
+export class ToastQueueManager extends QueueManager<IToastData> implements IToastQueueManager {
 
   protected configure(item: IToastData): void {
     const onClose = item.onClose;
@@ -30,4 +29,4 @@ class ToastQueueManager extends QueueManager<IToastData> implements IToastQueueM
 
 }
 
-di.bind(ToastQueueManagerServiceId).to(ToastQueueManager).inSingletonScope();
+export default ToastQueueManager;

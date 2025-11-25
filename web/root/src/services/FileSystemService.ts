@@ -5,58 +5,57 @@ import { AnyFileSystemObjectSchema, FileSystemDirectorySchema, FileSystemFileSch
 import { injectable } from 'inversify';
 
 @injectable()
-export default class FileSystemService extends BaseService implements IFileSystemService {
+export class FileSystemService extends BaseService implements IFileSystemService {
 
   private _batchersByProjectId = new Map<string, Batcher<string, AnyFileSystemObjectData>>();
 
   protected override get baseUrl(): string | URL | undefined {
-    return `http://localhost:3000/fs`;
+    return `http://localhost:3000/filesystems`;
   }
   
-  public createFileSystemDirectory(createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData> {
-    if (!this.user.account)
+  public createFileSystemDirectory(fileSystemId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData> {
+    if (!this.user.accountData)
       return Promise.reject();
 
-    return this.post<FileSystemDirectoryData>({ schema: FileSystemDirectorySchema, data: createFileSystemDirectoryData });
+    return this.post<FileSystemDirectoryData>({ schema: FileSystemDirectorySchema, url: `/${fileSystemId}/objects`, data: createFileSystemDirectoryData });
   }
   
-  public createFileSystemFile(createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData> {
-    if (!this.user.account)
+  public createFileSystemFile(fileSystemId: string, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData> {
+    if (!this.user.accountData)
       return Promise.reject();
 
-    return this.post<FileSystemFileData>({ schema: FileSystemFileSchema, data: createFileSystemFileData });
+    return this.post<FileSystemFileData>({ schema: FileSystemFileSchema, url: `/${fileSystemId}/objects`, data: createFileSystemFileData });
   }
   
-  public async getFileSystemObject(fileSystemObjectId: string, projectId?: string): Promise<AnyFileSystemObjectData> {
+  public async getFileSystemObject(fileSystemId: string, fileSystemObjectId: string): Promise<AnyFileSystemObjectData> {
     const self = this;
 
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
-    
-    if (!projectId)
-      return this.get<AnyFileSystemObjectData>({ schema: AnyFileSystemObjectSchema, url: `/${fileSystemObjectId}` });
-    
-    let batcher = this._batchersByProjectId.get(projectId);
+
+    let batcher = this._batchersByProjectId.get(fileSystemId);
     if (!batcher) {
       batcher = new Batcher<string, AnyFileSystemObjectData>(onFetch);
-      this._batchersByProjectId.set(projectId, batcher);
+      this._batchersByProjectId.set(fileSystemId, batcher);
     }
 
     return batcher.request(fileSystemObjectId);
 
     async function onFetch(ids: string[]): Promise<Map<string, AnyFileSystemObjectData>> {
-      const getAccountsData = await GetFileSystemObjectsSchema.parseAsync({ projectId, ids });
-      const anyFileSystemObjectsData = await self.getFileSystemObjects(getAccountsData);
+      const getAccountsData = await GetFileSystemObjectsSchema.parseAsync({ ids });
+      const anyFileSystemObjectsData = await self.getFileSystemObjects(fileSystemId, getAccountsData);
       const anyFileSystemObjectEntries = anyFileSystemObjectsData.map((accountData: AnyFileSystemObjectData): [string, AnyFileSystemObjectData] => [ accountData.id, accountData ]);
       return new Map(anyFileSystemObjectEntries);
     }
   }
 
-  public async getFileSystemObjects(getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]> {
-    if (!this.user.account)
+  public async getFileSystemObjects(fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]> {
+    if (!this.user.accountData)
       return Promise.reject();
 
-    return await this.get<AnyFileSystemObjectData[]>({ schema: AnyFileSystemObjectSchema.array(), data: getFileSystemObjectsData });
+    return await this.get<AnyFileSystemObjectData[]>({ schema: AnyFileSystemObjectSchema.array(), url: `/${fileSystemId}/objects`, data: getFileSystemObjectsData });
   }
 
 }
+
+export default FileSystemService;

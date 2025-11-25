@@ -16,10 +16,10 @@ export class FileSystemRouter extends BaseRouter implements IFileSystemRouter {
 
   public override async routes(instance: FastifyInstance): Promise<void> {
     super.routes(instance);
-    instance.post('/:fileSystemId', { onRequest: [ instance.authenticate ] }, this.createFileSystemObject.bind(this));
+    instance.post('/:fileSystemId/objects', { onRequest: [ instance.authenticate ] }, this.createFileSystemObject.bind(this));
     instance.delete('/:fileSystemId/objects/:fileSystemObjectId', { onRequest: [ instance.authenticate ] }, this.deleteFileSystemObject.bind(this));
     instance.get('/:fileSystemId/objects/:fileSystemObjectId', { onRequest: [ instance.authenticate ] }, this.getFileSystemObject.bind(this));
-    instance.get('/:fileSystemId', { onRequest: [ instance.authenticate ] }, this.getFileSystemObjects.bind(this));
+    instance.get('/:fileSystemId/objects', { onRequest: [ instance.authenticate ] }, this.getFileSystemObjects.bind(this));
   }
 
   private async createFileSystemObject(request: FastifyRequest, reply: FastifyReply): Promise<AnyFileSystemObjectData> {

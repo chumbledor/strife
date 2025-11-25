@@ -10,7 +10,7 @@ const DefaultEmpty =
     <ListItemText>There are no items to display here.</ListItemText>
   </ListItem>;
 
-interface ProjectListOwnProps<TProjectListItemComponent extends React.ElementType = typeof ListItem> extends ListProps {
+interface ProjectListProps extends ListProps {
   title: string,
   projects: ProjectData[],
   actions?: React.ReactNode,
@@ -18,7 +18,7 @@ interface ProjectListOwnProps<TProjectListItemComponent extends React.ElementTyp
   listItemPropsCallback?: (projectData: ProjectData, index: number) => ListItemProps;
 }
 
-export default function ProjectList({ title, projects, actions, empty, listItemPropsCallback, ...listProps }: ProjectListOwnProps): React.JSX.Element {
+export default function ProjectList({ title, projects, actions, empty, listItemPropsCallback, ...listProps }: ProjectListProps): React.JSX.Element {
   const projectListItems = projects.map(
     (projectData: ProjectData, index: number): React.JSX.Element => {
       const listItemProps = listItemPropsCallback

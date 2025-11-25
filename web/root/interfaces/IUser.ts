@@ -1,7 +1,7 @@
 import type { AccountData } from '@strife/common';
 
 export interface IUser {
-  account?: AccountData;
+  accountData?: AccountData;
   login(accountData: AccountData): void;
   logout(): void;
 }

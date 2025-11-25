@@ -4,7 +4,7 @@ import { ProjectSchema, type CreateProjectData, type GetProjectsData, type Proje
 import { injectable } from 'inversify';
 
 @injectable()
-export default class ProjectService extends BaseService implements IProjectService {
+export class ProjectService extends BaseService implements IProjectService {
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/projects`;
@@ -15,7 +15,7 @@ export default class ProjectService extends BaseService implements IProjectServi
   }
 
   public deleteProject(projectId: string): Promise<void> {
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
 
     return this.delete({ url: `/${projectId}` });
@@ -30,10 +30,12 @@ export default class ProjectService extends BaseService implements IProjectServi
   }
 
   public updateProject(projectId: string, updateProjectData: UpdateProjectData): Promise<ProjectData> {
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
 
     return this.put<ProjectData>({ schema: ProjectSchema, url: `/${projectId}`, data: updateProjectData });
   }
 
 }
+
+export default ProjectService;

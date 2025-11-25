@@ -30,8 +30,9 @@ export default class FileSystemEntity extends UniqueEntity implements IFileSyste
   @BeforeCreate()
   public async createFileSystem(args: EventArgs<IFileSystemEntity>): Promise<void> {
     const nosql = await di.getAsync(NoSQLServiceId);
-    const rootfileSystemObject = new nosql.fileSystemDirectory({ FileSystemId: this.id, name: RootDirectoryName });
+    const rootfileSystemObject = new nosql.fileSystemDirectory({ fileSystemId: this.id, name: RootDirectoryName });
     await rootfileSystemObject.save();
+    console.log(`\n\n${this.id}\n\n`);
     this.rootFileSystemObjectId = rootfileSystemObject.id.toString();
   }
 

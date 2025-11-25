@@ -3,29 +3,28 @@
 import di from '@/DependencyInjection';
 import { AccountServiceServiceId } from '@/di/services/AccountServiceInjector';
 import { AuthenticationServiceServiceId } from '@/di/services/AuthenticationServiceInjector';
-import '@/services/AccountService';
-import '@/services/AuthenticationService';
 import Window from '@components/layout/Window';
 import Logo from '@components/Logo';
 import Page from '@components/page/Page';
 import { Alert, Box, Button, FormControl, FormHelperText, Input, InputLabel, Link } from '@mui/material';
 import { validateEmail, validatePassword, validateUsername } from '@strife/common';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, Fragment, JSX, useState } from 'react';
+import React from 'react';
 
 const DefaultRedirect = '/';
 
-export default function RegisterPage(): JSX.Element {
+export function RegisterPage(): React.JSX.Element {
+  
   const accountService = di.get(AccountServiceServiceId);
   const authenticationService = di.get(AuthenticationServiceServiceId);
   const router = useRouter();
-  const [ email, setEmail ] = useState('');
-  const [ emailError, setEmailError ] = useState<string | undefined>();
-  const [ username, setUsername ] = useState('');
-  const [ usernameError, setUsernameError ] = useState<string | undefined>();
-  const [ password, setPassword ] = useState('');
-  const [ passwordError, setPasswordError ] = useState<string | undefined>();
-  const [ error, setError ] = useState<string | undefined>();
+  const [ email, setEmail ] = React.useState('');
+  const [ emailError, setEmailError ] = React.useState<string | undefined>();
+  const [ username, setUsername ] = React.useState('');
+  const [ usernameError, setUsernameError ] = React.useState<string | undefined>();
+  const [ password, setPassword ] = React.useState('');
+  const [ passwordError, setPasswordError ] = React.useState<string | undefined>();
+  const [ error, setError ] = React.useState<string | undefined>();
 
   return <Page>
     <Window>
@@ -33,9 +32,9 @@ export default function RegisterPage(): JSX.Element {
         <Logo />
         <Box display='flex' flexDirection='column' gap='16px'>
           {
-            error == undefined
-              ? <Fragment />
-              : <Alert variant='filled' severity='error'>{error}</Alert>
+            error
+              ? <Alert variant='filled' severity='error'>{error}</Alert>
+              : undefined
           }
           <Box id='register-form' component='form' display='flex' flexDirection='column' gap='16px' paddingY='16px' onSubmit={onSubmitRegister}>
             <FormControl>
@@ -61,7 +60,7 @@ export default function RegisterPage(): JSX.Element {
     </Window>
   </Page>;
 
-  function onChangeEmail(event: ChangeEvent<HTMLInputElement>): void {
+  function onChangeEmail(event: React.ChangeEvent<HTMLInputElement>): void {
     const email = event.target.value;
     setEmail(email)
     const error = email.length == 0 
@@ -70,7 +69,7 @@ export default function RegisterPage(): JSX.Element {
     setEmailError(error ? error.message : undefined);
   }
 
-  function onChangeUsername(event: ChangeEvent<HTMLInputElement>): void {
+  function onChangeUsername(event: React.ChangeEvent<HTMLInputElement>): void {
     const username = event.target.value;
     setUsername(username)
     const error = username.length == 0
@@ -79,7 +78,7 @@ export default function RegisterPage(): JSX.Element {
     setUsernameError(error ? error.message : undefined);
   }
 
-  function onChangePassword(event: ChangeEvent<HTMLInputElement>): void {
+  function onChangePassword(event: React.ChangeEvent<HTMLInputElement>): void {
     const password = event.target.value;
     setPassword(password);
     const error = password.length == 0
@@ -123,3 +122,5 @@ export default function RegisterPage(): JSX.Element {
     router.push(DefaultRedirect);
   }
 }
+
+export default RegisterPage;

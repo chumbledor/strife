@@ -12,7 +12,8 @@ import { type CreateProjectData, type ProjectData } from '@strife/common';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-export default function HomePage(): React.JSX.Element {
+export function HomePage(): React.JSX.Element {
+  
   const user = di.get(UserServiceId);
   const projectService = di.get(ProjectServiceServiceId);
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function HomePage(): React.JSX.Element {
   }
 
   async function getProjects(): Promise<void> {
-    const projects = await projectService.getProjects({ account_id: user.account?.id });
+    const projects = await projectService.getProjects({ accountId: user.accountData?.id });
     setProjects(projects);
   }
 
@@ -93,4 +94,7 @@ export default function HomePage(): React.JSX.Element {
   function goToProjectPage(projectData: ProjectData): void {
     router.push(`/projects/${projectData.id}`);
   }
+
 }
+
+export default HomePage;

@@ -1,27 +1,23 @@
 import di from '@/DependencyInjection';
 import { UserServiceId } from '@/di/UserInjector';
 import { type IUser } from '@interfaces/IUser';
-import { type IBaseService, type ServiceOptions, type VoidServiceOptions } from '@interfaces/services/IBaseService';
+import { type BaseServiceOptions, type IBaseService, type ServiceOptions, type VoidServiceOptions } from '@interfaces/services/IBaseService';
 
-export default class BaseService implements IBaseService {
+export class BaseService implements IBaseService {
 
-  private static defaultOptions = {
+  private static defaultOptions: BaseServiceOptions = {
     url: ''
   };
 
-  private static defaultInit = {
+  private static defaultInit: RequestInit = {
     headers: { 'Content-Type': 'application/json' }
   };
 
   private static defaultBody = JSON.stringify({});
 
-  private _user: IUser;
+  private _user = di.get(UserServiceId);
   protected get user(): IUser {
     return this._user;
-  }
-
-  public constructor() {
-    this._user = di.get(UserServiceId);
   }
 
   protected get baseUrl(): string | URL | undefined {
@@ -62,7 +58,6 @@ export default class BaseService implements IBaseService {
     options.init = { ...BaseService.defaultInit, ...options.init };
     options.init.method = 'GET';
     const searchParams = new URLSearchParams(options.data);
-    console.log(searchParams.toString());
     options.url = searchParams.size == 0 
       ? options.url
       : `${options.url}?${searchParams.toString()}`;
@@ -83,21 +78,22 @@ export default class BaseService implements IBaseService {
   }
 
   private async fetch<TResponse>(options?: VoidServiceOptions | ServiceOptions<TResponse>): Promise<void | TResponse> {
+    const self = this;
     options = { ...BaseService.defaultOptions, ...options };
     options.data = this.filter(options.data);
     options.init = { ...BaseService.defaultInit, ...options.init };
-    if (this._user.account && this._user.account?.authentication?.accessToken) {
-      options.init.headers = { ...options.init.headers, ...{ 'Authorization': `Bearer ${this._user.account.authentication.accessToken}` } };
+    if (this._user.accountData && this._user.accountData?.authentication?.accessToken) {
+      options.init.headers = { ...options.init.headers, ...{ 'Authorization': `Bearer ${this._user.accountData.authentication.accessToken}` } };
     }
 
     const url = `${this.baseUrl}${options.url ? options.url : ''}`;
-
     const response = await fetch(url, options.init);
+
     if (!response.ok) {
       const json = await response.json();
       return Promise.reject(json.message);
     }
-
+    
     const typed = options as ServiceOptions<TResponse>;
     if (!typed.schema)
       return;
@@ -115,3 +111,5 @@ export default class BaseService implements IBaseService {
   }
 
 }
+
+export default BaseService;

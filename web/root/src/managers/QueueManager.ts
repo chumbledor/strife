@@ -2,7 +2,7 @@ import { type IQueueManager } from '@interfaces/managers/IQueueManager';
 import { IAction } from '@strife/common';
 import Queue from '@/collections/Queue';
 
-export default abstract class QueueManager<TItem> implements IQueueManager<TItem> {
+export abstract class QueueManager<TItem> implements IQueueManager<TItem> {
 
   private _version = 0;
   public get version(): number {
@@ -57,3 +57,5 @@ export default abstract class QueueManager<TItem> implements IQueueManager<TItem
   }
 
 }
+
+export default QueueManager;

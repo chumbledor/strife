@@ -16,6 +16,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@strife/common": "github:chumbledor/strife-common",
+    "@tanstack/react-query": "^5.90.10",
     "ace-builds": "^1.43.4",
     "gridstack": "^12.3.3",
     "interactjs": "^1.10.27",

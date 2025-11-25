@@ -4,14 +4,14 @@ import { AccountSchema, type AccountData, type LoginAuthenticationData, type Upd
 import { injectable } from 'inversify';
 
 @injectable()
-export default class AuthenticationService extends BaseService implements IAuthenticationService {
+export class AuthenticationService extends BaseService implements IAuthenticationService {
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/authentication`;
   }
 
   public async login(loginAuthenticationData: LoginAuthenticationData): Promise<AccountData> {
-    if (this.user.account)
+    if (this.user.accountData)
       return Promise.reject();
     
     const accountData = await this.post<AccountData>({ schema: AccountSchema, data: loginAuthenticationData });
@@ -20,18 +20,18 @@ export default class AuthenticationService extends BaseService implements IAuthe
   }
 
   public async logout(): Promise<void> {
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
 
     try {
-      await this.delete({ url: `/${this.user.account.id}` });
+      await this.delete({ url: `/${this.user.accountData.id}` });
     } finally {
       this.user.logout();
     }
   }
 
   public async refresh(): Promise<AccountData> {
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
 
     const accountData = await this.post<AccountData>({ schema: AccountSchema, url: '/refresh', init: { credentials: 'include' } });
@@ -40,10 +40,12 @@ export default class AuthenticationService extends BaseService implements IAuthe
   }
 
   public async updateAuthentication(updateAuthenticationData: UpdateAuthenticationData): Promise<AccountData> {
-    if (!this.user.account)
+    if (!this.user.accountData)
       return Promise.reject();
 
-    return this.put<AccountData>({ schema: AccountSchema, url: `/${this.user.account.id}`, data: updateAuthenticationData });
+    return this.put<AccountData>({ schema: AccountSchema, url: `/${this.user.accountData.id}`, data: updateAuthenticationData });
   }
 
 }
+
+export default AuthenticationService;

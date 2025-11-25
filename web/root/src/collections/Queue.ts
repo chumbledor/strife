@@ -1,7 +1,7 @@
 import { Action, type IAction } from '@strife/common';
 import { type IQueue } from '@interfaces/collections/IQueue';
 
-export default class Queue<TItem> implements IQueue<TItem> {
+export class Queue<TItem> implements IQueue<TItem> {
 
   public get head(): TItem | undefined {
     return this._items.at(0);
@@ -52,3 +52,5 @@ export default class Queue<TItem> implements IQueue<TItem> {
   }
 
 }
+
+export default Queue;

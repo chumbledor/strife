@@ -1,5 +1,3 @@
-'use client'
-
 import di from '@/DependencyInjection';
 import { AuthenticationServiceServiceId } from '@/di/services/AuthenticationServiceInjector';
 import { UserServiceId } from '@/di/UserInjector';
@@ -23,10 +21,10 @@ export default function PrimaryAppBar({ children, ...appBarProps }: PrimaryAppBa
       <Logo align='left' variant='h6' />
       <Box sx={{ flexGrow: 1 }}>{children}</Box>
       {
-        user && user.account
+        user && user.accountData
           ? <React.Fragment>
               <IconButton ref={userMenuAchorRef} onClick={onClickOpenUserMenu}>
-                <AccountAvatar accountData={user.account} />
+                <AccountAvatar accountData={user.accountData} />
               </IconButton>
               <Menu anchorEl={userMenuAchorRef.current} open={isUserMenuOpen} onClose={onCloseUserMenu}>
                 <MenuItem onClick={onClickLogout}>Logout</MenuItem>

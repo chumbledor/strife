@@ -8,17 +8,19 @@ import { Alert, Box, Button, FormControl, FormHelperText, Input, InputLabel, Lin
 import Page from '@root/components/page/Page';
 import { validateEmail, validatePassword } from '@strife/common';
 import { useRouter } from 'next/navigation';
-import { ChangeEvent, Fragment, JSX, useState } from 'react';
+import React from 'react';
 
 const DefaultRedirect = '/';
 
-export default function LoginPage(): JSX.Element {
+export function LoginPage(): React.JSX.Element {
+  
+  const authenticationService = di.get(AuthenticationServiceServiceId);
   const router = useRouter();
-  const [ email, setEmail ] = useState('');
-  const [ emailError, setEmailError ] = useState<string | undefined>();
-  const [ password, setPassword ] = useState('');
-  const [ passwordError, setPasswordError ] = useState<string | undefined>();
-  const [ error, setError ] = useState<string | undefined>();
+  const [ email, setEmail ] = React.useState('');
+  const [ emailError, setEmailError ] = React.useState<string | undefined>();
+  const [ password, setPassword ] = React.useState('');
+  const [ passwordError, setPasswordError ] = React.useState<string | undefined>();
+  const [ error, setError ] = React.useState<string | undefined>();
 
   return <Page>
     <Window>
@@ -26,9 +28,9 @@ export default function LoginPage(): JSX.Element {
         <Logo />
         <Box display='flex' flexDirection='column' gap='16px'>
           {
-            error == undefined
-              ? <Fragment />
-              : <Alert variant='filled' severity='error'>{error}</Alert>
+            error
+              ? <Alert variant='filled' severity='error'>{error}</Alert>
+              : undefined
           }
           <Box id='login-form' component='form' display='flex' flexDirection='column' gap='16px' paddingY='16px' onSubmit={onSubmitLogin}>
             <FormControl>
@@ -49,7 +51,7 @@ export default function LoginPage(): JSX.Element {
     </Window>
   </Page>;
 
-  function onChangeEmail(event: ChangeEvent<HTMLInputElement>): void {
+  function onChangeEmail(event: React.ChangeEvent<HTMLInputElement>): void {
     const email = event.target.value;
     setEmail(email)
     const error = email.length == 0 
@@ -58,7 +60,7 @@ export default function LoginPage(): JSX.Element {
     setEmailError(error ? error.message : undefined);
   }
 
-  function onChangePassword(event: ChangeEvent<HTMLInputElement>): void {
+  function onChangePassword(event: React.ChangeEvent<HTMLInputElement>): void {
     const password = event.target.value;
     setPassword(password);
     const error = password.length == 0
@@ -72,8 +74,6 @@ export default function LoginPage(): JSX.Element {
 
     if (emailError || passwordError)
       return;
-
-    const authenticationService = await di.getAsync(AuthenticationServiceServiceId);
 
     try {
       const accountData = await authenticationService.login({ email, password });
@@ -101,3 +101,5 @@ export default function LoginPage(): JSX.Element {
   }
 
 }
+
+export default LoginPage;

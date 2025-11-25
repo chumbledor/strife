@@ -6,7 +6,7 @@ import { injectable } from 'inversify';
 export default class User implements IUser {
 
   private _account?: AccountData = this.load();
-  public get account(): AccountData | undefined {
+  public get accountData(): AccountData | undefined {
     return this._account;
   }
 

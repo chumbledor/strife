@@ -1,20 +1,30 @@
 'use client'
 
 import di from '@/DependencyInjection';
+import { ToastQueueManagerServiceId } from '@/di/managers/ToastQueueManagerInjector';
 import '@/managers/ToastQueueManager';
-import { ToastQueueManagerServiceId } from '@interfaces/managers/IToastQueueManager';
 import { Snackbar } from '@mui/material';
 import React from 'react';
 
 export interface ToastsProps {}
 
-export default function Toasts({}: ToastsProps): React.JSX.Element {
+export function Toasts({}: ToastsProps): React.JSX.Element {
 
   const toastQueueManager = di.get(ToastQueueManagerServiceId);
   const [ snackbar, setSnackbar ] = React.useState<React.ReactNode | undefined>();
   React.useEffect(initializationEffect, []);
 
   return <React.Fragment>{snackbar}</React.Fragment>;
+
+  function initializationEffect(): () => void {
+    onHeadChanged();
+    toastQueueManager.headChangedEvent.add(onHeadChanged);
+    return cleanupEffect;
+  }
+
+  function cleanupEffect(): void {
+    toastQueueManager.headChangedEvent.remove(onHeadChanged);
+  }
 
   function onHeadChanged(): void {
     const snackbar = toastQueueManager.head
@@ -23,9 +33,6 @@ export default function Toasts({}: ToastsProps): React.JSX.Element {
     setSnackbar(snackbar);
   }
 
-  function initializationEffect(): void {
-    onHeadChanged();
-    toastQueueManager.headChangedEvent.add(onHeadChanged);
-  }
-
 }
+
+export default Toasts;

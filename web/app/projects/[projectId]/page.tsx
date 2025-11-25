@@ -5,7 +5,7 @@ import { ProjectServiceServiceId } from '@/di/services/ProjectServiceInjector';
 import EnumTabs from '@components/generic/EnumTabs';
 import AuthenticatedPage from '@components/page/AuthenticatedPage';
 import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import EditorContextProvider from '@root/components/editor/EditorContextProvider';
+import ProjectContextProvider from '@components/project/ProjectContextProvider';
 import CodeView from '@root/components/editor/views/CodeView';
 import { type ProjectData } from '@strife/common';
 import React from 'react';
@@ -20,10 +20,11 @@ export interface ProjectPageProps {
   params: Promise<{ projectId: string }>
 }
 
-export default function ProjectPage({ params }: ProjectPageProps): React.JSX.Element {
+export function ProjectPage({ params }: ProjectPageProps): React.JSX.Element {
+  
   const { projectId } = React.use(params);
   const projectService = di.get(ProjectServiceServiceId);
-  const [ project, setProject ] = React.useState<ProjectData | undefined>();
+  const [ projectData, setProjectData ] = React.useState<ProjectData | undefined>();
   const [ tab, setTab ] = React.useState(0);
   React.useEffect(initializationEffect, []);
 
@@ -40,8 +41,8 @@ export default function ProjectPage({ params }: ProjectPageProps): React.JSX.Ele
   const primaryAppBarChildren = isDesktop
     ? <Box display='flex' flexDirection='row' alignItems='center'>
       <Stack paddingX='32px'>
-        <Typography variant='subtitle1'>{project?.name}</Typography>
-        <Typography variant='subtitle2'>{project?.description}</Typography>
+        <Typography variant='subtitle1'>{projectData?.name}</Typography>
+        <Typography variant='subtitle2'>{projectData?.description}</Typography>
       </Stack>
       <Box flexGrow={1}>
         <EnumTabs type={EditorTabs} value={tab} onChange={onTabChange} textColor='inherit' indicatorColor='secondary' centered />
@@ -56,11 +57,11 @@ export default function ProjectPage({ params }: ProjectPageProps): React.JSX.Ele
     : undefined;
 
   return <AuthenticatedPage primaryAppBarProps={{ children: primaryAppBarChildren }} secondaryAppBarProps={{ children: secondaryAppBarChildren, sx: { alignItems: 'center' } }}>
-    <EditorContextProvider projectId={projectId}>
+    <ProjectContextProvider projectId={projectId}>
       <Box height='100%' display='flex' flexDirection='row'>
         {content}
       </Box>
-    </EditorContextProvider>
+    </ProjectContextProvider>
   </AuthenticatedPage>;
   
   function onTabChange(event: React.SyntheticEvent, value: number): void {
@@ -73,7 +74,9 @@ export default function ProjectPage({ params }: ProjectPageProps): React.JSX.Ele
 
   async function getProject(): Promise<ProjectData> {
     const projectData = await projectService.getProject(projectId);
-    setProject(projectData);
+    setProjectData(projectData);
     return projectData;
   }
 }
+
+export default ProjectPage;

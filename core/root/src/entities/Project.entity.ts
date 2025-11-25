@@ -10,7 +10,7 @@ export default class ProjectEntity extends UniqueEntity implements IProjectEntit
   @ManyToOne(() => AccountEntity)
   public account!: AccountEntity;
   
-  @OneToOne(() => FileSystemEntity)
+  @OneToOne(() => FileSystemEntity, { eager: true })
   public fileSystem!: FileSystemEntity;
 
   @Property()

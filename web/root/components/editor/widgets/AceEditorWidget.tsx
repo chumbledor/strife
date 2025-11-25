@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 
 export interface AceEditorWidgetProps extends WidgetProps {}
 
-export default function AceEditorWidget({ ...widgetProps }: AceEditorWidgetProps): React.JSX.Element {
+export function AceEditorWidget({ ...widgetProps }: AceEditorWidgetProps): React.JSX.Element {
 
   React.useEffect(initializationEffect, []);
 
@@ -18,3 +18,5 @@ export default function AceEditorWidget({ ...widgetProps }: AceEditorWidgetProps
   }
   
 }
+
+export default AceEditorWidget;

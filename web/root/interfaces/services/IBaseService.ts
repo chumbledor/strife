@@ -1,4 +1,4 @@
-import { ZodType } from 'zod';
+import { type ZodType } from 'zod';
 
 export type BaseServiceOptions = {
   url?: string | URL | undefined,

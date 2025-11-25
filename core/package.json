@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
-    "dev": "tsx root/index.ts",
+    "dev": "tsx watch root/index.ts",
     "mikro-orm": "node --loader ts-node/esm ./node_modules/@mikro-orm/cli/cli.js"
   },
   "author": "",
