@@ -1,3 +1,4 @@
+import App from '@/App.js';
 import di from '@/DependencyInjection.js';
 import { AppServiceId } from '@/di/AppInjector.js';
 import AccountEntity from '@/entities/Account.entity.js';
@@ -5,46 +6,40 @@ import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import FileSystemEntity from '@/entities/FileSystem.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
 import config from '@config/mikro-orm.config.js';
-import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
-import { type IAuthenticationEntity } from '@interfaces/entities/IAuthentication.entity.js';
-import { type IFileSystemEntity } from '@interfaces/entities/IFileSystem.entity.js';
-import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
-import { type IApp } from '@interfaces/IApp.js';
-import { type ISQL } from '@interfaces/ISQL.js';
 import { MikroORM, RequestContext } from '@mikro-orm/core';
 import { SqlEntityRepository } from '@mikro-orm/mysql';
 import { type FastifyReply, type FastifyRequest, type HookHandlerDoneFunction } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-export class SQL implements ISQL {
+export class SQL {
 
   private _orm!: MikroORM;
   public get orm(): MikroORM {
     return this._orm;
   }
 
-  private _account!: SqlEntityRepository<IAccountEntity>;
-  public get account(): SqlEntityRepository<IAccountEntity> {
+  private _account!: SqlEntityRepository<AccountEntity>;
+  public get account(): SqlEntityRepository<AccountEntity> {
     return this._account;
   }
 
-  private _authentication!: SqlEntityRepository<IAuthenticationEntity>;
-  public get authentication(): SqlEntityRepository<IAuthenticationEntity> {
+  private _authentication!: SqlEntityRepository<AuthenticationEntity>;
+  public get authentication(): SqlEntityRepository<AuthenticationEntity> {
     return this._authentication;
   }
 
-  private _project!: SqlEntityRepository<IProjectEntity>;
-  public get project(): SqlEntityRepository<IProjectEntity> {
+  private _project!: SqlEntityRepository<ProjectEntity>;
+  public get project(): SqlEntityRepository<ProjectEntity> {
     return this._project;
   }
 
-  private _fileSystem!: SqlEntityRepository<IFileSystemEntity>;
-  public get fileSystem(): SqlEntityRepository<IFileSystemEntity> {
+  private _fileSystem!: SqlEntityRepository<FileSystemEntity>;
+  public get fileSystem(): SqlEntityRepository<FileSystemEntity> {
     return this._fileSystem;
   }
 
-  private _app!: IApp;
+  private _app!: App;
   
   public async initialize(): Promise<void> {
     this._orm = await MikroORM.init(config);

@@ -1,26 +1,24 @@
 import BaseController from '@/controllers/BaseController.js';
-import ProjectEntity from '@/entities/Project.entity.js';
 import FileSystemEntity from '@/entities/FileSystem.entity.js';
+import ProjectEntity from '@/entities/Project.entity.js';
 import { ProjectCreateNameInUseError, ProjectDeleteUnauthorizedError, ProjectUpdateUnauthorizedError } from '@/errors/project.js';
-import { type IProjectController } from '@interfaces/controllers/IProjectController.js';
-import { type IProjectEntity } from '@interfaces/entities/IProject.entity.js';
-import { type IUser } from '@interfaces/IUser.js';
+import User from '@/User.js';
 import { type FilterQuery, type QBFilterQuery } from '@mikro-orm/core';
-import { ProjectSchema, type CreateProjectData, type GetProjectsData, type ProjectData, type UpdateProjectData } from '@strife/common';
+import { Project } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export class ProjectController extends BaseController implements IProjectController {
+export class ProjectController extends BaseController {
 
-  async existsProject(where: QBFilterQuery<ProjectData>): Promise<boolean> {
+  async existsProject(where: QBFilterQuery<Project.Data>): Promise<boolean> {
     const count = await this.sql.project.qb()
       .where(where)
       .getCount();
     return count > 0;
   }
 
-  async createProject(user: IUser, createProjectData: CreateProjectData): Promise<ProjectData> {
-    const isNameInUse = await this.existsProject({ account: user.account, name: createProjectData.name });
+  async createProject(user: User, createData: Project.CreateData): Promise<Project.Data> {
+    const isNameInUse = await this.existsProject({ account: user.account, name: createData.name });
     if (isNameInUse)
       return Promise.reject(ProjectCreateNameInUseError);
 
@@ -29,14 +27,14 @@ export class ProjectController extends BaseController implements IProjectControl
 
     projectEntity.account = user.account;
     projectEntity.fileSystem = fileSystemEntity;
-    projectEntity.name = createProjectData.name;
-    projectEntity.description = createProjectData.description;
+    projectEntity.name = createData.name;
+    projectEntity.description = createData.description;
 
     await this.sql.project.getEntityManager().persistAndFlush(projectEntity);
-    return ProjectSchema.parseAsync(projectEntity);
+    return Project.Schema.parseAsync(projectEntity);
   }
 
-  async deleteProject(user: IUser, projectId: string): Promise<void> {
+  async deleteProject(user: User, projectId: string): Promise<void> {
     const projectEntity = await this.sql.project.findOneOrFail(projectId);
     if (projectEntity.account.id != user.account.id)
       return Promise.reject(ProjectDeleteUnauthorizedError);
@@ -44,40 +42,40 @@ export class ProjectController extends BaseController implements IProjectControl
     await this.sql.project.getEntityManager().removeAndFlush(projectEntity);
   }
 
-  async getProject(projectId: string): Promise<ProjectData> {
+  async getProject(projectId: string): Promise<Project.Data> {
     const projectEntity = await this.sql.project.findOneOrFail(projectId);
-    return ProjectSchema.parseAsync(projectEntity);
+    return Project.Schema.parseAsync(projectEntity);
   }
 
-  async getProjects(getProjectsData: GetProjectsData): Promise<ProjectData[]> {
-    const where: FilterQuery<IProjectEntity> = {};
+  async getProjects(getData: Project.GetData): Promise<Project.Data[]> {
+    const where: FilterQuery<ProjectEntity> = {};
         
-    if (getProjectsData.ids && getProjectsData.ids.length > 0)
-      where.id = { $in: getProjectsData.ids };
+    if (getData.ids && getData.ids.length > 0)
+      where.id = { $in: getData.ids };
 
-    if (getProjectsData.name)
-      where.name = { $like: `%${getProjectsData.name}` };
+    if (getData.name)
+      where.name = { $like: `%${getData.name}` };
 
     const projectEntities = await this.sql.project.find(
       where, 
       { 
-        offset: getProjectsData.skip, 
-        limit: getProjectsData.take, orderBy: 
+        offset: getData.skip, 
+        limit: getData.take, orderBy: 
         { id: 'ASC' } 
       }
     );
 
-    return ProjectSchema.array().parseAsync(projectEntities);
+    return Project.Schema.array().parseAsync(projectEntities);
   }
 
-  async updateProject(user: IUser, projectId: string, updateProjectData: UpdateProjectData): Promise<ProjectData> {
+  async updateProject(user: User, projectId: string, updateData: Project.UpdateData): Promise<Project.Data> {
     const projectEntity = await this.sql.project.findOneOrFail(projectId);
     if (projectEntity.account.id != user.account.id)
       return Promise.reject(ProjectUpdateUnauthorizedError);
 
-    Object.assign(projectEntity, updateProjectData);
+    Object.assign(projectEntity, updateData);
     await this.sql.project.getEntityManager().flush();
-    return ProjectSchema.parseAsync(projectEntity);
+    return Project.Schema.parseAsync(projectEntity);
   }  
 
 }

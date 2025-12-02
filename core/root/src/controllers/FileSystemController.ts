@@ -1,34 +1,33 @@
 import BaseController from '@/controllers/BaseController.js';
-import { type IFileSystemController } from '@interfaces/controllers/IFileSystemController.js';
-import { type IUser } from '@interfaces/IUser.js';
-import { type IFileSystemObject } from '@interfaces/models/IFileSystemObjectModel.js';
-import { CreateFileSystemDirectorySchema, CreateFileSystemFileSchema, FileSystemDirectorySchema, FileSystemFileSchema, FileSystemObjectType, type AnyFileSystemObjectData, type CreateFileSystemDirectoryData, type CreateFileSystemFileData, type CreateFileSystemObjectData, type FileSystemDirectoryData, type FileSystemFileData, type GetFileSystemObjectsData } from '@strife/common';
+import { type FileSystemObject } from '@/models/file-system/FileSystemObjectModel.js';
+import User from '@/User.js';
+import { FileSystem } from '@strife/common';
 import { injectable } from 'inversify';
 import mongoose from 'mongoose';
 
 @injectable()
-export class FileSystemController extends BaseController implements IFileSystemController {
+export class FileSystemController extends BaseController {
 
-  public async existsFileSystemObject(query: mongoose.FilterQuery<IFileSystemObject>): Promise<boolean> {
+  public async existsFileSystemObject(query: mongoose.FilterQuery<FileSystemObject>): Promise<boolean> {
     const count = await this.nosql.fileSystemObject
       .find(query)
       .countDocuments();
     return count > 0;
   }
 
-  public async createFileSystemObject(user: IUser, fileSystemId: string, createFileSystemObjectData: CreateFileSystemObjectData): Promise<AnyFileSystemObjectData> {
-    if (createFileSystemObjectData.type == FileSystemObjectType.Directory) {
-      const createFileSystemDirectoryData = await CreateFileSystemDirectorySchema.parseAsync(createFileSystemObjectData);
-      return this.createFileSystemDirectory(user, fileSystemId, createFileSystemDirectoryData);
-    } else if (createFileSystemObjectData.type == FileSystemObjectType.File) {
-      const createFileSystemFileData = await CreateFileSystemFileSchema.parseAsync(createFileSystemObjectData);
-      return this.createFileSystemFile(user, fileSystemId, createFileSystemFileData);
+  public async createFileSystemObject(user: User, fileSystemId: string, createObjectData: FileSystem.CreateObjectData): Promise<FileSystem.AnyObjectData> {
+    if (createObjectData.type == FileSystem.ObjectType.Directory) {
+      const createDirectoryObjectData = await FileSystem.CreateDirectoryObjectSchema.parseAsync(createObjectData);
+      return this.createFileSystemDirectoryObject(user, fileSystemId, createDirectoryObjectData);
+    } else if (createObjectData.type == FileSystem.ObjectType.File) {
+      const createFileObjectData = await FileSystem.CreateFileObjectSchema.parseAsync(createObjectData);
+      return this.createFileSystemFileObject(user, fileSystemId, createFileObjectData);
     }
 
     return Promise.reject();
   }
 
-  public async createFileSystemDirectory(user: IUser, fileSystemId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData> {
+  public async createFileSystemDirectoryObject(user: User, fileSystemId: string, createDirectoryObjectData: FileSystem.CreateDirectoryObjectData): Promise<FileSystem.DirectoryObjectData> {
     try {
       const fileSystem = await this.sql.fileSystem.findOneOrFail({ id: fileSystemId });
       if (!fileSystem.hasPermission(user))
@@ -37,25 +36,25 @@ export class FileSystemController extends BaseController implements IFileSystemC
       return Promise.reject();
     }
 
-    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemDirectoryData.parentId, fileSystemId });
+    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createDirectoryObjectData.parentFileSystemDirectoryId, fileSystemId });
     if (!parentFileSystemDirectory)
       return Promise.reject();
 
     const fileSystemDirectory = new this.nosql.fileSystemDirectory({
       fileSystemId,
-      parentId: createFileSystemDirectoryData.parentId,
-      name: createFileSystemDirectoryData.name
+      parentFileSystemDirectoryId: createDirectoryObjectData.parentFileSystemDirectoryId,
+      name: createDirectoryObjectData.name
     });
 
     fileSystemDirectory.save();
 
-    parentFileSystemDirectory.childrenIds.push(fileSystemDirectory.id);
+    parentFileSystemDirectory.childrenFileSystemObjectIds.push(fileSystemDirectory.id);
     parentFileSystemDirectory.save();
     
-    return await FileSystemDirectorySchema.parseAsync(fileSystemDirectory);
+    return await FileSystem.DirectoryObjectSchema.parseAsync(fileSystemDirectory);
   }
 
-  public async createFileSystemFile(user: IUser, fileSystemId: string, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData> {
+  public async createFileSystemFileObject(user: User, fileSystemId: string, createFileObjectData: FileSystem.CreateFileObjectData): Promise<FileSystem.FileObjectData> {
     try {
       const fileSystem = await this.sql.fileSystem.findOneOrFail({ id: fileSystemId });
       if (!fileSystem.hasPermission(user))
@@ -64,27 +63,26 @@ export class FileSystemController extends BaseController implements IFileSystemC
       return Promise.reject();
     }
 
-    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileSystemFileData.parentId, fileSystemId });
+    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileObjectData.parentFileSystemDirectoryId, fileSystemId });
     if (!parentFileSystemDirectory)
       return Promise.reject();
 
     const fileSystemFile = new this.nosql.fileSystemFile({
       fileSystemId,
-      parentId: createFileSystemFileData.parentId,
-      name: createFileSystemFileData.name,
-      size: createFileSystemFileData.size,
-      mimeType: createFileSystemFileData.mimeType
+      parentFileSystemDirectoryId: createFileObjectData.parentFileSystemDirectoryId,
+      name: createFileObjectData.name,
+      mimeType: createFileObjectData.mimeType
     });
 
     fileSystemFile.save();
 
-    parentFileSystemDirectory.childrenIds.push(fileSystemFile.id);
+    parentFileSystemDirectory.childrenFileSystemObjectIds.push(fileSystemFile.id);
     parentFileSystemDirectory.save();
     
-    return await FileSystemFileSchema.parseAsync(fileSystemFile);
+    return await FileSystem.FileObjectSchema.parseAsync(fileSystemFile);
   }
 
-  public async deleteFileSystemObject(user: IUser, fileSystemId: string, fileSystemObjectId: string): Promise<void> {
+  public async deleteFileSystemObject(user: User, fileSystemId: string, fileSystemObjectId: string): Promise<void> {
     try {
       const fileSystem = await this.sql.fileSystem.findOneOrFail({ id: fileSystemId });
       if (!fileSystem.hasPermission(user))
@@ -96,7 +94,7 @@ export class FileSystemController extends BaseController implements IFileSystemC
     await this.nosql.fileSystemObject.deleteOne({ id: fileSystemObjectId, fileSystemId });
   }
 
-  public async getFileSystemObject(user: IUser, fileSystemId: string, fileSystemObjectId: string): Promise<AnyFileSystemObjectData> {
+  public async getFileSystemObject(user: User, fileSystemId: string, fileSystemObjectId: string): Promise<FileSystem.AnyObjectData> {
     try {
       const fileSystem = await this.sql.fileSystem.findOneOrFail({ id: fileSystemId });
       if (!fileSystem.hasPermission(user))
@@ -109,46 +107,46 @@ export class FileSystemController extends BaseController implements IFileSystemC
     if (!fileSystemObject)
       return Promise.reject();
     
-    if (fileSystemObject.type == FileSystemObjectType.Directory)
-      return FileSystemDirectorySchema.parseAsync(fileSystemObject);
-    else if (fileSystemObject.type == FileSystemObjectType.File)
-      return FileSystemFileSchema.parseAsync(fileSystemObject);
+    if (fileSystemObject.type == FileSystem.ObjectType.Directory)
+      return FileSystem.DirectoryObjectSchema.parseAsync(fileSystemObject);
+    else if (fileSystemObject.type == FileSystem.ObjectType.File)
+      return FileSystem.FileObjectSchema.parseAsync(fileSystemObject);
 
     return Promise.reject();
   }
 
-  public async getFileSystemObjects(user: IUser, fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]> {
-    const query: mongoose.FilterQuery<IFileSystemObject> = {
+  public async getFileSystemObjects(user: User, fileSystemId: string, getObjectsData: FileSystem.GetObjectsData): Promise<FileSystem.AnyObjectData[]> {
+    const query: mongoose.FilterQuery<FileSystemObject> = {
       fileSystemId
     };
 
-    if (getFileSystemObjectsData.ids) {
+    if (getObjectsData.ids) {
       query._id = {
-        $in: getFileSystemObjectsData.ids
+        $in: getObjectsData.ids
       }
     }
 
-    if (getFileSystemObjectsData.parentId) {
-      query.parentId = getFileSystemObjectsData.parentId;
+    if (getObjectsData.parentFileSystemDirectoryId) {
+      query.parentFileSystemDirectoryObjectId = getObjectsData.parentFileSystemDirectoryId;
     }
 
-    if (getFileSystemObjectsData.name) {
+    if (getObjectsData.name) {
       query.name = {
-        $regex: getFileSystemObjectsData.name,
+        $regex: getObjectsData.name,
         $options: 'i'
       }
     }
 
     let fileSystemObjects = await this.nosql.fileSystemObject.find(query)
-      .skip(getFileSystemObjectsData.skip)
-      .limit(getFileSystemObjectsData.take);
+      .skip(getObjectsData.skip)
+      .limit(getObjectsData.take);
 
     const promises = fileSystemObjects.map(
-      async (fileSystemObject: IFileSystemObject): Promise<AnyFileSystemObjectData> => {
-        if (fileSystemObject.type == FileSystemObjectType.Directory)
-          return FileSystemDirectorySchema.parseAsync(fileSystemObject);
-        else if (fileSystemObject.type == FileSystemObjectType.File)
-          return FileSystemFileSchema.parseAsync(fileSystemObject);
+      async (fileSystemObject: FileSystemObject): Promise<FileSystem.AnyObjectData> => {
+        if (fileSystemObject.type == FileSystem.ObjectType.Directory)
+          return FileSystem.DirectoryObjectSchema.parseAsync(fileSystemObject);
+        else if (fileSystemObject.type == FileSystem.ObjectType.File)
+          return FileSystem.FileObjectSchema.parseAsync(fileSystemObject);
         else 
           return Promise.reject();
       }

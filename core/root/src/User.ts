@@ -1,18 +1,17 @@
-import { type IUser } from '@interfaces/IUser.js';
-import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
-import { SQLServiceId } from '@/di/SQLInjector.js';
 import di from '@/DependencyInjection.js';
+import { SQLServiceId } from '@/di/SQLInjector.js';
+import AccountEntity from '@/entities/Account.entity.js';
 
-export class User implements IUser {
+export class User {
 
-  public static async from(accountId: string): Promise<IUser> {
+  public static async from(accountId: string): Promise<User> {
     const user = new User();
     await user.initialize(accountId);
     return user;
   }
 
-  private _account!: IAccountEntity;
-  public get account(): IAccountEntity {
+  private _account!: AccountEntity;
+  public get account(): AccountEntity {
     return this._account;
   }
 

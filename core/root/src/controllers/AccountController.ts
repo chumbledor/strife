@@ -2,29 +2,27 @@ import BaseController from '@/controllers/BaseController.js';
 import AccountEntity from '@/entities/Account.entity.js';
 import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import { AccountCreateEmailInUseError, AccountCreateUsernameInUseError } from '@/errors/account.js';
-import { type IAccountController } from '@interfaces/controllers/IAccountController.js';
-import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
+import User from '@/User.js';
 import { type FilterQuery, type QBFilterQuery } from '@mikro-orm/core';
-import { type IUser } from '@interfaces/IUser.js';
-import { AccountSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
+import { Account } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AccountController extends BaseController implements IAccountController {
+export class AccountController extends BaseController {
 
-  public async existsAccount(where: QBFilterQuery<IAccountEntity>): Promise<boolean> {
+  public async existsAccount(where: QBFilterQuery<AccountEntity>): Promise<boolean> {
     const count = await this.sql.account.qb()
       .where(where)
       .getCount();
     return count > 0;
   }
 
-  public async createAccount(createAccountData: CreateAccountData): Promise<AccountData> {
-    const isEmailInUse = await this.existsAccount({ email: createAccountData.email });
+  public async createAccount(createData: Account.CreateData): Promise<Account.Data> {
+    const isEmailInUse = await this.existsAccount({ email: createData.email });
     if (isEmailInUse)
       return Promise.reject(AccountCreateEmailInUseError);
 
-    const isUsernameInUse = await this.existsAccount({ username: createAccountData.username });
+    const isUsernameInUse = await this.existsAccount({ username: createData.username });
     if (isUsernameInUse)
       return Promise.reject(AccountCreateUsernameInUseError);
 
@@ -32,52 +30,52 @@ export class AccountController extends BaseController implements IAccountControl
     const authenticationEntity = new AuthenticationEntity();
 
     accountEntity.authentication = authenticationEntity;
-    accountEntity.email = createAccountData.email;
-    accountEntity.username = createAccountData.username;
+    accountEntity.email = createData.email;
+    accountEntity.username = createData.username;
 
     authenticationEntity.account = accountEntity;
-    authenticationEntity.password = createAccountData.password;
+    authenticationEntity.password = createData.password;
 
     await this.sql.account.getEntityManager().persistAndFlush(accountEntity);
-    return AccountSchema.parseAsync(accountEntity);
+    return Account.Schema.parseAsync(accountEntity);
   }
   
-  public async deleteAccount(user: IUser): Promise<void> {
+  public async deleteAccount(user: User): Promise<void> {
     const accountEntity = user.account;
     return this.sql.account.getEntityManager().removeAndFlush(accountEntity);
   }
 
-  public async getAccount(accountId: string): Promise<AccountData> {
+  public async getAccount(accountId: string): Promise<Account.Data> {
     const accountEntity = await this.sql.account.findOneOrFail({ id: accountId });
-    return AccountSchema.parseAsync(accountEntity);
+    return Account.Schema.parseAsync(accountEntity);
   }
 
-  public async getAccounts(getAccountsData: GetAccountsData): Promise<AccountData[]> {
-    const where: FilterQuery<IAccountEntity> = {};
+  public async getAccounts(getData: Account.GetData): Promise<Account.Data[]> {
+    const where: FilterQuery<AccountEntity> = {};
     
-    if (getAccountsData.ids && getAccountsData.ids.length > 0)
-      where.id = { $in: getAccountsData.ids };
+    if (getData.ids && getData.ids.length > 0)
+      where.id = { $in: getData.ids };
 
-    if (getAccountsData.username)
-      where.username = { $like: `%${getAccountsData.username}` };
+    if (getData.username)
+      where.username = { $like: `%${getData.username}` };
 
     const accountEntities = await this.sql.account.find(
       where, 
       { 
-        offset: getAccountsData.skip, 
-        limit: getAccountsData.take, orderBy: 
+        offset: getData.skip, 
+        limit: getData.take, orderBy: 
         { id: 'ASC' } 
       }
     );
 
-    return await AccountSchema.array().parseAsync(accountEntities);
+    return await Account.Schema.array().parseAsync(accountEntities);
   }
 
-  public async updateAccount(user: IUser, updateAccountData: UpdateAccountData): Promise<AccountData> {
+  public async updateAccount(user: User, updateData: Account.UpdateData): Promise<Account.Data> {
     const accountEntity = user.account;
-    Object.assign(accountEntity, updateAccountData);
+    Object.assign(accountEntity, updateData);
     await this.sql.account.getEntityManager().flush();
-    return await AccountSchema.parseAsync(accountEntity);
+    return await Account.Schema.parseAsync(accountEntity);
   }
 
 }

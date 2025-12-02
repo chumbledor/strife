@@ -1,24 +1,17 @@
-import FileSystemDirectoryModel from '@/models/FileSystemDirectoryModel.js';
-import FileSystemFileModel from '@/models/FileSystemFileModel.js';
-import FileSystemObjectModel from '@/models/FileSystemObjectModel.js';
-import { type INoSQL } from '@interfaces/INoSQL.js';
+import FileSystemDirectoryObjectModel from '@root/src/models/file-system/FileSystemDirectoryObjectModel.js';
+import FileSystemFileObjectModel from '@root/src/models/file-system/FileSystemFileObjectModel.js';
+import FileSystemObjectModel from '@/models/file-system/FileSystemObjectModel.js';
 import { injectable } from 'inversify';
-import { GridFSBucket } from 'mongodb';
 import mongoose from 'mongoose';
 
 const FileSystemBucketName = 'file_system';
 
 @injectable()
-export class NoSQL implements INoSQL {
+export class NoSQL {
 
   private _odm!: mongoose.Mongoose;
   public get odm(): mongoose.Mongoose {
     return this._odm;
-  }
-
-  private _fileSystemBucket!: GridFSBucket;
-  public get fileSystemBucket(): GridFSBucket {
-    return this._fileSystemBucket;
   }
 
   private _fileSystemObject!: typeof FileSystemObjectModel;
@@ -26,13 +19,13 @@ export class NoSQL implements INoSQL {
     return this._fileSystemObject;
   }
 
-  private _fileSystemDirectory!: typeof FileSystemDirectoryModel;
-  public get fileSystemDirectory(): typeof FileSystemDirectoryModel {
+  private _fileSystemDirectory!: typeof FileSystemDirectoryObjectModel;
+  public get fileSystemDirectory(): typeof FileSystemDirectoryObjectModel {
     return this._fileSystemDirectory;
   }
 
-  private _fileSystemFile!: typeof FileSystemFileModel;
-  public get fileSystemFile(): typeof FileSystemFileModel {
+  private _fileSystemFile!: typeof FileSystemFileObjectModel;
+  public get fileSystemFile(): typeof FileSystemFileObjectModel {
     return this._fileSystemFile;
   }
   
@@ -49,15 +42,10 @@ export class NoSQL implements INoSQL {
 
     if (!this._odm.connection.db)
       return;
-
-    // this._fileSystemBucket = new GridFSBucket(
-    //   this._odm.connection.db,
-    //   { bucketName: FileSystemBucketName }
-    // )
     
     this._fileSystemObject = FileSystemObjectModel;
-    this._fileSystemDirectory = FileSystemDirectoryModel;
-    this._fileSystemFile = FileSystemFileModel;
+    this._fileSystemDirectory = FileSystemDirectoryObjectModel;
+    this._fileSystemFile = FileSystemFileObjectModel;
   }
 
   public async update(): Promise<void> {}

@@ -2,14 +2,13 @@ import di from '@/DependencyInjection.js';
 import { AuthenticationControllerServiceId } from '@/di/controllers/AuthenticationControllerInjector.js';
 import { AuthenticationLogoutError, AuthenticationRefreshInvalidRefreshTokenError, AuthenticationUpdateUnauthorizedError } from '@/errors/authentication.js';
 import BaseRouter from '@/routers/BaseRouter.js';
-import { type IUser } from '@interfaces/IUser.js';
-import { type IAuthenticationRouter } from '@interfaces/routers/IAuthenticationRouter.js';
-import { AccountIdSchema, LoginAuthenticationSchema, UpdateAuthenticationSchema, type AccountData } from '@strife/common';
+import User from '@/User.js';
+import { Account, Authentication } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AuthenticationRouter extends BaseRouter implements IAuthenticationRouter {
+export class AuthenticationRouter extends BaseRouter {
 
   protected override get prefix(): string | undefined {
     return 'authentication';
@@ -23,17 +22,17 @@ export class AuthenticationRouter extends BaseRouter implements IAuthenticationR
     instance.put('/:accountId', { onRequest: [ instance.authenticate ] }, this.updateAuthentication.bind(this));
   }
 
-  private async login(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const loginAuthenticationData = await LoginAuthenticationSchema.parseAsync(request.body);
+  private async login(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
+    const loginData = await Authentication.LoginSchema.parseAsync(request.body);
     const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
-    const accountData = await authenticationController.login(loginAuthenticationData);
+    const accountData = await authenticationController.login(loginData);
     // this.updateRefreshTokenCookie(accountData, request, reply);
     return accountData;
   }
 
   private async logout(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const user = request.user as IUser;
-    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+    const user = request.user as User;
+    const { accountId } = await Account.IdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AuthenticationLogoutError);
     
@@ -41,7 +40,7 @@ export class AuthenticationRouter extends BaseRouter implements IAuthenticationR
     await authenticationController.logout(user);
   }
 
-  private async refresh(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
+  private async refresh(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
     const { refreshToken } = request.cookies;
     if (!refreshToken)
       return Promise.reject(AuthenticationRefreshInvalidRefreshTokenError);
@@ -52,15 +51,15 @@ export class AuthenticationRouter extends BaseRouter implements IAuthenticationR
     return accountData;
   }
 
-  private async updateAuthentication(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const user = request.user as IUser;
-    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+  private async updateAuthentication(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
+    const user = request.user as User;
+    const { accountId } = await Account.IdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AuthenticationUpdateUnauthorizedError);
     
-    const updateAuthenticationData = await UpdateAuthenticationSchema.parseAsync(request.body);
+    const updateData = await Authentication.UpdateSchema.parseAsync(request.body);
     const authenticationController = await di.getAsync(AuthenticationControllerServiceId);
-    return authenticationController.updateAuthentication(user, updateAuthenticationData);
+    return authenticationController.updateAuthentication(user, updateData);
   }
 
   // private updateRefreshTokenCookie(accountData: AccountData, request: FastifyRequest, reply: FastifyReply): void {

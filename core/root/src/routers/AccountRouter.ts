@@ -2,14 +2,13 @@ import di from '@/DependencyInjection.js';
 import { AccountControllerServiceId } from '@/di/controllers/AccountControllerInjector.js';
 import { AccountDeleteUnauthorizedError, AccountUpdateUnauthorizedError } from '@/errors/account.js';
 import BaseRouter from '@/routers/BaseRouter.js';
-import { type IUser } from '@interfaces/IUser.js';
-import { type IAccountRouter } from '@interfaces/routers/IAccountRouter.js';
-import { AccountIdSchema, CreateAccountSchema, GetAccountsSchema, UpdateAccountSchema, type AccountData } from '@strife/common';
+import User from '@/User.js';
+import { Account } from '@strife/common';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AccountRouter extends BaseRouter implements IAccountRouter {
+export class AccountRouter extends BaseRouter {
 
   protected override get prefix(): string | undefined {
     return 'accounts';
@@ -24,15 +23,15 @@ export class AccountRouter extends BaseRouter implements IAccountRouter {
     instance.put('/:accountId', { onRequest: [ instance.authenticate ] }, this.updateAccount.bind(this));
   }
 
-  private async createAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const createAccountData = await CreateAccountSchema.parseAsync(request.body);
+  private async createAccount(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
+    const createData = await Account.CreateSchema.parseAsync(request.body);
     const accountController = await di.getAsync(AccountControllerServiceId);
-    return accountController.createAccount(createAccountData);
+    return accountController.createAccount(createData);
   }
 
   private async deleteAccount(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const user = request.user as IUser;
-    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+    const user = request.user as User;
+    const { accountId } = await Account.IdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AccountDeleteUnauthorizedError);
 
@@ -40,27 +39,27 @@ export class AccountRouter extends BaseRouter implements IAccountRouter {
     return accountController.deleteAccount(user);
   }
 
-  private async getAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+  private async getAccount(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
+    const { accountId } = await Account.IdSchema.parseAsync(request.params);
     const accountController = await di.getAsync(AccountControllerServiceId);
     return accountController.getAccount(accountId);
   }
 
-  private async getAccounts(request: FastifyRequest, reply: FastifyReply): Promise<AccountData[]> {
-    const getAccountsData = await GetAccountsSchema.parseAsync(request.query);
+  private async getAccounts(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data[]> {
+    const getData = await Account.GetSchema.parseAsync(request.query);
     const accountController = await di.getAsync(AccountControllerServiceId);
-    return accountController.getAccounts(getAccountsData);
+    return accountController.getAccounts(getData);
   }
 
-  private async updateAccount(request: FastifyRequest, reply: FastifyReply): Promise<AccountData> {
-    const user = request.user as IUser;
-    const { accountId } = await AccountIdSchema.parseAsync(request.params);
+  private async updateAccount(request: FastifyRequest, reply: FastifyReply): Promise<Account.Data> {
+    const user = request.user as User;
+    const { accountId } = await Account.IdSchema.parseAsync(request.params);
     if (!user.is(accountId))
       return Promise.reject(AccountUpdateUnauthorizedError);
 
-    const updateAccountData = await UpdateAccountSchema.parseAsync(request.body);
+    const updateData = await Account.UpdateSchema.parseAsync(request.body);
     const accountController = await di.getAsync(AccountControllerServiceId);
-    return accountController.updateAccount(user, updateAccountData);
+    return accountController.updateAccount(user, updateData);
   }
 
 }

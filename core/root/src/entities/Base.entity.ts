@@ -1,7 +1,6 @@
-import { type IBaseEntity } from '@interfaces/entities/IBase.entity.js';
 import { OptionalProps, Property } from '@mikro-orm/core';
 
-export default abstract class BaseEntity<Optional = never> implements IBaseEntity {
+export default abstract class BaseEntity<Optional = never> {
 
   [OptionalProps]?: 'createdAt' | 'updatedAt' | Optional;
 

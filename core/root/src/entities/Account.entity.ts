@@ -1,11 +1,10 @@
 import AuthenticationEntity from '@/entities/Authentication.entity.js';
 import ProjectEntity from '@/entities/Project.entity.js';
 import UniqueEntity from '@/entities/Unique.entity.js';
-import { type IAccountEntity } from '@interfaces/entities/IAccount.entity.js';
 import { Cascade, Collection, Entity, OneToMany, OneToOne, Property } from '@mikro-orm/core';
 
 @Entity()
-export default class AccountEntity extends UniqueEntity implements IAccountEntity {
+export default class AccountEntity extends UniqueEntity {
 
   @OneToOne(() => AuthenticationEntity, authentication => authentication.account, { cascade: [Cascade.ALL] })
   public authentication!: AuthenticationEntity;

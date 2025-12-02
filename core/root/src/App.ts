@@ -2,7 +2,6 @@ import User from '@/User.js';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import { type IApp } from '@interfaces/IApp.js';
 import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { injectable } from 'inversify';
 
@@ -13,7 +12,7 @@ declare module 'fastify' {
 }
 
 @injectable()
-export class App implements IApp {
+export class App {
 
   private _instance!: FastifyInstance;
   public get instance(): FastifyInstance {
