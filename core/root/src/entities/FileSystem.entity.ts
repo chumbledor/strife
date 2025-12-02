@@ -1,7 +1,7 @@
 import di from '@/DependencyInjection.js';
 import { NoSQLServiceId } from '@/di/NoSQLInjector.js';
 import UniqueEntity from '@/entities/Unique.entity.js';
-import { type FileSystemDirectoryObject } from '@root/src/models/file-system/FileSystemDirectoryObjectModel.js';
+import { type FileSystemDirectoryObject } from '@/models/file-system/FileSystemDirectoryObjectModel.js';
 import User from '@/User.js';
 import { BeforeCreate, BeforeDelete, Entity, Property, type EventArgs } from '@mikro-orm/core';
 import mongoose from 'mongoose';

@@ -1,5 +1,5 @@
-import FileSystemFileObjectBinaryContentModel from '@root/src/models/file-system/content/FileSystemFileObjectBinaryContentModel.js';
-import FileSystemFileContentVersionModel, { type FileSystemFileObjectContentVersion } from '@root/src/models/file-system/content/version/FileSystemFileObjectContentVersionModel.js';
+import FileSystemFileObjectBinaryContentModel from '@/models/file-system/content/FileSystemFileObjectBinaryContentModel.js';
+import FileSystemFileContentVersionModel, { type FileSystemFileObjectContentVersion } from '@/models/file-system/content/version/FileSystemFileObjectContentVersionModel.js';
 import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 
@@ -43,11 +43,11 @@ FileSystemFileObjectBinaryContentVersionSchema.pre(
   'deleteOne', 
   { document: true, query: false }, 
   async function(next: mongoose.CallbackWithoutResultAndOptionalError): Promise<void> {
-    if (!this.fileSystemFileObjectBinaryContentId)
+    if (!this.fileSystemFileObjectContentId)
       return next();
 
     const fileSystemFileObjectBinaryContent = await FileSystemFileObjectBinaryContentModel
-      .findById(this.fileSystemFileObjectBinaryContentId)
+      .findById(this.fileSystemFileObjectContentId)
       .select('_id')
       .lean();
 
@@ -56,7 +56,7 @@ FileSystemFileObjectBinaryContentVersionSchema.pre(
 
     await FileSystemFileObjectBinaryContentModel
       .updateOne(
-        { _id: this.fileSystemFileObjectBinaryContentId },
+        { _id: this.fileSystemFileObjectContentId },
         { $pull: { fileSystemFileObjectContentVersionIds: this._id } }
       );
 

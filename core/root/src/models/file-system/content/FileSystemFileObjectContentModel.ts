@@ -1,10 +1,10 @@
-import FileSystemFileObjectModel from '@root/src/models/file-system/FileSystemFileObjectModel.js';
+import FileSystemFileObjectModel from '@/models/file-system/FileSystemFileObjectModel.js';
 import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 
 export interface FileSystemFileObjectContent extends mongoose.Document {
   type: FileSystem.FileContentType,
-  fileSystemFileId: mongoose.Types.ObjectId;
+  fileSystemFileObjectId: mongoose.Types.ObjectId;
   mimeType: string;
 }
 
@@ -15,7 +15,7 @@ const FileSystemFileObjectContentOptions = {
 
 export const FileSystemFileObjectContentSchema = new mongoose.Schema<FileSystemFileObjectContent>(
   {
-    fileSystemFileId: {
+    fileSystemFileObjectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: FileSystem.ObjectType.File,
       required: true
@@ -33,18 +33,18 @@ FileSystemFileObjectContentSchema.pre(
   'deleteOne', 
   { document: true, query: false }, 
   async function(next: mongoose.CallbackWithoutResultAndOptionalError): Promise<void> {
-    if (!this.fileSystemFileId)
+    if (!this.fileSystemFileObjectId)
       return next();
 
-    const fileSystemFile = await FileSystemFileObjectModel
-      .findById(this.fileSystemFileId)
+    const fileSystemFileObject = await FileSystemFileObjectModel
+      .findById(this.fileSystemFileObjectId)
       .select('_id')
       .lean();
 
-    if (!fileSystemFile)
+    if (!fileSystemFileObject)
       return next();
 
-    await FileSystemFileObjectModel.deleteOne({ _id: this.fileSystemFileId });
+    await FileSystemFileObjectModel.deleteOne({ _id: this.fileSystemFileObjectId });
     next();
   }
 );

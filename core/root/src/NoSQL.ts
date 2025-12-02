@@ -1,10 +1,8 @@
-import FileSystemDirectoryObjectModel from '@root/src/models/file-system/FileSystemDirectoryObjectModel.js';
-import FileSystemFileObjectModel from '@root/src/models/file-system/FileSystemFileObjectModel.js';
+import FileSystemDirectoryObjectModel from '@/models/file-system/FileSystemDirectoryObjectModel.js';
+import FileSystemFileObjectModel from '@/models/file-system/FileSystemFileObjectModel.js';
 import FileSystemObjectModel from '@/models/file-system/FileSystemObjectModel.js';
 import { injectable } from 'inversify';
 import mongoose from 'mongoose';
-
-const FileSystemBucketName = 'file_system';
 
 @injectable()
 export class NoSQL {

@@ -1,16 +1,16 @@
-import FileSystemFileObjectContentModel, { type FileSystemFileObjectContent } from '@root/src/models/file-system/content/FileSystemFileObjectContentModel.js';
+import FileSystemFileObjectContentModel, { type FileSystemFileObjectContent } from '@/models/file-system/content/FileSystemFileObjectContentModel.js';
 import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 
-export interface FileSystemFileTextContent extends FileSystemFileObjectContent {
+export interface FileSystemFileObjectTextContent extends FileSystemFileObjectContent {
   text: string;
 }
 
-export const FileSystemFileTextContentSchema = new mongoose.Schema<FileSystemFileTextContent>({
+export const FileSystemFileObjectTextContentSchema = new mongoose.Schema<FileSystemFileObjectTextContent>({
   text: {
     type: String
   }
 });
 
-export const FileSystemFileTextContentModel = FileSystemFileObjectContentModel.discriminator(FileSystem.FileContentType.Text, FileSystemFileTextContentSchema);
-export default FileSystemFileTextContentModel;
+export const FileSystemFileObjectTextContentModel = FileSystemFileObjectContentModel.discriminator(FileSystem.FileContentType.Text, FileSystemFileObjectTextContentSchema);
+export default FileSystemFileObjectTextContentModel;

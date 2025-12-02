@@ -1,4 +1,4 @@
-import FileSystemDirectoryObjectModel from '@root/src/models/file-system/FileSystemDirectoryObjectModel.js';
+import FileSystemDirectoryObjectModel from '@/models/file-system/FileSystemDirectoryObjectModel.js';
 import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 
@@ -51,12 +51,12 @@ FileSystemObjectSchema.pre(
     if (!this.parentFileSystemDirectoryObjectId)
       return next();
 
-    const parentFileSystemDirectory = await FileSystemDirectoryObjectModel
+    const parentFileSystemDirectoryObject = await FileSystemDirectoryObjectModel
       .findById(this.parentFileSystemDirectoryObjectId)
       .select('_id')
       .lean();
 
-    if (!parentFileSystemDirectory)
+    if (!parentFileSystemDirectoryObject)
       return next();
 
     await FileSystemDirectoryObjectModel

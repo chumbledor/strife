@@ -1,5 +1,5 @@
-import FileSystemFileObjectContentModel, { type FileSystemFileObjectContent } from '@root/src/models/file-system/content/FileSystemFileObjectContentModel.js';
-import FileSystemFileObjectBinaryContentVersionModel from '@root/src/models/file-system/content/version/FileSystemFileObjectBinaryContentVersionModel.js';
+import FileSystemFileObjectContentModel, { type FileSystemFileObjectContent } from '@/models/file-system/content/FileSystemFileObjectContentModel.js';
+import FileSystemFileObjectBinaryContentVersionModel from '@/models/file-system/content/version/FileSystemFileObjectBinaryContentVersionModel.js';
 import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 

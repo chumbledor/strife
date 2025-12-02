@@ -4,17 +4,12 @@ import mongoose from 'mongoose';
 
 export interface FileSystemFileObject extends FileSystemObject {
   fileSystemFileObjectContentId: mongoose.Types.ObjectId;
-  mimeType: string;
 }
 
 export const FileSystemFileObjectSchema = new mongoose.Schema<FileSystemFileObject>({
   fileSystemFileObjectContentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: FileSystem.FileContentType.Unknown,
-    required: true
-  },
-  mimeType: { 
-    type: String,
     required: true
   }
 });

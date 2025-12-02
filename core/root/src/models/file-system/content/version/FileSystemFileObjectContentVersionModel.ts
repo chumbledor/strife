@@ -2,7 +2,7 @@ import { FileSystem } from '@strife/common';
 import mongoose from 'mongoose';
 
 export interface FileSystemFileObjectContentVersion {
-  fileSystemFileObjectBinaryContentId: mongoose.Types.ObjectId;
+  fileSystemFileObjectContentId: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 
@@ -13,7 +13,7 @@ const FileSystemFileObjectContentVersionOptions = {
 
 export const FileSystemFileObjectContentVersionSchema = new mongoose.Schema<FileSystemFileObjectContentVersion>(
   {
-    fileSystemFileObjectBinaryContentId: {
+    fileSystemFileObjectContentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: FileSystem.FileContentType.Binary,
       required: true
