@@ -1,5 +1,6 @@
 import FileSystemDirectoryObjectModel from '@/models/file-system/FileSystemDirectoryObjectModel.js';
 import { FileSystem } from '@strife/common';
+import { timeStamp } from 'console';
 import mongoose from 'mongoose';
 
 export interface FileSystemObject extends mongoose.Document {
@@ -7,14 +8,9 @@ export interface FileSystemObject extends mongoose.Document {
   fileSystemId: string;
   createdAt: Date,
   updatedAt: Date,
-  parentFileSystemDirectoryObjectId: mongoose.Types.ObjectId;
+  parentFileSystemObjectId: mongoose.Types.ObjectId;
   name: string;
 }
-
-const FileSystemObjectOptions = {
-  collection: 'file_system',
-  discriminatorKey: FileSystem.ObjectDiscriminator
-};
 
 export const FileSystemObjectSchema = new mongoose.Schema<FileSystemObject>(
   {
@@ -22,17 +18,7 @@ export const FileSystemObjectSchema = new mongoose.Schema<FileSystemObject>(
       type: String,
       required: true
     },
-    createdAt: {
-      type: Date,
-      default: Date.UTC,
-      required: true
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.UTC,
-      required: true
-    },
-    parentFileSystemDirectoryObjectId: {
+    parentFileSystemObjectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: FileSystem.ObjectType.Directory
     },
@@ -41,18 +27,22 @@ export const FileSystemObjectSchema = new mongoose.Schema<FileSystemObject>(
       required: true
     }
   }, 
-  FileSystemObjectOptions
+  {
+    collection: 'file_system',
+    discriminatorKey: FileSystem.ObjectDiscriminator,
+    timestamps: true
+  }
 );
 
 FileSystemObjectSchema.pre(
   'deleteOne', 
   { document: true, query: false }, 
   async function(next: mongoose.CallbackWithoutResultAndOptionalError): Promise<void> {
-    if (!this.parentFileSystemDirectoryObjectId)
+    if (!this.parentFileSystemObjectId)
       return next();
 
     const parentFileSystemDirectoryObject = await FileSystemDirectoryObjectModel
-      .findById(this.parentFileSystemDirectoryObjectId)
+      .findById(this.parentFileSystemObjectId)
       .select('_id')
       .lean();
 
@@ -61,7 +51,7 @@ FileSystemObjectSchema.pre(
 
     await FileSystemDirectoryObjectModel
       .updateOne(
-        { _id: this.parentFileSystemDirectoryObjectId },
+        { _id: this.parentFileSystemObjectId },
         { $pull: { childrenIds: this._id } }
       );
     

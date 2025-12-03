@@ -1,8 +1,7 @@
-import { type IQueueManager } from '@interfaces/managers/IQueueManager';
-import { IAction } from '@strife/common';
+import { Event } from '@strife/common';
 import Queue from '@/collections/Queue';
 
-export abstract class QueueManager<TItem> implements IQueueManager<TItem> {
+export abstract class QueueManager<TItem> {
 
   private _version = 0;
   public get version(): number {
@@ -13,7 +12,7 @@ export abstract class QueueManager<TItem> implements IQueueManager<TItem> {
     return this._queue.head;
   }
   
-  public get headChangedEvent(): IAction<[ TItem | undefined ]> {
+  public get headChangedEvent(): Event.IAction<[ TItem | undefined ]> {
     return this._queue.headChangedEvent;
   }
 

@@ -2,53 +2,51 @@ import Batcher from '@/collections/Batcher';
 import di from '@/DependencyInjection';
 import { QueryClientManagerServiceId } from '@/di/managers/QueryClientManagerInjector';
 import { FileSystemServiceServiceId } from '@/di/services/FileSystemServiceInjector';
-import { type IBatcher } from '@interfaces/collections/IBatcher';
-import { type IFileSystemStore } from '@interfaces/stores/IFileSystemStore';
-import { type AnyFileSystemObjectData, type CreateFileSystemDirectoryData, type CreateFileSystemFileData, type FileSystemDirectoryData, type FileSystemFileData, type GetFileSystemObjectsData, GetFileSystemObjectsSchema } from '@strife/common';
+import { FileSystem } from '@strife/common';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { injectable } from 'inversify';
 
 @injectable()
-export class FileSystemStore implements IFileSystemStore {
+export class FileSystemStore {
   
   private _queryClientManager = di.get(QueryClientManagerServiceId);
   private _fileSystemService = di.get(FileSystemServiceServiceId);
-  private _batchers = new Map<string, Batcher<string, AnyFileSystemObjectData>>();
+  private _batchers = new Map<string, Batcher<string, FileSystem.AnyObjectData>>();
 
-  useCreateFileSystemDirectory(fileSystemId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): ReturnType<typeof useMutation<FileSystemDirectoryData>> {
+  useCreateFileSystemDirectoryObject(): ReturnType<typeof useMutation<FileSystem.DirectoryObjectData, Error, { fileSystemId: string, createDirectoryObjectData: FileSystem.CreateDirectoryObjectData }>> {
     return useMutation({
-      mutationFn: (): Promise<FileSystemDirectoryData> => this._fileSystemService.createFileSystemDirectory(fileSystemId, createFileSystemDirectoryData),
-      onSuccess: (fileSystemDirectoryData: FileSystemDirectoryData): void => {
+      mutationFn: ({ fileSystemId, createDirectoryObjectData }: { fileSystemId: string, createDirectoryObjectData: FileSystem.CreateDirectoryObjectData }): Promise<FileSystem.DirectoryObjectData> => this._fileSystemService.createFileSystemDirectoryObject(fileSystemId, createDirectoryObjectData),
+      onSuccess: (fileSystemDirectoryData: FileSystem.DirectoryObjectData): void => {
         this.setFileSystemObjectQueryData(fileSystemDirectoryData);
-        if (fileSystemDirectoryData.parentId)
-          this.invalidateFileSystemObjectQueryData(fileSystemId, fileSystemDirectoryData.parentId);
+        if (fileSystemDirectoryData.parentFileSystemObjectId)
+          this.invalidateFileSystemObjectQueryData(fileSystemDirectoryData.fileSystemId, fileSystemDirectoryData.parentFileSystemObjectId);
       }
     });
   }
 
-  useCreateFileSystemFile(fileSystemId: string, createFileSystemFileData: CreateFileSystemFileData): ReturnType<typeof useMutation<FileSystemFileData>> {
+  useCreateFileSystemFileObject(): ReturnType<typeof useMutation<FileSystem.FileObjectData, Error, { fileSystemId: string, createFileObjectData: FileSystem.CreateFileObjectData }>> {
     return useMutation({
-      mutationFn: (): Promise<FileSystemFileData> => this._fileSystemService.createFileSystemFile(fileSystemId, createFileSystemFileData),
-      onSuccess: (fileSystemFileData: FileSystemFileData): void => {
+      mutationFn: ({ fileSystemId, createFileObjectData }: { fileSystemId: string, createFileObjectData: FileSystem.CreateFileObjectData }): Promise<FileSystem.FileObjectData> => this._fileSystemService.createFileSystemFileObject(fileSystemId, createFileObjectData),
+      onSuccess: (fileSystemFileData: FileSystem.FileObjectData): void => {
         this.setFileSystemObjectQueryData(fileSystemFileData);
-        if (fileSystemFileData.parentId)
-          this.invalidateFileSystemObjectQueryData(fileSystemId, fileSystemFileData.parentId);
+        if (fileSystemFileData.parentFileSystemObjectId)
+          this.invalidateFileSystemObjectQueryData(fileSystemFileData.fileSystemId, fileSystemFileData.parentFileSystemObjectId);
       }
     });
   }
 
-  useGetFileSystemObject(fileSystemId: string, fileSystemObjectId: string): ReturnType<typeof useQuery<AnyFileSystemObjectData>> {
+  useGetFileSystemObject(fileSystemId: string, fileSystemObjectId: string): ReturnType<typeof useQuery<FileSystem.AnyObjectData>> {
     return useQuery({ 
       queryKey: this.getFileSystemObjectQueryKey(fileSystemId, fileSystemObjectId), 
-      queryFn: (): Promise<AnyFileSystemObjectData> => this.getBatcher(fileSystemId).request(fileSystemObjectId)
+      queryFn: (): Promise<FileSystem.AnyObjectData> => this.getBatcher(fileSystemId).request(fileSystemObjectId)
     });
   }
 
-  useGetFileSystemObjects(fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): ReturnType<typeof useQuery<AnyFileSystemObjectData[]>> {
+  useGetFileSystemObjects(fileSystemId: string, getObjectsData: FileSystem.GetObjectsData): ReturnType<typeof useQuery<FileSystem.AnyObjectData[]>> {
     return useQuery({
-      queryKey: this.getFileSystemObjectsQueryKey(fileSystemId, getFileSystemObjectsData),
-      queryFn: async (): Promise<AnyFileSystemObjectData[]> => {
-        const fileSystemDatas = await this._fileSystemService.getFileSystemObjects(fileSystemId, getFileSystemObjectsData)
+      queryKey: this.getFileSystemObjectsQueryKey(fileSystemId, getObjectsData),
+      queryFn: async (): Promise<FileSystem.AnyObjectData[]> => {
+        const fileSystemDatas = await this._fileSystemService.getFileSystemObjects(fileSystemId, getObjectsData)
         fileSystemDatas.forEach(this.setFileSystemObjectQueryData.bind(this));
         return fileSystemDatas;
       }
@@ -59,7 +57,7 @@ export class FileSystemStore implements IFileSystemStore {
     return [ 'file-system-object', fileSystemId, fileSystemObjectId ];
   }
 
-  private setFileSystemObjectQueryData(anyFileSystemObjectData: AnyFileSystemObjectData): void {
+  private setFileSystemObjectQueryData(anyFileSystemObjectData: FileSystem.AnyObjectData): void {
     this._queryClientManager.queryClient.setQueryData(
       this.getFileSystemObjectQueryKey(anyFileSystemObjectData.fileSystemId, anyFileSystemObjectData.id),
       anyFileSystemObjectData
@@ -72,11 +70,11 @@ export class FileSystemStore implements IFileSystemStore {
     });
   }
 
-  private getFileSystemObjectsQueryKey(fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): unknown[] {
-    return [ 'file-system-objects', fileSystemId, getFileSystemObjectsData ];
+  private getFileSystemObjectsQueryKey(fileSystemId: string, getObjectsData: FileSystem.GetObjectsData): unknown[] {
+    return [ 'file-system-objects', fileSystemId, getObjectsData ];
   }
   
-  private getBatcher(fileSystemId: string): IBatcher<string, AnyFileSystemObjectData> {
+  private getBatcher(fileSystemId: string): Batcher<string, FileSystem.AnyObjectData> {
     const self = this;
 
     let batcher = this._batchers.get(fileSystemId);
@@ -87,11 +85,11 @@ export class FileSystemStore implements IFileSystemStore {
 
     return batcher;
 
-    async function onFetch(ids: string[]): Promise<Map<string, AnyFileSystemObjectData>> {
-      const getFileSystemObjectsData = await GetFileSystemObjectsSchema.parseAsync({ ids });
-      const anyFileSystemObjectDatas = await self._fileSystemService.getFileSystemObjects(fileSystemId, getFileSystemObjectsData);
-      const anyFileSystemObjectEntries = anyFileSystemObjectDatas.map((anyFileSystemObjectData: AnyFileSystemObjectData): [string, AnyFileSystemObjectData] => [ anyFileSystemObjectData.id, anyFileSystemObjectData ]);
-      return new Map(anyFileSystemObjectEntries);
+    async function onFetch(ids: string[]): Promise<Map<string, FileSystem.AnyObjectData>> {
+      const getObjectsData = await FileSystem.GetObjectsSchema.parseAsync({ ids });
+      const anyObjectDatas = await self._fileSystemService.getFileSystemObjects(fileSystemId, getObjectsData);
+      const anyObjectDataEntries = anyObjectDatas.map((anyFileSystemObjectData: FileSystem.AnyObjectData): [string, FileSystem.AnyObjectData] => [ anyFileSystemObjectData.id, anyFileSystemObjectData ]);
+      return new Map(anyObjectDataEntries);
     }
   }
 

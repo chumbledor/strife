@@ -1,59 +1,47 @@
-import Batcher from '@/collections/Batcher';
 import BaseService from '@/services/BaseService';
-import { type IFileSystemService } from '@interfaces/services/IFileSystemService';
-import { AnyFileSystemObjectSchema, FileSystemDirectorySchema, FileSystemFileSchema, GetFileSystemObjectsSchema, type AnyFileSystemObjectData, type CreateFileSystemDirectoryData, type CreateFileSystemFileData, type FileSystemDirectoryData, type FileSystemFileData, type GetFileSystemObjectsData } from '@strife/common';
+import { FileSystem } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export class FileSystemService extends BaseService implements IFileSystemService {
-
-  private _batchersByProjectId = new Map<string, Batcher<string, AnyFileSystemObjectData>>();
+export class FileSystemService extends BaseService {
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/filesystems`;
   }
   
-  public createFileSystemDirectory(fileSystemId: string, createFileSystemDirectoryData: CreateFileSystemDirectoryData): Promise<FileSystemDirectoryData> {
+  public createFileSystemDirectoryObject(fileSystemId: string, createDirectoryObjectData: FileSystem.CreateDirectoryObjectData): Promise<FileSystem.DirectoryObjectData> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    return this.post<FileSystemDirectoryData>({ schema: FileSystemDirectorySchema, url: `/${fileSystemId}/objects`, data: createFileSystemDirectoryData });
+    return this.post({ schema: FileSystem.DirectoryObjectSchema, url: `/${fileSystemId}/objects`, data: createDirectoryObjectData });
   }
   
-  public createFileSystemFile(fileSystemId: string, createFileSystemFileData: CreateFileSystemFileData): Promise<FileSystemFileData> {
+  public createFileSystemFileObject(fileSystemId: string, createFileObjectData: FileSystem.CreateFileObjectData): Promise<FileSystem.FileObjectData> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    return this.post<FileSystemFileData>({ schema: FileSystemFileSchema, url: `/${fileSystemId}/objects`, data: createFileSystemFileData });
+    return this.post({ schema: FileSystem.FileObjectSchema, url: `/${fileSystemId}/objects`, data: createFileObjectData });
+  }
+
+  public deleteFileSystemObject(fileSystemId: string, fileSystemObjectId: string): Promise<void> {
+    if (!this.user.accountData)
+      return Promise.reject();
+    
+    return this.delete({ url: `/${fileSystemId}/objects/${fileSystemObjectId}` });
   }
   
-  public async getFileSystemObject(fileSystemId: string, fileSystemObjectId: string): Promise<AnyFileSystemObjectData> {
-    const self = this;
-
+  public async getFileSystemObject(fileSystemId: string, fileSystemObjectId: string): Promise<FileSystem.AnyObjectData> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    let batcher = this._batchersByProjectId.get(fileSystemId);
-    if (!batcher) {
-      batcher = new Batcher<string, AnyFileSystemObjectData>(onFetch);
-      this._batchersByProjectId.set(fileSystemId, batcher);
-    }
-
-    return batcher.request(fileSystemObjectId);
-
-    async function onFetch(ids: string[]): Promise<Map<string, AnyFileSystemObjectData>> {
-      const getAccountsData = await GetFileSystemObjectsSchema.parseAsync({ ids });
-      const anyFileSystemObjectsData = await self.getFileSystemObjects(fileSystemId, getAccountsData);
-      const anyFileSystemObjectEntries = anyFileSystemObjectsData.map((accountData: AnyFileSystemObjectData): [string, AnyFileSystemObjectData] => [ accountData.id, accountData ]);
-      return new Map(anyFileSystemObjectEntries);
-    }
+    return await this.get({ schema: FileSystem.AnyObjectSchema, url: `/${fileSystemId}/objects/${fileSystemObjectId}` });
   }
 
-  public async getFileSystemObjects(fileSystemId: string, getFileSystemObjectsData: GetFileSystemObjectsData): Promise<AnyFileSystemObjectData[]> {
+  public async getFileSystemObjects(fileSystemId: string, getObjectsData: FileSystem.GetObjectsData): Promise<FileSystem.AnyObjectData[]> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    return await this.get<AnyFileSystemObjectData[]>({ schema: AnyFileSystemObjectSchema.array(), url: `/${fileSystemId}/objects`, data: getFileSystemObjectsData });
+    return await this.get({ schema: FileSystem.AnyObjectSchema.array(), url: `/${fileSystemId}/objects`, data: getObjectsData });
   }
 
 }

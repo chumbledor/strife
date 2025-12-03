@@ -1,14 +1,13 @@
-import { Action, type IAction } from '@strife/common';
-import { type IQueue } from '@interfaces/collections/IQueue';
+import { Event } from '@strife/common';
 
-export class Queue<TItem> implements IQueue<TItem> {
+export class Queue<TItem> {
 
   public get head(): TItem | undefined {
     return this._items.at(0);
   }
 
-  private _headChangedEvent = new Action<[ TItem | undefined ]>();
-  public get headChangedEvent(): IAction<[ TItem | undefined ]> {
+  private _headChangedEvent = new Event.Action<[ TItem | undefined ]>();
+  public get headChangedEvent(): Event.IAction<[ TItem | undefined ]> {
     return this._headChangedEvent;
   }
 

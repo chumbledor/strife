@@ -6,7 +6,7 @@ import Window from '@components/layout/Window';
 import Logo from '@components/Logo';
 import { Alert, Box, Button, FormControl, FormHelperText, Input, InputLabel, Link } from '@mui/material';
 import Page from '@root/components/page/Page';
-import { validateEmail, validatePassword } from '@strife/common';
+import { AccountValidation, AuthenticationValidation } from '@strife/common';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
@@ -56,7 +56,7 @@ export function LoginPage(): React.JSX.Element {
     setEmail(email)
     const error = email.length == 0 
       ? undefined
-      : validateEmail(email);
+      : AccountValidation.validateEmail(email);
     setEmailError(error ? error.message : undefined);
   }
 
@@ -65,7 +65,7 @@ export function LoginPage(): React.JSX.Element {
     setPassword(password);
     const error = password.length == 0
       ? undefined
-      : validatePassword(password);
+      : AuthenticationValidation.validatePassword(password);
     setPasswordError(error ? error.message : undefined);
   }
 

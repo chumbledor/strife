@@ -2,21 +2,20 @@ import Batcher from '@/collections/Batcher';
 import di from '@/DependencyInjection';
 import { QueryClientManagerServiceId } from '@/di/managers/QueryClientManagerInjector';
 import { ProjectServiceServiceId } from '@/di/services/ProjectServiceInjector';
-import { type IProjectStore } from '@interfaces/stores/IProjectStore';
-import { GetProjectsSchema, type CreateProjectData, type GetProjectsData, type ProjectData, type UpdateProjectData } from '@strife/common';
+import { Project } from '@strife/common';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { injectable } from 'inversify';
 
 @injectable()
-export class ProjectStore implements IProjectStore {
+export class ProjectStore {
   
   private _queryClientManager = di.get(QueryClientManagerServiceId);
   private _projectService = di.get(ProjectServiceServiceId);
-  private _batcher = new Batcher<string, ProjectData>(this.onFetch.bind(this));
+  private _batcher = new Batcher<string, Project.Data>(this.onFetch.bind(this));
 
-  public useCreateProject(createProjectData: CreateProjectData): ReturnType<typeof useMutation<ProjectData>> {
+  public useCreateProject(): ReturnType<typeof useMutation<Project.Data, Error, Project.CreateData>> {
     return useMutation({
-      mutationFn: (): Promise<ProjectData> => this._projectService.createProject(createProjectData),
+      mutationFn: (createData: Project.CreateData): Promise<Project.Data> => this._projectService.createProject(createData),
       onSuccess: this.setProjectQueryData.bind(this)
     });
   }
@@ -28,27 +27,27 @@ export class ProjectStore implements IProjectStore {
     });
   }
 
-  public useGetProject(projectId: string): ReturnType<typeof useQuery<ProjectData>> {
+  public useGetProject(projectId: string): ReturnType<typeof useQuery<Project.Data>> {
     return useQuery({ 
       queryKey: this.getProjectQueryKey(projectId), 
-      queryFn: (): Promise<ProjectData> => this._batcher.request(projectId)
+      queryFn: (): Promise<Project.Data> => this._batcher.request(projectId)
     });
   }
 
-  public useGetProjects(getProjectsData: GetProjectsData): ReturnType<typeof useQuery<ProjectData[]>> {
+  public useGetProjects(getData: Project.GetData): ReturnType<typeof useQuery<Project.Data[]>> {
     return useQuery({
-      queryKey: this.getProjectsQueryKey(getProjectsData),
-      queryFn: async (): Promise<ProjectData[]> => {
-        const projectDatas = await this._projectService.getProjects(getProjectsData)
+      queryKey: this.getProjectsQueryKey(getData),
+      queryFn: async (): Promise<Project.Data[]> => {
+        const projectDatas = await this._projectService.getProjects(getData)
         projectDatas.forEach(this.setProjectQueryData.bind(this));
         return projectDatas;
       }
     });
   }
 
-  public useUpdateProject(projectId: string, updateProjectData: UpdateProjectData): ReturnType<typeof useMutation<ProjectData>> {
+  public useUpdateProject(): ReturnType<typeof useMutation<Project.Data, Error, { projectId: string, updateData: Project.UpdateData }>> {
     return useMutation({
-      mutationFn: (): Promise<ProjectData> => this._projectService.updateProject(projectId, updateProjectData),
+      mutationFn: ({ projectId, updateData }: { projectId: string, updateData: Project.UpdateData }): Promise<Project.Data> => this._projectService.updateProject(projectId, updateData),
       onSuccess: this.setProjectQueryData.bind(this)
     });
   }
@@ -57,7 +56,7 @@ export class ProjectStore implements IProjectStore {
     return [ 'project', projectId ];
   }
 
-  private setProjectQueryData(projectData: ProjectData): void {
+  private setProjectQueryData(projectData: Project.Data): void {
     this._queryClientManager.queryClient.setQueryData(
       this.getProjectQueryKey(projectData.id),
       projectData
@@ -70,15 +69,15 @@ export class ProjectStore implements IProjectStore {
     });
   }
 
-  private getProjectsQueryKey(getProjectsData: GetProjectsData): unknown[] {
-    return [ 'projects', getProjectsData ];
+  private getProjectsQueryKey(getData: Project.GetData): unknown[] {
+    return [ 'projects', getData ];
   }
 
-  private async onFetch(ids: string[]): Promise<Map<string, ProjectData>> {
-    const getProjectsData = await GetProjectsSchema.parseAsync({ ids });
-    const projectDatas = await this._projectService.getProjects(getProjectsData);
-    const projectEntries = projectDatas.map((projectData: ProjectData): [string, ProjectData] => [ projectData.id, projectData ]);
-    return new Map(projectEntries);
+  private async onFetch(ids: string[]): Promise<Map<string, Project.Data>> {
+    const getData = await Project.GetSchema.parseAsync({ ids });
+    const projectDatas = await this._projectService.getProjects(getData);
+    const projectDataEntries = projectDatas.map((projectData: Project.Data): [string, Project.Data] => [ projectData.id, projectData ]);
+    return new Map(projectDataEntries);
   }
 
 }

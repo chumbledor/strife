@@ -2,21 +2,20 @@ import Batcher from '@/collections/Batcher';
 import di from '@/DependencyInjection';
 import { QueryClientManagerServiceId } from '@/di/managers/QueryClientManagerInjector';
 import { AccountServiceServiceId } from '@/di/services/AccountServiceInjector';
-import { type IAccountStore } from '@root/interfaces/stores/IAccountStore';
-import { GetAccountsSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
+import { Account } from '@strife/common';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AccountStore implements IAccountStore {
+export class AccountStore {
   
   private _queryClientManager = di.get(QueryClientManagerServiceId);
   private _accountService = di.get(AccountServiceServiceId);
-  private _batcher = new Batcher<string, AccountData>(this.onFetch.bind(this));
+  private _batcher = new Batcher<string, Account.Data>(this.onFetch.bind(this));
 
-  public useCreateAccount(createAccountData: CreateAccountData): ReturnType<typeof useMutation<AccountData>> {
+  public useCreateAccount(): ReturnType<typeof useMutation<Account.Data, Error, Account.CreateData>> {
     return useMutation({
-      mutationFn: (): Promise<AccountData> => this._accountService.createAccount(createAccountData),
+      mutationFn: (createData: Account.CreateData): Promise<Account.Data> => this._accountService.createAccount(createData),
       onSuccess: this.setAccountQueryData.bind(this)
     });
   }
@@ -27,27 +26,27 @@ export class AccountStore implements IAccountStore {
     }); 
   }
 
-  public useGetAccount(accountId: string): ReturnType<typeof useQuery<AccountData>> {
+  public useGetAccount(accountId: string): ReturnType<typeof useQuery<Account.Data>> {
     return useQuery({ 
       queryKey: this.getAccountQueryKey(accountId), 
-      queryFn: (): Promise<AccountData> => this._batcher.request(accountId) 
+      queryFn: (): Promise<Account.Data> => this._batcher.request(accountId) 
     });
   }
 
-  public useGetAccounts(getAccountsData: GetAccountsData): ReturnType<typeof useQuery<AccountData[]>> {
+  public useGetAccounts(getData: Account.GetData): ReturnType<typeof useQuery<Account.Data[]>> {
     return useQuery({
-      queryKey: this.getAccountsQueryKey(getAccountsData),
-      queryFn: async (): Promise<AccountData[]> => {
-        const accountDatas = await this._accountService.getAccounts(getAccountsData);
+      queryKey: this.getAccountsQueryKey(getData),
+      queryFn: async (): Promise<Account.Data[]> => {
+        const accountDatas = await this._accountService.getAccounts(getData);
         accountDatas.forEach(this.setAccountQueryData.bind(this));
         return accountDatas;
       }
     });
   }
 
-  public useUpdateAccount(updateAccountData: UpdateAccountData): ReturnType<typeof useMutation<AccountData>> {
+  public useUpdateAccount(): ReturnType<typeof useMutation<Account.Data, Error, Account.UpdateData>> {
     return useMutation({
-      mutationFn: (): Promise<AccountData> => this._accountService.updateAccount(updateAccountData),
+      mutationFn: (updateData: Account.UpdateData): Promise<Account.Data> => this._accountService.updateAccount(updateData),
       onSuccess: this.setAccountQueryData.bind(this)
     });
   }
@@ -56,22 +55,22 @@ export class AccountStore implements IAccountStore {
     return [ 'account', accountId ];
   }
 
-  private setAccountQueryData(accountData: AccountData): void {
+  private setAccountQueryData(accountData: Account.Data): void {
     this._queryClientManager.queryClient.setQueryData(
       this.getAccountQueryKey(accountData.id),
       accountData
     );
   }
 
-  private getAccountsQueryKey(getAccountsData: GetAccountsData): unknown[] {
-    return [ 'accounts', getAccountsData ];
+  private getAccountsQueryKey(getData: Account.GetData): unknown[] {
+    return [ 'accounts', getData ];
   }
 
-  private async onFetch(ids: string[]): Promise<Map<string, AccountData>> {
-    const getAccountsData = await GetAccountsSchema.parseAsync({ ids });
-    const accountDatas = await this._accountService.getAccounts(getAccountsData);
-    const accountEntries = accountDatas.map((accountData: AccountData): [string, AccountData] => [ accountData.id, accountData ]);
-    return new Map(accountEntries);
+  private async onFetch(ids: string[]): Promise<Map<string, Account.Data>> {
+    const getData = await Account.GetSchema.parseAsync({ ids });
+    const accountDatas = await this._accountService.getAccounts(getData);
+    const accountDataEntries = accountDatas.map((accountData: Account.Data): [string, Account.Data] => [ accountData.id, accountData ]);
+    return new Map(accountDataEntries);
   }
 
 }

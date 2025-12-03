@@ -1,9 +1,8 @@
 import di from '@/DependencyInjection';
-import UserService from '@/User';
-import { type IUser } from "@interfaces/IUser";
+import User from '@/User';
 import { type ServiceIdentifier } from 'inversify';
 
-export const UserServiceId: ServiceIdentifier<IUser> = Symbol.for('UserServiceId');
-di.bind<IUser>(UserServiceId)
-  .to(UserService)
+export const UserServiceId: ServiceIdentifier<User> = Symbol.for('UserServiceId');
+di.bind<User>(UserServiceId)
+  .to(User)
   .inSingletonScope();

@@ -8,11 +8,6 @@ export interface FileSystemFileObjectContent extends mongoose.Document {
   mimeType: string;
 }
 
-const FileSystemFileObjectContentOptions = {
-  collection: 'file_system_file_content',
-  discriminatorKey: FileSystem.FileContentDiscriminator
-};
-
 export const FileSystemFileObjectContentSchema = new mongoose.Schema<FileSystemFileObjectContent>(
   {
     fileSystemFileObjectId: {
@@ -26,7 +21,11 @@ export const FileSystemFileObjectContentSchema = new mongoose.Schema<FileSystemF
       required: true
     }
   }, 
-  FileSystemFileObjectContentOptions
+  {
+    collection: 'file_system_file_content',
+    discriminatorKey: FileSystem.FileContentDiscriminator,
+    timestamps: true
+  }
 );
 
 FileSystemFileObjectContentSchema.pre(

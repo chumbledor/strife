@@ -3,7 +3,7 @@
 import di from '@/DependencyInjection';
 import { ContextMenuManagerServiceId } from '@/di/managers/ContextMenuManagerInjector';
 import '@/managers/ContextMenuManager';
-import { type IContextMenuData } from '@interfaces/managers/IContextMenuManager';
+import { ContextMenuData } from '@/managers/ContextMenuManager';
 import { Menu, type MenuProps } from '@mui/material';
 import React from 'react';
 
@@ -12,7 +12,7 @@ export interface ContextMenuProps extends Partial<MenuProps> {}
 export function ContextMenu({ ...menuProps }: ContextMenuProps): React.JSX.Element {
 
   const contextMenuManager = di.get(ContextMenuManagerServiceId);
-  const [ contextMenuData, setContextMenuData ] = React.useState<IContextMenuData | undefined>();
+  const [ contextMenuData, setContextMenuData ] = React.useState<ContextMenuData | undefined>();
   React.useEffect(initializationEffect, []);
 
   let { open, anchorReference, anchorPosition, ...otherMenuProps } = { ...menuProps, ...contextMenuData?.menuProps };
@@ -22,7 +22,7 @@ export function ContextMenu({ ...menuProps }: ContextMenuProps): React.JSX.Eleme
   anchorPosition = anchorPosition ?? { top: contextMenuData?.event.clientY ?? 0, left: contextMenuData?.event.clientX ?? 0 };
 
   return <Menu key={contextMenuManager.version} open={open} onClose={onClose} anchorReference={anchorReference} anchorPosition={anchorPosition} {...otherMenuProps}>
-    {contextMenuData?.content}
+    {contextMenuData?.items}
   </Menu>
 
   function initializationEffect(): () => void {

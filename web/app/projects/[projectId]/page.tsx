@@ -7,7 +7,7 @@ import AuthenticatedPage from '@components/page/AuthenticatedPage';
 import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import ProjectContextProvider from '@components/project/ProjectContextProvider';
 import CodeView from '@root/components/editor/views/CodeView';
-import { type ProjectData } from '@strife/common';
+import { Project } from '@strife/common';
 import React from 'react';
 
 enum EditorTabs {
@@ -24,7 +24,7 @@ export function ProjectPage({ params }: ProjectPageProps): React.JSX.Element {
   
   const { projectId } = React.use(params);
   const projectService = di.get(ProjectServiceServiceId);
-  const [ projectData, setProjectData ] = React.useState<ProjectData | undefined>();
+  const [ projectData, setProjectData ] = React.useState<Project.Data | undefined>();
   const [ tab, setTab ] = React.useState(0);
   React.useEffect(initializationEffect, []);
 
@@ -72,11 +72,12 @@ export function ProjectPage({ params }: ProjectPageProps): React.JSX.Element {
     getProject();
   }
 
-  async function getProject(): Promise<ProjectData> {
+  async function getProject(): Promise<Project.Data> {
     const projectData = await projectService.getProject(projectId);
     setProjectData(projectData);
     return projectData;
   }
+  
 }
 
 export default ProjectPage;

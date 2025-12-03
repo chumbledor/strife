@@ -1,20 +1,16 @@
-import { type IBatcher } from '@interfaces/collections/IBatcher';
-
-// TODO: Clear map after resolving?
-// TODO: Hold one promise per key and just return that for each thing that requests it?
-
 interface PromiseExecutorData<TValue> {
+  promise: Promise<TValue>;
   resolve: (value: TValue | PromiseLike<TValue>) => void;
   reject: (error?: any) => void;
 }
 
-export class Batcher<TKey, TValue> implements IBatcher<TKey, TValue> {
+export class Batcher<TKey, TValue> {
 
   private _onFetch: (keys: TKey[]) => Promise<Map<TKey, TValue>>;
   private _time: number;
   private _timer?: ReturnType<typeof setTimeout>;
 
-  private _promiseExecutorDatasByKey = new Map<TKey, PromiseExecutorData<TValue>[]>;
+  private _promiseExecutorDatasByKey = new Map<TKey, PromiseExecutorData<TValue>>();
 
   public constructor(onFetch: (keys: TKey[]) => Promise<Map<TKey, TValue>>, time: number = 10) {
     this._onFetch = onFetch;
@@ -24,23 +20,23 @@ export class Batcher<TKey, TValue> implements IBatcher<TKey, TValue> {
   public async request(key: TKey): Promise<TValue> {
     const self = this;
 
-    const promise = new Promise(executor);
+    let promiseExecutorData = this._promiseExecutorDatasByKey.get(key);
+    if (promiseExecutorData)
+      return promiseExecutorData.promise;
+
+    let promise: Promise<TValue>;
+    promise = new Promise(executor.bind(this));
     this.queue();
     return promise;
     
     function executor(resolve: (value: TValue | PromiseLike<TValue>) => void, reject: (error?: any) => void) {
-      let promiseExecutorDatas = self._promiseExecutorDatasByKey.get(key);
-      if (!promiseExecutorDatas) {
-        promiseExecutorDatas = [];
-        self._promiseExecutorDatasByKey.set(key, promiseExecutorDatas);
-      }
-
       const promiseExecutorData = {
+        promise,
         resolve,
         reject
       };
 
-      promiseExecutorDatas.push(promiseExecutorData);
+      self._promiseExecutorDatasByKey.set(key, promiseExecutorData);
     }
   }
 
@@ -57,36 +53,31 @@ export class Batcher<TKey, TValue> implements IBatcher<TKey, TValue> {
   }
 
   private async fetch(): Promise<void> {
-    const self = this;
+    const promiseExecutorDatasByKey = this._promiseExecutorDatasByKey;
+    this._promiseExecutorDatasByKey = new Map<TKey, PromiseExecutorData<TValue>>();
 
     const keys = this._promiseExecutorDatasByKey.keys();
     const valuesByKey = await this._onFetch([...keys]);
-    valuesByKey.forEach(this.resolve.bind(this));
+    valuesByKey.forEach(resolve.bind(this));
 
     const rejects = keys.filter((key: TKey): boolean => !valuesByKey.has(key));
-    rejects.forEach(this.reject.bind(this));
-  }
+    rejects.forEach(reject.bind(this));
 
-  private resolve(value: TValue, key: TKey): void {
-    const promiseExecutorDatas = this._promiseExecutorDatasByKey.get(key);
-    if (!promiseExecutorDatas)
-      return;
+    function resolve(value: TValue, key: TKey): void {
+      const promiseExecutorData = promiseExecutorDatasByKey.get(key);
+      if (!promiseExecutorData)
+        return;
+      
+      promiseExecutorData.resolve(value);
+    }
 
-    promiseExecutorDatas.forEach(
-      (promiseExecutorData: PromiseExecutorData<TValue>): void => 
-        promiseExecutorData.resolve(value)
-    );
-  }
+    function reject(key: TKey): void {
+      const promiseExecutorData = promiseExecutorDatasByKey.get(key);
+      if (!promiseExecutorData)
+        return;
 
-  private reject(key: TKey): void {
-    const promiseExecutorDatas = this._promiseExecutorDatasByKey.get(key);
-    if (!promiseExecutorDatas)
-      return;
-
-    promiseExecutorDatas.forEach(
-      (promiseExecutorData: PromiseExecutorData<TValue>): void => 
-        promiseExecutorData.reject()
-    );
+      promiseExecutorData.reject();
+    }
   }
 
 }

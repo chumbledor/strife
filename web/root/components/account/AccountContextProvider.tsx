@@ -1,6 +1,6 @@
 import di from '@/DependencyInjection';
 import { AccountStoreServiceId } from '@/di/stores/AccountStoreInjector';
-import AccountContext, { type IAccountContext } from '@components/account/AccountContext';
+import AccountContext, { type AccountContextValue } from '@components/account/AccountContext';
 import React from 'react';
 
 export interface AccountContextProviderProps extends React.PropsWithChildren {
@@ -11,7 +11,7 @@ export function AccountContextProvider({ accountId, children }: AccountContextPr
   const accountStore = di.get(AccountStoreServiceId);
   const { data } = accountStore.useGetAccount(accountId);
 
-  const value: IAccountContext = {
+  const value: AccountContextValue = {
     accountData: data
   };
 

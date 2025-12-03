@@ -1,13 +1,14 @@
 import QueueManager from '@/managers/QueueManager';
-import { type IToastData, type IToastQueueManager } from '@interfaces/managers/IToastQueueManager';
-import { type SnackbarCloseReason } from '@mui/material';
+import { type SnackbarCloseReason, type SnackbarProps } from '@mui/material';
 import { injectable } from 'inversify';
 import { type SyntheticEvent } from 'react';
 
-@injectable()
-export class ToastQueueManager extends QueueManager<IToastData> implements IToastQueueManager {
+export type ToastData = SnackbarProps;
 
-  protected configure(item: IToastData): void {
+@injectable()
+export class ToastQueueManager extends QueueManager<ToastData> {
+
+  protected configure(item: ToastData): void {
     const onClose = item.onClose;
     item.onClose = 
       (event: Event | SyntheticEvent<any, Event>, reason: SnackbarCloseReason): void => {
@@ -19,11 +20,11 @@ export class ToastQueueManager extends QueueManager<IToastData> implements IToas
       };
   }
 
-  protected activate(item: IToastData): void {
+  protected activate(item: ToastData): void {
     item.open = true;
   }
 
-  protected deactivate(item: IToastData): void {
+  protected deactivate(item: ToastData): void {
     item.open = false;
   }
 

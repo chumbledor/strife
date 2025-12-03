@@ -1,12 +1,12 @@
 'use client'
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Input, InputLabel, type DialogProps } from '@mui/material';
-import { CreateProjectSchema, type CreateProjectData } from '@strife/common';
+import { Project } from '@strife/common';
 import React from 'react';
 
 export interface CreateProjectDialogProps extends DialogProps {
   onCancel?: () => void;
-  onCreate?: (createProjectData: CreateProjectData) => void;
+  onCreate?: (createData: Project.CreateData) => void;
 }
 
 export default function CreateProjectDialog({ onCancel, onCreate, ...dialogProps }: CreateProjectDialogProps): React.JSX.Element {  
@@ -63,12 +63,12 @@ export default function CreateProjectDialog({ onCancel, onCreate, ...dialogProps
     if (nameError || descriptionError)
       return;
 
-    const createProjectData = await CreateProjectSchema.parseAsync({
+    const createData = await Project.CreateSchema.parseAsync({
       name,
       description
     });
     
     if (onCreate)
-      onCreate(createProjectData);
+      onCreate(createData);
   }
 }

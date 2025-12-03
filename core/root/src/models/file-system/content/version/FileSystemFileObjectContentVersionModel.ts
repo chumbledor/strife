@@ -3,13 +3,7 @@ import mongoose from 'mongoose';
 
 export interface FileSystemFileObjectContentVersion {
   fileSystemFileObjectContentId: mongoose.Types.ObjectId;
-  createdAt: Date;
 }
-
-const FileSystemFileObjectContentVersionOptions = {
-  collection: 'file_system_file_content_version',
-  discriminatorKey: FileSystem.FileContentVersionDiscriminator
-};
 
 export const FileSystemFileObjectContentVersionSchema = new mongoose.Schema<FileSystemFileObjectContentVersion>(
   {
@@ -17,14 +11,13 @@ export const FileSystemFileObjectContentVersionSchema = new mongoose.Schema<File
       type: mongoose.Schema.Types.ObjectId,
       ref: FileSystem.FileContentType.Binary,
       required: true
-    },
-    createdAt: {
-      type: Date,
-      default: Date.UTC,
-      required: true
-    },
+    }
   },
-  FileSystemFileObjectContentVersionOptions
+  {
+    collection: 'file_system_file_content_version',
+    discriminatorKey: FileSystem.FileContentVersionDiscriminator,
+    timestamps: true
+  }
 );
 
 export const FileSystemFileObjectBinaryContentVersionModel = mongoose.model<FileSystemFileObjectContentVersion>(FileSystem.FileContentVersionType.Unknown, FileSystemFileObjectContentVersionSchema);

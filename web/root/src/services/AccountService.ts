@@ -1,17 +1,16 @@
 import BaseService from '@/services/BaseService';
-import { type IAccountService } from '@interfaces/services/IAccountService';
-import { AccountSchema, type AccountData, type CreateAccountData, type GetAccountsData, type UpdateAccountData } from '@strife/common';
+import { Account } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AccountService extends BaseService implements IAccountService {
+export class AccountService extends BaseService {
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/accounts`;
   }
 
-  public createAccount(createAccountData: CreateAccountData): Promise<AccountData> {
-    return this.post<AccountData>({ schema: AccountSchema, data: createAccountData });
+  public createAccount(createData: Account.CreateData): Promise<Account.Data> {
+    return this.post({ schema: Account.Schema, data: createData });
   }
 
   public deleteAccount(): Promise<void> {
@@ -21,19 +20,19 @@ export class AccountService extends BaseService implements IAccountService {
     return this.delete({ url: `/${this.user.accountData.id}` });
   }
 
-  public getAccount(accountId: string): Promise<AccountData> {
-    return this.get<AccountData>({ schema: AccountSchema, url: `/${accountId}` });
+  public getAccount(accountId: string): Promise<Account.Data> {
+    return this.get({ schema: Account.Schema, url: `/${accountId}` });
   }
 
-  public getAccounts(getAccountsData: GetAccountsData): Promise<AccountData[]> {
-    return this.get<AccountData[]>({ schema: AccountSchema.array(), data: getAccountsData });
+  public getAccounts(getData: Account.GetData): Promise<Account.Data[]> {
+    return this.get({ schema: Account.Schema.array(), data: getData });
   }
 
-  public updateAccount(updateAccountData: UpdateAccountData): Promise<AccountData> {
+  public updateAccount(updateData: Account.UpdateData): Promise<Account.Data> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    return this.put<AccountData>({ schema: AccountSchema, url: `/${this.user.accountData.id}`, data: updateAccountData });
+    return this.put({ schema: Account.Schema, url: `/${this.user.accountData.id}`, data: updateData });
   }
 
 }

@@ -1,13 +1,13 @@
-import FileSystemContext, { type IFileSystemContext } from '@components/file-system/FileSystemContext';
-import { type FileSystemData } from '@strife/common';
+import FileSystemContext, { type FileSystemContextValue } from '@components/file-system/FileSystemContext';
+import { FileSystem } from '@strife/common';
 import React from 'react';
 
 export interface FileSystemContextProviderProps extends React.PropsWithChildren {
-  fileSystemData: FileSystemData
+  fileSystemData: FileSystem.Data
 }
 
 export function FileSystemContextProvider({ fileSystemData, children }: FileSystemContextProviderProps): React.JSX.Element {
-  const value: IFileSystemContext = {
+  const value: FileSystemContextValue = {
     fileSystemData
   };
 

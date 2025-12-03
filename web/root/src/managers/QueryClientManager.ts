@@ -1,9 +1,8 @@
-import { type IQueryClientManager } from '@interfaces/managers/IQueryClientManager';
 import { DefaultOptions, QueryClient } from '@tanstack/react-query';
 import { injectable } from 'inversify';
 
 @injectable()
-export class QueryClientManager implements IQueryClientManager {
+export class QueryClientManager {
   
   private _queryClient = new QueryClient();
   public get queryClient(): QueryClient {

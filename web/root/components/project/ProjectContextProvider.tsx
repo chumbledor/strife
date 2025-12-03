@@ -9,10 +9,10 @@ export interface ProjectContextProviderProps extends React.PropsWithChildren {
 
 export function ProjectContextProvider({ projectId, children }: ProjectContextProviderProps): React.JSX.Element {
   const projectStore = di.get(ProjectStoreServiceId);
-  const { data } = projectStore.useGetProject(projectId);
+  const { data: projectData } = projectStore.useGetProject(projectId);
 
   const value: IProjectContext = {
-    projectData: data
+    projectData
   };
 
   return <ProjectContext.Provider value={value}>

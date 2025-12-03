@@ -1,9 +1,18 @@
 import di from '@/DependencyInjection';
 import { UserServiceId } from '@/di/UserInjector';
-import { type IUser } from '@interfaces/IUser';
-import { type BaseServiceOptions, type IBaseService, type ServiceOptions, type VoidServiceOptions } from '@interfaces/services/IBaseService';
+import User from '@/User';
+import { type ZodType } from 'zod';
 
-export class BaseService implements IBaseService {
+export type BaseServiceOptions = {
+  url?: string | URL | undefined,
+  data?: Record<string, any>,
+  init?: RequestInit
+}
+
+export type VoidServiceOptions = BaseServiceOptions;
+export type ServiceOptions<TResponse> = BaseServiceOptions & { schema: ZodType<TResponse> };
+
+export class BaseService {
 
   private static defaultOptions: BaseServiceOptions = {
     url: ''
@@ -16,7 +25,7 @@ export class BaseService implements IBaseService {
   private static defaultBody = JSON.stringify({});
 
   private _user = di.get(UserServiceId);
-  protected get user(): IUser {
+  protected get user(): User {
     return this._user;
   }
 

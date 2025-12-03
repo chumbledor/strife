@@ -1,9 +1,8 @@
 import di from '@/DependencyInjection';
 import QueryClientManager from '@/managers/QueryClientManager';
-import { type IQueryClientManager } from "@interfaces/managers/IQueryClientManager";
 import { type ServiceIdentifier } from 'inversify';
 
-export const QueryClientManagerServiceId: ServiceIdentifier<IQueryClientManager> = Symbol.for('QueryClientManagerServiceId');
-di.bind<IQueryClientManager>(QueryClientManagerServiceId)
+export const QueryClientManagerServiceId: ServiceIdentifier<QueryClientManager> = Symbol.for('QueryClientManagerServiceId');
+di.bind<QueryClientManager>(QueryClientManagerServiceId)
   .to(QueryClientManager)
   .inSingletonScope();

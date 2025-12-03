@@ -1,10 +1,10 @@
 import di from '@/DependencyInjection';
-import { FileSystemServiceServiceId } from '@/di/services/FileSystemServiceInjector';
+import { FileSystemStoreServiceId } from '@/di/stores/FileSystemStoreInjector';
 import { useFileSystemContext } from '@components/file-system//FileSystemContext';
-import FileSystemDirectoryListItem from '@components/file-system/FileSystemDirectoryListItem';
-import FileSystemFileListItem from '@components/file-system/FileSystemFileListItem';
+import FileSystemDirectoryObjectListItem from '@components/file-system/FileSystemDirectoryObjectListItem';
+import FileSystemFileObjectListItem from '@components/file-system/FileSystemFileObjectListItem';
 import { type ListItemProps } from '@mui/material';
-import { type AnyFileSystemObjectData, FileSystemObjectType } from '@strife/common';
+import { FileSystem } from '@strife/common';
 import React from 'react';
 
 export interface FileSystemObjectListItemProps extends ListItemProps {
@@ -12,33 +12,22 @@ export interface FileSystemObjectListItemProps extends ListItemProps {
 }
 
 export default function FileSystemObjectListItem({ fileSystemObjectId, ...listItemProps }: FileSystemObjectListItemProps): React.JSX.Element {
-  const fileSystemService = di.get(FileSystemServiceServiceId);
   const { fileSystemData } = useFileSystemContext();
-  const [ anyFileSystemObjectData, setAnyFileSystemObjectData ] = React.useState<AnyFileSystemObjectData>();
-  React.useEffect(initializationEffect, []);
 
-  if (!fileSystemData || !anyFileSystemObjectData)
+  if (!fileSystemData)
     return <React.Fragment />;
 
-  let children: React.ReactNode;
-  switch (anyFileSystemObjectData.type) {
-    case FileSystemObjectType.Directory:
-      return <FileSystemDirectoryListItem fileSystemObjectId={fileSystemObjectId} {...listItemProps} />
-    case FileSystemObjectType.File:
-      return <FileSystemFileListItem fileSystemObjectId={fileSystemObjectId} {...listItemProps} />
+  const fileSystemStore = di.get(FileSystemStoreServiceId);
+  const { data: anyObjectData } = fileSystemStore.useGetFileSystemObject(fileSystemData.id, fileSystemObjectId);
+  if (!anyObjectData)
+    return <React.Fragment />;
+
+  switch (anyObjectData.type) {
+    case FileSystem.ObjectType.Directory:
+      return <FileSystemDirectoryObjectListItem fileSystemObjectId={fileSystemObjectId} {...listItemProps} />
+    case FileSystem.ObjectType.File:
+      return <FileSystemFileObjectListItem fileSystemObjectId={fileSystemObjectId} {...listItemProps} />
     default: 
       return <React.Fragment />;
-  }
-  
-  function initializationEffect(): void {
-    getFileSystemObject();
-  }
-
-  async function getFileSystemObject(): Promise<void> {
-    if (!fileSystemData)
-      return;
-
-    const anyFileSystemObjectData = await fileSystemService.getFileSystemObject(fileSystemData.id, fileSystemObjectId);
-    setAnyFileSystemObjectData(anyFileSystemObjectData);
   }
 }

@@ -1,20 +1,19 @@
 import BaseService from '@/services/BaseService';
-import { type IAuthenticationService } from '@interfaces/services/IAuthenticationService';
-import { AccountSchema, type AccountData, type LoginAuthenticationData, type UpdateAuthenticationData } from '@strife/common';
+import { Account, Authentication } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export class AuthenticationService extends BaseService implements IAuthenticationService {
+export class AuthenticationService extends BaseService {
 
   protected override get baseUrl(): string | URL | undefined {
     return `http://localhost:3000/authentication`;
   }
 
-  public async login(loginAuthenticationData: LoginAuthenticationData): Promise<AccountData> {
+  public async login(loginData: Authentication.LoginData): Promise<Account.Data> {
     if (this.user.accountData)
       return Promise.reject();
     
-    const accountData = await this.post<AccountData>({ schema: AccountSchema, data: loginAuthenticationData });
+    const accountData = await this.post({ schema: Account.Schema, data: loginData });
     this.user.login(accountData);
     return accountData;
   }
@@ -30,20 +29,20 @@ export class AuthenticationService extends BaseService implements IAuthenticatio
     }
   }
 
-  public async refresh(): Promise<AccountData> {
+  public async refresh(): Promise<Account.Data> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    const accountData = await this.post<AccountData>({ schema: AccountSchema, url: '/refresh', init: { credentials: 'include' } });
+    const accountData = await this.post({ schema: Account.Schema, url: '/refresh', init: { credentials: 'include' } });
     this.user.login(accountData);
     return accountData;
   }
 
-  public async updateAuthentication(updateAuthenticationData: UpdateAuthenticationData): Promise<AccountData> {
+  public async updateAuthentication(updateData: Authentication.UpdateData): Promise<Account.Data> {
     if (!this.user.accountData)
       return Promise.reject();
 
-    return this.put<AccountData>({ schema: AccountSchema, url: `/${this.user.accountData.id}`, data: updateAuthenticationData });
+    return this.put({ schema: Account.Schema, url: `/${this.user.accountData.id}`, data: updateData });
   }
 
 }

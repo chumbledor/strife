@@ -36,13 +36,13 @@ export class FileSystemController extends BaseController {
       return Promise.reject();
     }
 
-    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createDirectoryObjectData.parentFileSystemDirectoryId, fileSystemId });
+    const parentFileSystemDirectory = await this.nosql.fileSystemDirectoryObject.findOne({ _id: createDirectoryObjectData.parentFileSystemObjectId, fileSystemId });
     if (!parentFileSystemDirectory)
       return Promise.reject();
 
-    const fileSystemDirectory = new this.nosql.fileSystemDirectory({
+    const fileSystemDirectory = new this.nosql.fileSystemDirectoryObject({
       fileSystemId,
-      parentFileSystemDirectoryId: createDirectoryObjectData.parentFileSystemDirectoryId,
+      parentFileSystemObjectId: createDirectoryObjectData.parentFileSystemObjectId,
       name: createDirectoryObjectData.name
     });
 
@@ -63,15 +63,14 @@ export class FileSystemController extends BaseController {
       return Promise.reject();
     }
 
-    const parentFileSystemDirectory = await this.nosql.fileSystemDirectory.findOne({ _id: createFileObjectData.parentFileSystemDirectoryId, fileSystemId });
+    const parentFileSystemDirectory = await this.nosql.fileSystemDirectoryObject.findOne({ _id: createFileObjectData.parentFileSystemObjectId, fileSystemId });
     if (!parentFileSystemDirectory)
       return Promise.reject();
 
-    const fileSystemFile = new this.nosql.fileSystemFile({
+    const fileSystemFile = new this.nosql.fileSystemFileObject({
       fileSystemId,
-      parentFileSystemDirectoryId: createFileObjectData.parentFileSystemDirectoryId,
-      name: createFileObjectData.name,
-      mimeType: createFileObjectData.mimeType
+      parentFileSystemDirectoryObjectId: createFileObjectData.parentFileSystemObjectId,
+      name: createFileObjectData.name
     });
 
     fileSystemFile.save();
@@ -126,8 +125,8 @@ export class FileSystemController extends BaseController {
       }
     }
 
-    if (getObjectsData.parentFileSystemDirectoryId) {
-      query.parentFileSystemDirectoryObjectId = getObjectsData.parentFileSystemDirectoryId;
+    if (getObjectsData.parentFileSystemObjectId) {
+      query.parentFileSystemObjectId = getObjectsData.parentFileSystemObjectId;
     }
 
     if (getObjectsData.name) {

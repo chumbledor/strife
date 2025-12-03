@@ -19,26 +19,26 @@ export default class FileSystemEntity extends UniqueEntity {
   }
 
   public async getRootFileSystemObject(): Promise<FileSystemDirectoryObject | null> {
-    if (!mongoose.isValidObjectId(this.rootFileSystemObjectId))
+    const isValidObjectId = mongoose.isValidObjectId(this.rootFileSystemObjectId);
+    if (!isValidObjectId)
       return null;
 
     const nosql = await di.getAsync(NoSQLServiceId);
-    return nosql.fileSystemDirectory.findById(this.rootFileSystemObjectId);
+    return nosql.fileSystemObject.findById(this.rootFileSystemObjectId);
   }
 
   @BeforeCreate()
   public async createFileSystem(args: EventArgs<FileSystemEntity>): Promise<void> {
     const nosql = await di.getAsync(NoSQLServiceId);
-    const rootfileSystemObject = new nosql.fileSystemDirectory({ fileSystemId: this.id, name: RootDirectoryName });
-    await rootfileSystemObject.save();
-    console.log(`\n\n${this.id}\n\n`);
-    this.rootFileSystemObjectId = rootfileSystemObject.id.toString();
+    const rootFileSystemObject = new nosql.fileSystemDirectoryObject({ fileSystemId: this.id, name: RootDirectoryName });
+    await rootFileSystemObject.save();
+    this.rootFileSystemObjectId = rootFileSystemObject.id.toString();
   }
 
   @BeforeDelete()
   public async deleteFileSystem(args: EventArgs<FileSystemEntity>): Promise<void> {
     const nosql = await di.getAsync(NoSQLServiceId);
-    await nosql.fileSystemDirectory.deleteOne({ _id: this.rootFileSystemObjectId });
+    await nosql.fileSystemDirectoryObject.deleteOne({ _id: this.rootFileSystemObjectId });
   }
 
 }

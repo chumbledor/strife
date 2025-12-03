@@ -17,14 +17,14 @@ export class NoSQL {
     return this._fileSystemObject;
   }
 
-  private _fileSystemDirectory!: typeof FileSystemDirectoryObjectModel;
-  public get fileSystemDirectory(): typeof FileSystemDirectoryObjectModel {
-    return this._fileSystemDirectory;
+  private _fileSystemDirectoryObject!: typeof FileSystemDirectoryObjectModel;
+  public get fileSystemDirectoryObject(): typeof FileSystemDirectoryObjectModel {
+    return this._fileSystemDirectoryObject;
   }
 
-  private _fileSystemFile!: typeof FileSystemFileObjectModel;
-  public get fileSystemFile(): typeof FileSystemFileObjectModel {
-    return this._fileSystemFile;
+  private _fileSystemFileObject!: typeof FileSystemFileObjectModel;
+  public get fileSystemFileObject(): typeof FileSystemFileObjectModel {
+    return this._fileSystemFileObject;
   }
   
   public async initialize(): Promise<void> {
@@ -42,8 +42,8 @@ export class NoSQL {
       return;
     
     this._fileSystemObject = FileSystemObjectModel;
-    this._fileSystemDirectory = FileSystemDirectoryObjectModel;
-    this._fileSystemFile = FileSystemFileObjectModel;
+    this._fileSystemDirectoryObject = FileSystemDirectoryObjectModel;
+    this._fileSystemFileObject = FileSystemFileObjectModel;
   }
 
   public async update(): Promise<void> {}

@@ -1,8 +1,8 @@
-import { type ProjectData } from '@strife/common';
+import { Project } from '@strife/common';
 import React from 'react';
 
 export interface IProjectContext {
-  projectData?: ProjectData
+  projectData?: Project.Data
 }
 
 export const ProjectContext = React.createContext<IProjectContext | undefined>(undefined);

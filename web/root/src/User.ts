@@ -1,26 +1,25 @@
-import { type IUser } from '@interfaces/IUser';
-import { AccountSchema, type AccountData } from '@strife/common';
+import { Account } from '@strife/common';
 import { injectable } from 'inversify';
 
 @injectable()
-export default class User implements IUser {
+export default class User {
 
-  private _account?: AccountData = this.load();
-  public get accountData(): AccountData | undefined {
-    return this._account;
+  private _accountData?: Account.Data = this.load();
+  public get accountData(): Account.Data | undefined {
+    return this._accountData;
   }
 
-  public login(accountData: AccountData): void {
-    this._account = accountData;
-    localStorage.setItem(typeof User, JSON.stringify(this._account))
+  public login(accountData: Account.Data): void {
+    this._accountData = accountData;
+    localStorage.setItem(typeof User, JSON.stringify(this._accountData))
   }
 
   public logout(): void {
-    this._account = undefined;
+    this._accountData = undefined;
     localStorage.removeItem(typeof User);
   }
 
-  private load(): AccountData | undefined {
+  private load(): Account.Data | undefined {
     if (!localStorage)
       return;
     
@@ -32,8 +31,12 @@ export default class User implements IUser {
     if (!accountObject)
       return;
 
-    const accountData = AccountSchema.parse(accountObject);
-    return accountData;
+    try {
+      const accountData = Account.Schema.parse(accountObject);
+      return accountData;
+    } catch (error: any) {
+      return;
+    }
   }
 
 }
